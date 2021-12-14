@@ -1,0 +1,189 @@
+#ifndef LMCOCKTAIL_H
+#define LMCOCKTAIL_H
+
+// c++ includes
+#include <vector>
+#include <string>
+// ROOT includes
+#include "TH2.h"
+// project includes
+#include "LmCocktailMan.h"
+#include "LmCocktailPart.h"
+
+class LmCocktail {
+public:
+  LmCocktail(const LmCocktail& cockt);
+  LmCocktail(Int_t system=0, std::string name = "Cocktail", Bool_t UseNormMidRap=kFALSE);
+  ~LmCocktail();
+
+  // function declarations
+  Int_t         Process(Int_t type = kStd);
+	void          AttachManager(LmCocktailMan &newman) { fLmCocktailMan.push_back(&newman); }
+	void          AttachPart(LmCocktailPart &newpart)  { fLmCocktailPart.push_back(&newpart); }
+  void          MakeSpectra1D();
+  // output-related
+  void          DrawProjection(unsigned int bin_number, Bool_t projOnMee); ///< Used by LmHandler::PrintCompare().
+  void          PrintCocktail_Mee(unsigned int bin_number = 0, const Char_t* filename = "cCocktail_Mee.pdf", const Char_t* comment = "", TH1* hData=0x0);
+  void          PrintCocktail_Ptee(unsigned int bin_number = 0, const Char_t* filename = "cCocktail_Ptee.pdf", const Char_t* comment = "", TH1* hData=0x0);
+  void          PrintUncertainties(Double_t min, Double_t max, Bool_t doMass);
+  void          WriteHist1D(unsigned int histBits, const std::vector<Double_t> bins, Bool_t simplehistnames, Bool_t projOnMee, TString appendix="");
+  void          WriteHist2D(std::string filename = "cocktail.root");
+  void          WriteHist1D(unsigned int bin_number, Bool_t projOnMee);
+  void          WriteHist2D(Bool_t divideByBinWidth); 
+
+
+  // setters
+  void          SetName(const std::string name)       { fName = name; }
+  //void        SetType(); // dont implement this unless the copy constructor was updated.
+  // Configure the scaling of heavy flavours depending on setup of Monte Carlo input. Or collect needed values in LmCocktail constructor.
+  void          SetCrosssection_pp(Double_t xs)       { fCrosssection_pp       = xs; }
+  void          SetCrosssection_event_cc(Double_t xs) { fCrosssection_event_cc = xs; }
+  void          SetCrosssection_event_bb(Double_t xs) { fCrosssection_event_bb = xs; }
+  void          SetNcoll(Double_t ncoll)              { fNcoll = ncoll; }
+  void          SetForcedBranchingCharmToEle(Double_t br  = 0.096 ) { fBranchingCharmToEle  = br; } ///< Correction factor, use only if decay was forced in Monte Carlo! 0.096 is c->lepton [PDG 2014]. 0.103 was old default from Irem. 0.0828 calculated with Basti, based on PR and BR. following is wrong: (16.07+6.49)/2 = 0.1128, from (D+- + D0)/2 [PDG 2014].
+  void          SetForcedBranchingBeautyToEle(Double_t br = 0.    ) { fBranchingBeautyToEle = br; } ///< Correction factor, use only if decay was forced in Monte Carlo! following is wrong: (10.8+10.1)/2 = 0.1045, from (B+- + B0)/2 [PDG 2014].
+  void          SetBinsPtee_forprojMee(std::vector<Double_t> bins)  { fBinsPtee_forprojMee  = bins; }
+  void          SetBinsMee_forprojPtee(std::vector<Double_t> bins)  { fBinsMee_forprojPtee  = bins; }
+  void          SetDrawStyle(const std::string st)    { fDrawStyle = st; }
+  void          SetDrawStyleErr(const std::string st) { fDrawStyleErr = st; }
+  void          SetDrawOption(Int_t opt)              { fDrawOpt = opt; }
+  void          SetParamRelUncertainty(LmCocktailPart::enType, double low, double high);
+  void          SetBRRelUncertainty(LmCocktailPart::enType, double low, double high);
+  void          SetMTscalingRelUncertainty(LmCocktailPart::enType, double low, double high);
+  void          SetAdditionalRelUncertainty(LmCocktailPart::enType type, double low, double high);
+
+  //void          SetNeventsPhysSel(Double_t newevts)       { fNeventsPhysSel = newevts; }
+  void          SetCrossSection(Double_t crosssection)    { fCrossSection   = crosssection; }
+
+  void          SetDoNormBinwidth     (bool b=kTRUE)  { fDoNormBinwidth     = b; }
+  void          SetDoNormNevents      (bool b=kTRUE)  { fDoNormNevents      = b; }
+  void          SetDoNormNentries     (bool b=kTRUE)  { fDoNormNentries     = b; }
+  void          SetDoNormCrossSection (bool b=kTRUE)  { fDoNormCrossSection = b; }
+  void          SetDoNormMidRap       (bool b=kTRUE)  { fDoNormMidRap       = b; }
+
+  // getters
+  const char*   GetName() const                       { return fName.c_str(); }
+  Double_t      GetNcoll() const                      { return fNcoll; }
+  TObjArray*    GetSpectra1D(unsigned int bin_number, Bool_t projOnMee);
+  TH1D*         GetSum1D(unsigned int bin_number, Bool_t projOnMee);
+  TGraphAsymmErrors* GetSumErr1D(unsigned int bin_number, Bool_t projOnMee);
+  TH1D*         GetComponent1D(Int_t partType, unsigned int bin_number, Bool_t projOnMee);
+//  LmCocktailPart*               GetLmCocktailPartCopy(Int_t partType);
+  LmCocktailPart*               GetLmCocktailPart(Int_t partType, Bool_t suppressErr=kFALSE);
+  std::vector<TString>          GetPartNames();
+  std::vector<LmCocktailPart*>  GetLmCocktailPartVec() { return fLmCocktailPart; }
+  Double_t      GetPteeEdge_forprojMee(unsigned int bin) const;
+  Double_t      GetMeeEdge_forprojPtee(unsigned int bin) const;
+  const char*   GetDrawStyle()    const { return fDrawStyle.c_str(); }
+  const char*   GetDrawStyleErr() const { return fDrawStyleErr.c_str(); }
+  Bool_t        HasSystematics()  /*const*/ { return GetLmCocktailPart(LmCocktailPart::kSum)->HasSystematics(); } // modify or extend if needed -> check consequences for LmHandler.
+
+  //Double_t      GetNeventsPhysSel() const     { return fNeventsPhysSel; }
+  Double_t      GetCrossSection() const       { return fCrossSection; }
+
+  Bool_t        GetDoNormBinwidth() const     { return  fDoNormBinwidth;    }
+  Bool_t        GetDoNormNevents() const      { return  fDoNormNevents;     }
+  Bool_t        GetDoNormNentries() const     { return  fDoNormNentries;    }
+  Bool_t        GetDoNormCrossSection() const { return  fDoNormCrossSection;}
+
+
+  enum enSystem { // just extend the list as needed...
+		kUndef=0,       ///< No specific Type
+    kpp_MB_7,       ///< pp, Min.Bias, 7 TeV (collect values in constructor!)
+    kpp_EMcal_7,
+    kpp_MB_13,       ///< pp, Min.Bias, 13 TeV (collect values in constructor!)
+    kpPb_MB_502,    ///< p-Pb, Min.Bias, 5.02 TeV (collect values in constructor!)
+    kPbPb_0010_276_InputIrem,
+    kPbPb_0010_276,   ///< Pb-Pb,  0-10%, 2.76 TeV
+    kPbPb_1050_276,   ///< Pb-Pb, 10-50%, 2.76 TeV
+    kPbPb_2050_276,   ///< Pb-Pb, 20-50%, 2.76 TeV
+    kPbPb_0010_5020,  ///< Pb-Pb, 00-10%, 5.02 TeV
+    kPbPb_1050_5020,  ///< Pb-Pb, 10-50%, 5.02 TeV
+    kPbPb_5080_5020,  ///< Pb-Pb, 50-80%, 5.02 TeV
+    kPbPb_0080_5020,   ///< Pb-Pb, 00-80%, 5.02 TeV
+    kPbPb_0020_5020,   ///< Pb-Pb, 00-20%, 5.02 TeV
+    kPbPb_2040_5020,   ///< Pb-Pb, 20-40%, 5.02 TeV
+    kPbPb_4080_5020,   ///< Pb-Pb, 40-80%, 5.02 TeV
+    kPbPb_1020_5020,   ///< Pb-Pb, 10-20%, 5.02 TeV
+    kPbPb_4050_5020,   ///< Pb-Pb, 40-50%, 5.02 TeV
+    kPbPb_5060_5020,   ///< Pb-Pb, 50-60%, 5.02 TeV
+    kPbPb_6080_5020   ///< Pb-Pb, 60-80%, 5.02 TeV
+  };
+
+  enum enType {
+    kNoProcess=0,
+    kStd,
+    kFromManagers=kStd,
+    kFromParticles
+  };
+
+  enum enDrawOpt {
+    kAll=0,
+    kOnlySum,
+    kAllButSum
+  };
+  
+private:
+  // functions
+  void          AddHistToParticle(TH2D* hist, Int_t partType);
+  Bool_t        HasSysInput() const { if (fType==kFromManagers) for (UInt_t i=0; i<fLmCocktailMan.size(); i++) { if (fLmCocktailMan.at(i)->HasSystematics()) return kTRUE; } return kFALSE; }
+  void          ApplySysRelUncertainties(LmCocktailPart* part, TH2D* low, TH2D* high);
+  Bool_t        IsLFParticle(LmCocktailPart::enType type);
+  TH1D          BuildUncertaintyPlot(TH2D& unc, const TH1D& central, int color, bool doMass, int bin_min, int bin_max);
+  // switches
+  // variables
+  std::string  	fName; // name for the legend entry of the sum.
+  Int_t         fType;
+  Bool_t        fPrintUnc;
+  Double_t      fCrosssection_pp;
+  Double_t      fCrosssection_event_cc; // used to be called fCrosssection_Event
+  Double_t      fCrosssection_event_bb;
+  Double_t      fNcoll;
+  Double_t      fBranchingCharmToEle;
+  Double_t      fBranchingBeautyToEle;
+
+  // variables
+  //Double_t      fNeventsPhysSel;
+  Double_t      fCrossSection;
+  Bool_t        fDoNormBinwidth;
+  Bool_t        fDoNormNevents;
+  Bool_t        fDoNormNentries;
+  Bool_t        fDoNormCrossSection;
+
+  Bool_t        fDoNormMidRap;
+
+  TH2D* fCentral       = 0x0;
+  TH2D* fCentral_low   = 0x0;
+  TH2D* fCentral_high  = 0x0;
+  TH2D* fRel_para_low  = 0x0;
+  TH2D* fRel_para_high = 0x0;
+  TH2D* fRel_MT_low    = 0x0;
+  TH2D* fRel_MT_high   = 0x0;
+  TH2D* fRel_BR_low    = 0x0;
+  TH2D* fRel_BR_high   = 0x0;
+  TH2D* fRel_Add_low   = 0x0;
+  TH2D* fRel_Add_high  = 0x0;
+ 
+
+  std::vector<LmCocktailMan*>   fLmCocktailMan;
+  std::vector<LmCocktailPart*>  fLmCocktailPart; // includes sum as first element.
+  std::vector<Double_t> fBinsPtee_forprojMee;
+	std::vector<Double_t> fBinsMee_forprojPtee;
+  std::string   fDrawStyle;
+  std::string   fDrawStyleErr;
+  Int_t         fDrawOpt;
+  struct SysUnc{
+    LmCocktailPart::enType type;
+    double BRunc_low;
+    double BRunc_high;
+    double MTscaling_low;
+    double MTscaling_high;
+    double additional_uncertainty_low;
+    double additional_uncertainty_high;
+    double Param_low;
+    double Param_high;
+  };
+  std::vector<SysUnc> fSysUnc;
+};
+
+#endif
