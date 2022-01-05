@@ -1,0 +1,69 @@
+# config for the pair efficiency calculation
+
+# input
+
+
+#inputFilename   = "input/centralities_LEGO502_hijing_00-10/AnalysisResults_LEGO502_0005.root"
+#outputFilename           = "output/centralities_LEGO502_hijing_00-10/pair_eff_cut5_0005.root"
+#inputFilename   = "input/centralities_LEGO501_pythia_00-10/AnalysisResults_LEGO501_0005.root"
+#outputFilename           = "output/centralities_LEGO501_pythia_00-10/pair_eff_cut5_0005.root"
+
+inputFilename   = "input/centralities_LEGO521/AnalysisResults_LEGO521_0005.root"
+outputFilename           = "output/centralities_LEGO521/pair_eff_cut5_0005.root"
+#inputFilename   = "input/centralities_LEGO521/AnalysisResults_LEGO521_0510.root"
+#outputFilename           = "output/centralities_LEGO521/pair_eff_cut5_0510.root"
+#inputFilename   = "input/centralities_LEGO521/AnalysisResults_LEGO521_1020.root"
+#outputFilename           = "output/centralities_LEGO521/pair_eff_cut5_1020.root"
+#inputFilename   = "input/centralities_LEGO521/AnalysisResults_LEGO521_2030.root"
+#outputFilename           = "output/centralities_LEGO521/pair_eff_cut5_2030.root"
+#inputFilename   = "input/centralities_LEGO521/AnalysisResults_LEGO521_3040.root"
+#outputFilename           = "output/centralities_LEGO521/pair_eff_cut5_3040.root"
+#inputFilename   = "input/centralities_LEGO521/AnalysisResults_LEGO521_4050.root"
+#outputFilename           = "output/centralities_LEGO521/pair_eff_cut5_4050.root"
+#inputFilename   = "input/centralities_LEGO521/AnalysisResults_LEGO521_5060.root"
+#outputFilename           = "output/centralities_LEGO521/pair_eff_cut5_5060.root"
+#inputFilename   = "input/centralities_LEGO521/AnalysisResults_LEGO521_6070.root"
+#outputFilename           = "output/centralities_LEGO521/pair_eff_cut5_6070.root"
+#inputFilename   = "input/centralities_LEGO521/AnalysisResults_LEGO521_7080.root"
+#outputFilename           = "output/centralities_LEGO521/pair_eff_cut5_7080.root"
+
+# HIJING
+#inputFilename   = "input/centralities_LEGO516/AnalysisResults_LEGO516_0005.root"
+#outputFilename           = "output/centralities_LEGO516/pair_eff_cut5_0005.root"
+
+#inputFilename   = "input/centralities_LEGO500/AnalysisResults_LEGO500_0010.root"
+#outputFilename           = "output/centralities_LEGO500/pair_eff_cut5_0010.root"
+#inputFilename   = "input/centralities_LEGO500/AnalysisResults_LEGO500_2040.root"
+#outputFilename           = "output/centralities_LEGO500/pair_eff_cut5_2040.root"
+#inputFilename   = "input/centralities_LEGO500/AnalysisResults_LEGO500_2030.root"
+#outputFilename           = "output/centralities_LEGO500/pair_eff_cut5_2030.root"
+#inputFilename   = "input/centralities_LEGO500/AnalysisResults_LEGO500_3040.root"
+#outputFilename           = "output/centralities_LEGO500/pair_eff_cut5_3040.root"
+#inputFilename   = "input/centralities_LEGO500/AnalysisResults_LEGO500_4080.root"
+#outputFilename           = "output/centralities_LEGO500/pair_eff_cut5_4080.root"
+
+# PYTHIA
+#inputFilename   = "input/centralities_LEGO499/AnalysisResults_LEGO499_2030.root"
+#outputFilename           = "output/centralities_LEGO499/pair_eff_cut5_2030.root"
+#inputFilename   = "input/centralities_LEGO499/AnalysisResults_LEGO499_3040.root"
+#outputFilename           = "output/centralities_LEGO499/pair_eff_cut5_3040.root"
+#inputFilename   = "input/centralities_LEGO499/AnalysisResults_LEGO499_2040.root"
+#outputFilename           = "output/centralities_LEGO499/pair_eff_cut5_2040.root"
+#inputFilename   = "input/centralities_LEGO499/AnalysisResults_LEGO499_4080.root"
+#outputFilename           = "output/centralities_LEGO499/pair_eff_cut5_4080.root"
+
+cocktailWeights = "input/cocktail/pt200-400-0080/cocktail.root"
+
+histFolderGen = "efficiency3/Pairs/GeneratedSmeared"
+histFolderRec = "efficiency3/Pairs/"
+
+#cutSettings = "cut5_pt200;cut5_pt200_woSCcut;cut5_pt200_looserPionRejection;cut5_pt200_looserPionRejection_woSCcut"
+#cutSettings = "cut5_pt200;cut5_pt200_woSCcut"
+cutSettings = "cut5_pt200"
+
+prefixGen = "Ngen_"
+prefixRec = "Nrec_"
+
+MCSignal_Pair = "sameMother"
+MCSignal_ULSLS = "eleFinalStateFromD"
+MCSignal_Basesignal = "eleFinalState"
