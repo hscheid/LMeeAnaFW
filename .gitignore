@@ -33,3 +33,8 @@
 *.out
 *.app
 *.root
+
+# Specific folders in the framework
+./*/output
+./*/input
+./*/obj
