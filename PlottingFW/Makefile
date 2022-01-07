@@ -14,7 +14,7 @@
 # CXXFLAGS = -ggdb -Wall -Werror -Wextra -std=c++11 -stdlib=libc++ -I`root-config --incdir` -Og
 # CXXFLAGS = -ggdb -Wall -Wextra -I`root-config --incdir` -Og
 # use standard:
-# CXXFLAGS = -ggdb -Wall -Wextra -I`root-config --incdir` -std=c++11 
+# CXXFLAGS = -ggdb -Wall -Wextra -I`root-config --incdir` -std=c++11
 # CXXFLAGS = -ggdb -Wall -Wextra -std=c++14 -I`root-config --incdir`
 # use optimization:
 # CXXFLAGS = -O3 -Wall -Wextra -I`root-config --incdir`
@@ -24,7 +24,7 @@
 
 
 #    libraries die beim Linken eingesetzt werden
-LDFLAGS = `root-config --libs` -lEG 
+LDFLAGS = `root-config --libs` -lEG
 
 # doesn't seem to work yet (carsten)
 OBJDIR=obj
@@ -99,89 +99,89 @@ theo_Misc.exe: obj/theo_Misc.o obj/LmManager.o obj/LmBackground.o obj/LmSignal.o
 theo.exe: obj/theo.o obj/LmManager.o obj/LmBackground.o obj/LmSignal.o obj/LmHandler.o obj/LmHelper.o obj/LmCocktailMan.o obj/LmCocktailPart.o obj/LmCocktail.o obj/LmBaseSignal.o obj/LmBaseManager.o obj/LmHistogram.o obj/LmFitter.o obj/LmFitFunctions.o obj/LmQA.o obj/LmMultiQA.o obj/LmFileManager.o obj/LmRebinner.o
 	$(CXX) -o $@ $(CXXFLAGS) $^ $(LDFLAGS)
 
-obj/main.o: src/main.cpp src/config.h
+obj/main.o: src/user/main.cpp src/user/config.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
-obj/carsten.o: src/carsten.cpp src/carsten.h
+obj/carsten.o: src/user/carsten.cpp src/user/carsten.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
-obj/carsten_sys.o: src/carsten_sys.cpp src/carsten_sys.h
+obj/carsten_sys.o: src/user/carsten_sys.cpp src/user/carsten_sys.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
-obj/carsten_phiV.o: src/carsten_phiV.cpp src/carsten_phiV.h
+obj/carsten_phiV.o: src/user/carsten_phiV.cpp src/user/carsten_phiV.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
-obj/jerome.o: src/jerome.cpp src/jerome.h
+obj/jerome.o: src/user/jerome.cpp src/user/jerome.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
-obj/jerome_sys.o: src/jerome_sys.cpp src/jerome.h
+obj/jerome_sys.o: src/user/jerome_sys.cpp src/user/jerome.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
-obj/jerome_PbPb.o: src/jerome_PbPb.cpp src/jerome_PbPb.h
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
-obj/nadia.o: src/nadia.cpp src/nadia.h
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-obj/patrick.o: src/patrick.cpp src/patrick.h src/patrick_common.h
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-obj/pat_bg.o: src/pat_bg.cpp src/pat_bg.h
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-obj/pat_sys.o: src/pat_sys.cpp src/pat_sys.h src/patrick_common.h
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-obj/sebastian.o: src/sebastian.cpp src/sebastian.h
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-obj/theo_pPb.o: src/theo_pPb.cpp src/theo_pPb.h
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-obj/theo_pp.o: src/theo_pp.cpp src/theo_pp.h
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-obj/theo_Misc.o: src/theo_Misc.cpp src/theo_Misc.h
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-obj/theo.o: src/theo.cpp src/theo.h
+obj/jerome_PbPb.o: src/user/jerome_PbPb.cpp src/user/jerome_PbPb.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-obj/LmManager.o: src/LmManager.cpp src/LmManager.h
+obj/nadia.o: src/user/nadia.cpp src/user/nadia.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+obj/patrick.o: src/user/patrick.cpp src/user/patrick.h src/user/patrick_common.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+obj/pat_bg.o: src/user/pat_bg.cpp src/user/pat_bg.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+obj/pat_sys.o: src/user/pat_sys.cpp src/user/pat_sys.h src/user/patrick_common.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+obj/sebastian.o: src/user/sebastian.cpp src/user/sebastian.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+obj/theo_pPb.o: src/user/theo_pPb.cpp src/user/theo_pPb.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+obj/theo_pp.o: src/user/theo_pp.cpp src/user/theo_pp.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+obj/theo_Misc.o: src/user/theo_Misc.cpp src/user/theo_Misc.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+obj/theo.o: src/user/theo.cpp src/user/theo.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-obj/LmBackground.o: src/LmBackground.cpp src/LmBackground.h
+obj/LmManager.o: src/core/LmManager.cpp src/core/LmManager.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-obj/LmSignal.o: src/LmSignal.cpp src/LmSignal.h
+obj/LmBackground.o: src/core/LmBackground.cpp src/core/LmBackground.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-obj/LmHandler.o: src/LmHandler.cpp src/LmHandler.h
+obj/LmSignal.o: src/core/LmSignal.cpp src/core/LmSignal.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-obj/LmHelper.o: src/LmHelper.cpp src/LmHelper.h
+obj/LmHandler.o: src/core/LmHandler.cpp src/core/LmHandler.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-obj/LmCocktailMan.o: src/LmCocktailMan.cpp src/LmCocktailMan.h
+obj/LmHelper.o: src/core/LmHelper.cpp src/core/LmHelper.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-obj/LmCocktailPart.o: src/LmCocktailPart.cpp src/LmCocktailPart.h
+obj/LmCocktailMan.o: src/core/LmCocktailMan.cpp src/core/LmCocktailMan.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-obj/LmCocktail.o: src/LmCocktail.cpp src/LmCocktail.h
+obj/LmCocktailPart.o: src/core/LmCocktailPart.cpp src/core/LmCocktailPart.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-obj/LmBaseSignal.o: src/LmBaseSignal.cpp src/LmBaseSignal.h
+obj/LmCocktail.o: src/core/LmCocktail.cpp src/core/LmCocktail.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-obj/LmBaseManager.o: src/LmBaseManager.cpp src/LmBaseManager.h
+obj/LmBaseSignal.o: src/core/LmBaseSignal.cpp src/core/LmBaseSignal.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-obj/LmHistogram.o: src/LmHistogram.cpp src/LmHistogram.h
+obj/LmBaseManager.o: src/core/LmBaseManager.cpp src/core/LmBaseManager.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-obj/LmFitter.o: src/LmFitter.cpp src/LmFitter.h
+obj/LmHistogram.o: src/core/LmHistogram.cpp src/core/LmHistogram.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-obj/LmFitFunctions.o: src/LmFitFunctions.cpp src/LmFitFunctions.h
+obj/LmFitter.o: src/core/LmFitter.cpp src/core/LmFitter.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-obj/LmQA.o: src/LmQA.cpp src/LmQA.h
+obj/LmFitFunctions.o: src/core/LmFitFunctions.cpp src/core/LmFitFunctions.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-obj/LmMultiQA.o: src/LmMultiQA.cpp src/LmMultiQA.h
+obj/LmQA.o: src/core/LmQA.cpp src/core/LmQA.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-obj/LmFileManager.o: src/LmFileManager.cpp src/LmFileManager.h
+obj/LmMultiQA.o: src/core/LmMultiQA.cpp src/core/LmMultiQA.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-obj/LmRebinner.o: src/LmRebinner.cpp src/LmRebinner.h
+obj/LmFileManager.o: src/core/LmFileManager.cpp src/core/LmFileManager.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+obj/LmRebinner.o: src/core/LmRebinner.cpp src/core/LmRebinner.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 #L�schen der einzelnen Objekte
