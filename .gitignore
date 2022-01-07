@@ -34,6 +34,10 @@
 *.app
 *.root
 
+# Ignore backup swap files
+*.swp
+*~
+
 # Specific folders in the framework
 ./*/output
 ./*/input
