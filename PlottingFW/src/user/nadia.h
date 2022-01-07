@@ -1,6 +1,6 @@
 // input data files. make sure to edit the other strings accordingly!
 
-#include "LmBackground.h"
+#include "../core/LmBackground.h"
 
 TString name[] = {
   "./input/LMEE_1.root", //0 

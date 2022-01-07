@@ -28,16 +28,16 @@ using namespace std;
 
 // project includes
 
-#include "LmManager.h"
-#include "LmFileManager.h"
-#include "LmBackground.h"
-#include "LmBaseSignal.h"
-#include "LmSignal.h"
-#include "LmHandler.h"
-#include "LmHelper.h"
-#include "LmQA.h"
-#include "LmMultiQA.h"
-#include "LmFitter.h"
+#include "../core/LmManager.h"
+#include "../core/LmFileManager.h"
+#include "../core/LmBackground.h"
+#include "../core/LmBaseSignal.h"
+#include "../core/LmSignal.h"
+#include "../core/LmHandler.h"
+#include "../core/LmHelper.h"
+#include "../core/LmQA.h"
+#include "../core/LmMultiQA.h"
+#include "../core/LmFitter.h"
 #include "nadia.h"
 
 

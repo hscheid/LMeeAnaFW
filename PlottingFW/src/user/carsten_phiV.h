@@ -5,9 +5,9 @@
 #include "TBenchmark.h"
 #include "TSystem.h"
 
-#include "LmCocktail.h"
-#include "LmHandler.h"
-#include "LmFileManager.h"
+#include "../core/LmCocktail.h"
+#include "../core/LmHandler.h"
+#include "../core/LmFileManager.h"
 
 Bool_t    kDoSystematics    = kTRUE;
 // UInt_t    kDoExclusionCutZ  = LmManager::kFlatCorrSub;

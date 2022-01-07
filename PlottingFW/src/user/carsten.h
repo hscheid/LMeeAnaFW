@@ -5,10 +5,10 @@
 #include "TBenchmark.h"
 #include "TSystem.h"
 
-#include "LmCocktail.h"
-#include "LmBackground.h"
-#include "LmHandler.h"
-#include "LmFileManager.h"
+#include "../core/LmCocktail.h"
+#include "../core/LmBackground.h"
+#include "../core/LmHandler.h"
+#include "../core/LmFileManager.h"
 
 
 Double_t plotMeeMin= 0.; Double_t plotMeeMax = 0.139; Double_t  plotMeeMax_sys = 3.3;

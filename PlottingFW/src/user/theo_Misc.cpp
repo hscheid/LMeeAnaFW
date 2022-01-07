@@ -17,12 +17,12 @@ using namespace std;
 // project includes
 #include "theo_Misc.h"
 
-#include "LmManager.h"
-#include "LmBackground.h"
-#include "LmSignal.h"
-#include "LmHandler.h"
-#include "LmHelper.h"
-#include "LmFileManager.h"
+#include "../core/LmManager.h"
+#include "../core/LmBackground.h"
+#include "../core/LmSignal.h"
+#include "../core/LmHandler.h"
+#include "../core/LmHelper.h"
+#include "../core/LmFileManager.h"
 
 
 void ProcessSingleInputs(TString vConfig, TString vEffiConfig, TString inputhist, Int_t inputdim, TString name,

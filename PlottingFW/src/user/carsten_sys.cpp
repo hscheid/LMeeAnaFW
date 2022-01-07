@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "LmQA.h"
+#include "../core/LmQA.h"
 #include "TLegend.h"
 #include "carsten_sys.h"
 #include "TSystem.h"
@@ -8,7 +8,7 @@
 #include "TVirtualFitter.h"
 #include "TGraph.h"
 #include "TPaveText.h"
-#include "LmFitter.h"
+#include "../core/LmFitter.h"
 
 void Init();
 void Analyse();

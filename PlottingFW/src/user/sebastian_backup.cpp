@@ -12,22 +12,23 @@ using namespace std;
 #include "TStyle.h"
 #include "TBenchmark.h"
 // project includes
-#include "sebastian.h"
-#include "LmManager.h"
-#include "LmBackground.h"
-#include "LmBaseSignal.h"
-#include "LmSignal.h"
-#include "LmHandler.h"
-#include "LmHelper.h"
-#include "LmCocktailMan.h"
-#include "LmCocktail.h"
-#include "LmFitter.h"
-
+// core
+#include "../core/LmManager.h"
+#include "../core/LmBackground.h"
+#include "../core/LmBaseSignal.h"
+#include "../core/LmSignal.h"
+#include "../core/LmHandler.h"
+#include "../core/LmHelper.h"
+#include "../core/LmCocktailMan.h"
+#include "../core/LmCocktail.h"
+#include "../core/LmFitter.h"
+// user
+#include "sebastian_backup.h"
 int main()
 {
   LmHelper lmHelper;
- 
-  
+
+
   //Projection of 2D to 1D take a closer look
   std::vector<Double_t> binsMee_forDCA; //x-Axis --> dca
 //  binsMee_forDCA.push_back(0.0);
@@ -37,18 +38,18 @@ int main()
   binsMee_forDCA.push_back(2.80);
   binsMee_forDCA.push_back(3.20);
 //  for (int i = 0; i <= n_mee_bin; ++i) {
-//    binsMee_forDCA.push_back(mee_bin[i]); //put Mee binning from sebastian.h 
+//    binsMee_forDCA.push_back(mee_bin[i]); //put Mee binning from sebastian.h
 //  }
   std::vector<Double_t> binsDCA_forMee; //x-Axis --> dca
   for (int i = 0; i <= n_dca_bin; ++i) {
-    binsDCA_forMee.push_back(dca_bin[i]); //put Mee binning from sebastian.h 
+    binsDCA_forMee.push_back(dca_bin[i]); //put Mee binning from sebastian.h
   }
-  
+
   Double_t plotDCAMin  = 0.  , plotDCAMax  = 10.;
   Double_t plotPteeMin = 0.  , plotPteeMax = 5.0;
   Double_t plotMeeMin  = 0.05, plotMeeMax  = 3.2;
- 
-  
+
+
   //New LmManager to set labels etc right in external signal
   LmManager *manExt = new LmManager(const_cast<char*>(cconfig[0].Data()));
     manExt->SetEtaRange(-0.8,0.8);
@@ -72,14 +73,14 @@ int main()
     TH1D* h_inJPsi_MC[5];
     for (int i = 0; i < 4; ++i) {
       //this one is a little dirty -> mee_bin[] is not really in the external file but should have same binning
-      h_inD_MC[i]    = (TH1D*) f_extFile0 -> Get(Form("D_PairDCA_invM_%3.2f_%3.2f",mee_bin[i],mee_bin[i+1]));  
-      h_inB_MC[i]    = (TH1D*) f_extFile0 -> Get(Form("B_PairDCA_invM_%3.2f_%3.2f",mee_bin[i],mee_bin[i+1]));  
-      h_inPi0_MC[i]  = (TH1D*) f_extFile0 -> Get(Form("Pi0_PairDCA_invM_%3.2f_%3.2f",mee_bin[i],mee_bin[i+1]));  
-      h_inJPsi_MC[i] = (TH1D*) f_extFile0 -> Get(Form("JPsi_PairDCA_invM_%3.2f_%3.2f",mee_bin[i],mee_bin[i+1]));  
-      h_inD_MC[i]   ->SetTitle(Form("D: %3.2f #leq m_{ee} #leq  %3.2f",mee_bin[i],mee_bin[i+1]));  
-      h_inB_MC[i]   ->SetTitle(Form("B: %3.2f #leq m_{ee} #leq %3.2f",mee_bin[i],mee_bin[i+1]));  
-      h_inPi0_MC[i] ->SetTitle(Form("#pi^{0}: %3.2f #leq m_{ee} #leq  %3.2f",mee_bin[i],mee_bin[i+1]));  
-      h_inJPsi_MC[i]->SetTitle(Form("J/#Psi: %3.2f #leq m_{ee} #leq %3.2f",mee_bin[i],mee_bin[i+1]));  
+      h_inD_MC[i]    = (TH1D*) f_extFile0 -> Get(Form("D_PairDCA_invM_%3.2f_%3.2f",mee_bin[i],mee_bin[i+1]));
+      h_inB_MC[i]    = (TH1D*) f_extFile0 -> Get(Form("B_PairDCA_invM_%3.2f_%3.2f",mee_bin[i],mee_bin[i+1]));
+      h_inPi0_MC[i]  = (TH1D*) f_extFile0 -> Get(Form("Pi0_PairDCA_invM_%3.2f_%3.2f",mee_bin[i],mee_bin[i+1]));
+      h_inJPsi_MC[i] = (TH1D*) f_extFile0 -> Get(Form("JPsi_PairDCA_invM_%3.2f_%3.2f",mee_bin[i],mee_bin[i+1]));
+      h_inD_MC[i]   ->SetTitle(Form("D: %3.2f #leq m_{ee} #leq  %3.2f",mee_bin[i],mee_bin[i+1]));
+      h_inB_MC[i]   ->SetTitle(Form("B: %3.2f #leq m_{ee} #leq %3.2f",mee_bin[i],mee_bin[i+1]));
+      h_inPi0_MC[i] ->SetTitle(Form("#pi^{0}: %3.2f #leq m_{ee} #leq  %3.2f",mee_bin[i],mee_bin[i+1]));
+      h_inJPsi_MC[i]->SetTitle(Form("J/#Psi: %3.2f #leq m_{ee} #leq %3.2f",mee_bin[i],mee_bin[i+1]));
       h_inD_MC[i]   ->SetLineWidth(2);
       h_inB_MC[i]   ->SetLineWidth(2);
       h_inPi0_MC[i] ->SetLineWidth(2);
@@ -88,12 +89,12 @@ int main()
       h_inB_MC[i]   ->SetLineColor(kGreen+2);
       h_inPi0_MC[i] ->SetLineColor(kRed);
       h_inJPsi_MC[i]->SetLineColor(kYellow+1);
-      //Additonal to normalize external input on number of entries 
+      //Additonal to normalize external input on number of entries
       if (kDoNormNentries && h_inD_MC[i]->Integral()>1.)    h_inD_MC[i]   ->Scale(1/h_inD_MC[i]->Integral());
       if (kDoNormNentries && h_inB_MC[i]->Integral()>1.)    h_inB_MC[i]   ->Scale(1/h_inB_MC[i]->Integral());
       if (kDoNormNentries && h_inPi0_MC[i]->Integral()>1.)  h_inPi0_MC[i] ->Scale(1/h_inPi0_MC[i]->Integral());
       if (kDoNormNentries && h_inJPsi_MC[i]->Integral()>1.) h_inJPsi_MC[i]->Scale(1/h_inJPsi_MC[i]->Integral());
-      
+
       sigD_MC    -> AddProjection(h_inD_MC[i],    LmSignal::kSubSig ,LmBaseSignal::kProjOnMee);
       sigB_MC    -> AddProjection(h_inB_MC[i],    LmSignal::kSubSig ,LmBaseSignal::kProjOnMee);
       sigPi0_MC  -> AddProjection(h_inPi0_MC[i],  LmSignal::kSubSig ,LmBaseSignal::kProjOnMee);
@@ -103,12 +104,12 @@ int main()
 
 //Nochmal neu und ordentlich schreiben!
 
-  
+
   // create manager from config string
   LmManager* mgr00 = new LmManager(const_cast<char*>(cconfig[0].Data()));
   // (only one rootfile used, cannot compare to combined Pb-Pb output!)
-  
-  
+
+
   //set further configuration for the manager
   mgr00->SetInputhistAndDim("pInvMass_DCAsigma_pPt", 3);
   mgr00->SetProjOption("xy"); //this one hurts a little | its x vs y ... for DCA so its Minv vs DCA, so the DCAee is on the x axis, integrated for Ptee
@@ -122,7 +123,7 @@ int main()
   //mgr00->SetEnableRebinning(kFALSE); // use this to disable or just comment out the setter above...
   //
   // ...
-  
+
   // read in histograms from data files
 //  mgr00->ReadAllHistogramsFromFiles();
   //
@@ -133,17 +134,17 @@ int main()
   // 3) instead of mgr00->Process(kFALSE), use:
   // mgr00->Process(LmManager::kDontReadInput); // dont read in rootfiles again
   //
-  
+
   // make a copy of the manager including its input histograms
   mgr00->Process(LmManager::kReadInputOnly);
 
 
   // select different subranges in input histograms
 //  mgr00->Set3DProjRangeX(0., 3.7);
-  
+
   // process the managers: make the projections, rebinning, corrections...
   mgr00 ->Process(LmManager::kDontReadInput); // kFALSE: dont read in rootfiles again
-  
+
   LmBackground *bkgIn = new LmBackground (*mgr00);
   bkgIn -> Process(LmBackground::kGeom);
   LmSignal *sigIn = new LmSignal(*mgr00, *bkgIn, "Data");
@@ -153,11 +154,11 @@ int main()
   sigIn -> SetDoNormNevents(kDoNormNevents);
   sigIn -> SetDoNormNentries(kTRUE);
   sigIn -> Process(LmSignal::kStd);
- 
 
-  
+
+
  //////////////////////////////////////////////////////////////
- 
+
   LmHandler *hanCompare = new LmHandler(LmHandler::kCompare);
   hanCompare->AttachSignal(*sigIn);
   hanCompare->SetBinsY_forprojOnX(binsMee_forDCA);
@@ -179,26 +180,26 @@ int main()
  //              FITS! FITS! FITS!                         //
  ////////////////////////////////////////////////////////////
   TH1D* hData = 0x0;
-  
+
   // +------------------------------------------------------------------+
   // | Pythia 8                                                         |
   // +------------------------------------------------------------------+
   // | g g -> c cbar                                  121 |   4.311e+01 |
   // | q qbar -> c cbar                               122 |   2.293e-01 |
   // | g g -> b bbar                                  123 |   2.282e+00 |
-  // | q qbar -> b bbar                               124 |   1.657e-02 | 
+  // | q qbar -> b bbar                               124 |   1.657e-02 |
   // +------------------------------------------------------------------+
   // | PDG Branchingratios                                              |
   // +------------------------------------------------------------------+
-  // |D+/- -->  e+/- X                                    |       16.07 |  
+  // |D+/- -->  e+/- X                                    |       16.07 |
   // |D0   -->  e+/- X                                    |        6.49 |
   // |B+/- -->  e+/- X                                    |       10.80 |
   // |B0   -->  e+/- X                                    |       10.10 |
   // +------------------------------------------------------------------+
-  
-  
+
+
   // This is not actually right copared to documentation but works
-  Double_t Ratio_DB =1/(((4.311e+01+2.293e-01)/((16.07*2+6.49)/3))/((2.282e+00+1.657e-02)/((10.80*2+10.10)/3))); 
+  Double_t Ratio_DB =1/(((4.311e+01+2.293e-01)/((16.07*2+6.49)/3))/((2.282e+00+1.657e-02)/((10.80*2+10.10)/3)));
   cout << "Ratio_DB: " << Ratio_DB << endl;
 
 
@@ -211,7 +212,7 @@ int main()
     //////// CHARM FIT. //////////
 
     LmFitter* fitter = new LmFitter();
-    fitter->SetDatahist( hData ); 
+    fitter->SetDatahist( hData );
     fitter->AttachFitTemplateA( h_inD_MC[i] );
     fitter->AttachFitTemplateB( h_inB_MC[i] );
     fitter->AttachFitTemplateC( h_inJPsi_MC[i] );
@@ -224,14 +225,12 @@ int main()
     fitter->Process(LmFitter::kThreeTempl_OneNorm_PlusBaseline, Form("Fit_%d.pdf",i));
 
     fitter->PrintFitStatus();
- 
+
     delete hData;
     delete fitter;
   }
-  
-  
+
+
   std::cout << "main.cpp done :-)" << std::endl;
   return 0;
 }
-
-

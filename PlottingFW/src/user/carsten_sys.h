@@ -5,9 +5,9 @@
 #include "TBenchmark.h"
 #include "TSystem.h"
 
-#include "LmCocktail.h"
-#include "LmHandler.h"
-#include "LmFileManager.h"
+#include "../core/LmCocktail.h"
+#include "../core/LmHandler.h"
+#include "../core/LmFileManager.h"
 
 enum kCent{kCent0080, kCent0010, kCent1020, kCent2040, kCent4050, kCent5060, kCent6080, kCent1050, kCent5080, kCent0020, kCent4080};
 

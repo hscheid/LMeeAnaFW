@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "LmQA.h"
+#include "../core/LmQA.h"
 #include "TLegend.h"
 #include "carsten_phiV.h"
 #include "TSystem.h"

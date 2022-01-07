@@ -18,11 +18,11 @@ using namespace std;
 #include "TStyle.h"
 // project includes
 #include "config.h"
-#include "LmManager.h"
-#include "LmBackground.h"
-#include "LmSignal.h"
-#include "LmHandler.h"
-#include "LmHelper.h"
+#include "../core/LmManager.h"
+#include "../core/LmBackground.h"
+#include "../core/LmSignal.h"
+#include "../core/LmHandler.h"
+#include "../core/LmHelper.h"
 
 /*
 // Patricks Input

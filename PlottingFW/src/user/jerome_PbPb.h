@@ -1,6 +1,6 @@
 // input data files. make sure to edit the other strings accordingly!
 
-#include "LmBackground.h"
+#include "../core/LmBackground.h"
 
 TString name[] = {
   "./input/data_PbPb/LMEE_LEGO1545_LHC18r.root",

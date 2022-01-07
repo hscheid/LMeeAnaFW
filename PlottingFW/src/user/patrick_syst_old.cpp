@@ -15,16 +15,16 @@ using namespace std;
 #include "TSystem.h"
 // project includes
 #include "patrick_syst.h"
-#include "LmFileManager.h"
-#include "LmManager.h"
-#include "LmBackground.h"
-#include "LmBaseSignal.h"
-#include "LmSignal.h"
-#include "LmHandler.h"
-#include "LmHelper.h"
-#include "LmCocktailMan.h"
-#include "LmCocktail.h"
-#include "LmFitter.h"
+#include "../core/LmFileManager.h"
+#include "../core/LmManager.h"
+#include "../core/LmBackground.h"
+#include "../core/LmBaseSignal.h"
+#include "../core/LmSignal.h"
+#include "../core/LmHandler.h"
+#include "../core/LmHelper.h"
+#include "../core/LmCocktailMan.h"
+#include "../core/LmCocktail.h"
+#include "../core/LmFitter.h"
 
 int main()
 {

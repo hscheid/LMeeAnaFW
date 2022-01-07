@@ -17,12 +17,12 @@ using namespace std;
 // project includes
 #include "theo_pPb.h"
 
-#include "LmManager.h"
-#include "LmBackground.h"
-#include "LmSignal.h"
-#include "LmHandler.h"
-#include "LmHelper.h"
-#include "LmFileManager.h"
+#include "../core/LmManager.h"
+#include "../core/LmBackground.h"
+#include "../core/LmSignal.h"
+#include "../core/LmHandler.h"
+#include "../core/LmHelper.h"
+#include "../core/LmFileManager.h"
 
 void PlotHandler(LmHandler *han, TString name, Bool_t bSoverB=kFALSE, Bool_t bSignif=kFALSE);
 LmSignal* GetSignal(std::vector<LmSignal*> &sigVec,std::vector<LmSignal*> &sigVec_sys, Int_t iSig, Bool_t bWeightedAve=kFALSE);
