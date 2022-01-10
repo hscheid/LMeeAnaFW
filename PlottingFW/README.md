@@ -1,38 +1,36 @@
 The core classes of the plotting framework can be found in `src/core` while user specific code is located in `src/user`.
 A short description of the core classes can be found here, more information is provided at the specific documentation.
 
-###LmBackground###
+### LmBackground
 
-###LmBaseManager###
+### LmBaseManager
 
-###LmBaseSignal###
+### LmBaseSignal
 
-###LmCocktail###
+### LmCocktail
 
-###LmCocktailMan###
+### LmCocktailMan
 
-###LmCocktailPart###
+### LmCocktailPart
 
-###LmFileManager###
+### LmFileManager
 
-###LmFitFunctions###
+### LmFitFunctions
 
-###LmFitter###
+### LmFitter
 
-###LmHandler###
+### LmHandler
 
-###LmHelper###
+### LmHelper
 
-###LmHistogram###
+### LmHistogram
 
-###LmManager###
+### LmManager
 
-###LmManager_save###
+### LmMultiQA
 
-###LmMultiQA###
+### LmQA
 
-###LmQA###
+### LmRebinner
 
-###LmRebinner###
-
-###LmSignal###
+### LmSignal
