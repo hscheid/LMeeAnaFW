@@ -23,7 +23,7 @@ public:
   LmSignal(const LmSignal& sig, std::string name = "");
   LmSignal(LmManager &mgr, LmBackground &bkg, std::string name = "");
   ~LmSignal();
-  
+
   LmSignal(const LmSignal &s1, const LmSignal &s2, Double_t MeeMin, Double_t MeeMax, Double_t PteeMin, Double_t PteeMax); // combination constructor -> maybe move to process
 
   // function declarations
@@ -63,7 +63,7 @@ public:
   void                SetRelSystematicsLow(TH2D *h)       { fRelSystematicsLow  = new TH2D(*h); } ///< Binning may be different from SymmetricRelSystematics.
   void                SetRelSystematicsHigh(TH2D *h)      { fRelSystematicsHigh = new TH2D(*h); } ///< Binning of Low and High may be different.
   // getters
-  const char*         GetName()             const { return fName.c_str(); } 
+  const char*         GetName()             const { return fName.c_str(); }
   const char*         GetTypename()         const { return fTypename.c_str(); }
   const char*         GetSigName()          const { return GetSig2D()->GetName(); }
   TH2D*               GetSig2D()            const { if (fSubSig && fSubtractionDone) return fSubSig; else return fUnlike; } ///< Checking 'fSubtractionDone' is needed for LmHandler::SetDoSystOnUnlikeSign().
@@ -106,10 +106,10 @@ public:
   TGraphAsymmErrors*  GetSubSigSystematicGraph(Int_t bin, Bool_t projOnMee) const { return GetSubSig(bin,projOnMee)->GetSystError(); }
   UInt_t              GetNVisualSig()       const { if (fLmMgr) return fLmMgr->GetNVisualSig(); else return 0; }
   LmSignal*           GetVisualSigI(UInt_t i) const; ///< Create LmSignal from some visualization histogram and return it.
-  
+
   const char*         GetCharHistBit(unsigned int histBit, Bool_t shortname=kFALSE);
   static const char*  GetCharHistBitStatic(unsigned int histBit, Bool_t shortname=kFALSE, Bool_t subtracted=kTRUE, Bool_t signifraw=kTRUE);
-  
+
   enum enType {
     kNoProcess=0, ///< No specific Type.
     kStd,
@@ -123,12 +123,12 @@ public:
     kAcceCorrection2D,
     kMAX
   };
-  
+
 //enum projAxis { // in Base class
 //  kProjOnPtee=0,
 //  kProjOnMee =1
 //};
-  
+
   enum histBits {
     kSubSig   = 1<<0,
     kUnlike   = 1<<1,
@@ -143,7 +143,7 @@ public:
     kBkgNoEffi    = 1<<10,
     kMAXhist      = 1<<11 // Upper limit for loops & checks. To select all histograms, use kMAXhist-1.
   };
-  
+
 private:
   TH2D*         CalcSubtractedSignal(const TH2D* hUnlike, const TH2D* hLike, const Char_t* newname);
   void          UpdateTitleSubtracted(TH2D* hSub);
@@ -185,7 +185,7 @@ private:
   void          MakeSystematicHistos();
   void          AttachSystematicGraph_Mee(TH1D *hSubSig, TH1D *hSysLow, TH1D *hSysHigh);
   void          AttachSystematicGraph_Ptee(TH1D *hSubSig, TH1D *hSysLow, TH1D *hSysHigh);
-  
+
   // private getters for projections. please use generalized public version for better maintenance.
   ///@TODO:  Warning: not all projections must have the same number of entries...! should be fixed somehow.
   Int_t         GetMaxBin_projMee()                           const { return fSubSig_projMee.size()-1; } // not unsigned because it can be -1 in case of empty vector!
@@ -214,7 +214,7 @@ private:
     /**/          if (bin>=size) { LmHelper::Error(Form("LmSignal::Get%s(bin=%i) out of range (size=%i)! (name=%s)",fcn,bin,size,GetName())); }
     /**/        } // would be even more elegant to make this function not void but "Type CheckRange(bin, std::vector<Type>)" and return the element after the check.
   Bool_t        CheckAndDeleteOldProjections(Bool_t projOnMe);
-  
+
   // variables
   // make sure to initialize all pointer variables in the constructor(s)!
   // otherwise something like 'if(fSubSig){}' will crash and it is difficult to find the reason!
@@ -242,7 +242,7 @@ private:
 //Double_t      fNeventsPhysSel; // in Base class
 //Bool_t        fDoNormBinwidth; // in Base class
 //Bool_t        fDoNormNevents; // in Base class
-  
+
   std::vector<LmHistogram*> fSubSig_projMee; // the last projection is integrated over all bins
   std::vector<LmHistogram*> fSubSig_projPtee;
   std::vector<LmHistogram*> fUnlike_projMee;
@@ -263,7 +263,7 @@ private:
   std::vector<TH1D*>        fUnlikeNoEffiUnnorm_projPtee;
   std::vector<TH1D*>        fBkgNoEffiUnnorm_projMee;
   std::vector<TH1D*>        fBkgNoEffiUnnorm_projPtee;
-  
+
   // systematic uncertainties
   TH2D*                           fSymmetricRelSystematics;
   TH2D*                           fRelSystematicsLow;
@@ -272,7 +272,7 @@ private:
   TH2D*                           fSystematicHigh;
   //std::vector<TGraphAsymmErrors*> fSubSigSystematic_projMee; // now stored in LmHistogram
   //std::vector<TGraphAsymmErrors*> fSubSigSystematic_projPtee;
-  
+
 };
 
 #endif

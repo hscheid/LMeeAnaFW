@@ -344,28 +344,28 @@ Int_t LmManager::Process(Int_t type)
   }
 
   if (fDoEffiCorr){
-    std::cout << "Trying to apply Eff first" << std::endl; 
+    std::cout << "Trying to apply Eff first" << std::endl;
     CalcEffi(); // must be done after rebinning, because it is wrong to rebin an efficiency histogram itself!
-    std::cout << "Efficiency calculated" << std::endl; 
-    
+    std::cout << "Efficiency calculated" << std::endl;
+
     ApplyEfficiency2D_all(GetEffi());
-    std::cout << "Eff applied" << std::endl; 
+    std::cout << "Eff applied" << std::endl;
     if (fEnableRebinning){   Rebin2DHistogram_all(); // warning: too large bins will cause an incorrect (averaged) efficiency correction!
                                                     // warning: too small bins will cause bias in the background estimation
-      std::cout << "Everything rebinned" << std::endl; 
+      std::cout << "Everything rebinned" << std::endl;
     }
     if (fEnableAcceCorr)    CalcAcce(); // must be done after rebinning, because it is wrong to rebin an efficiency histogram itself!
   }
   //else if (fDoAcceCorr){
-  //  std::cout << "Trying to apply Acc first" << std::endl; 
+  //  std::cout << "Trying to apply Acc first" << std::endl;
   //  CalcAcce(); // must be done after rebinning, because it is wrong to rebin an efficiency histogram itself!
-  //  std::cout << "Acceptance calculated" << std::endl; 
-  //  
+  //  std::cout << "Acceptance calculated" << std::endl;
+  //
   //  ApplyAcceptance2D_all(GetAcce());
-  //  std::cout << "Acc applied" << std::endl; 
+  //  std::cout << "Acc applied" << std::endl;
   //  if (fEnableRebinning){   Rebin2DHistogram_all(); // warning: too large bins will cause an incorrect (averaged) efficiency correction!
   //                                                  // warning: too small bins will cause bias in the background estimation
-  //    std::cout << "Everything rebinned" << std::endl; 
+  //    std::cout << "Everything rebinned" << std::endl;
   //  }
   //}
   else {
@@ -1514,7 +1514,7 @@ void LmManager::CorrectForExclusionCutIn2D(TH2D* hSignal, Bool_t doScale, Bool_t
         // If any re-normalization (scaling) of templates is done, make sure to undo it at the end of the loop!
         // Whenever possible, just use any needed correction factors in hSignal->SetBinContent/Error().
         // --------------------------------------------------
- 
+
         // Create histograms to visualize the correction procedure later.
         // They are added to the vector 'fhVisualSig' as needed.
         TH2D* hVisualNorm = (TH2D*) hSignal->Clone("hVisualNorm"); hVisualNorm->Reset(); // binning of hSignal
@@ -1984,12 +1984,12 @@ void LmManager::CalcAcce()
   fhAcce = new TH2D(*fhAcceRec);
   fhAcce->SetName("fhAcce");
   fhAcce->Divide(fhAcceGen);
-  fhAcce->Scale(1.80548);   //Integral()/Integral(0.5) 
+  fhAcce->Scale(1.80548);   //Integral()/Integral(0.5)
   for (Int_t i = 0; i <= (fhAcce->GetNbinsX()*fhAcce->GetNbinsY()); ++i){
     fhAcce->SetBinError(i, 0);
   }
   Print2DAcce(Form("c2DAcce_%i.pdf", counter));
-  counter++; 
+  counter++;
   return;
 }
 
@@ -2084,9 +2084,9 @@ void LmManager::Rebin2DHistogram_all()
     LmHelper::Debug(Form("  rebin Effi gen"), 7);
     Rebin2DHistogram(*fhEffiGen);
     LmHelper::Debug(Form("  rebin Effi reco"), 7);
-    Rebin2DHistogram(*fhEffiRec); 
+    Rebin2DHistogram(*fhEffiRec);
   }
-  if(fEnableAcceCorr) { 
+  if(fEnableAcceCorr) {
     LmHelper::Debug(Form("  rebin Acce gen"), 7);
     Rebin2DHistogram(*fhAcceGen);
     LmHelper::Debug(Form("  rebin Acce reco"), 7);
@@ -2107,13 +2107,13 @@ void LmManager::Rebin2DHistogram_acce()
 
   GetAcceHistogramsFromFiles();
   if(fEnableAcceCorr) {
-    
+
     for (std::vector<Double_t>::const_iterator i = binningX.begin(); i != binningX.end(); ++i)
-      std::cout << *i << ' ';	
-    std::cout << std::endl; 
+      std::cout << *i << ' ';
+    std::cout << std::endl;
     for (std::vector<Double_t>::const_iterator i = binningY.begin(); i != binningY.end(); ++i)
-      std::cout << *i << ' ';	
-    std::cout << std::endl;  
+      std::cout << *i << ' ';
+    std::cout << std::endl;
     LmHelper::Debug(Form("  rebin Acce gen"), 7);
     Rebin2DHistogram(*fhAcceGen);
     LmHelper::Debug(Form("  rebin Acce reco"), 7);
@@ -2294,4 +2294,3 @@ void LmManager::Rebin2DHistogram2(TH2D& hIn, Int_t n_bins_mee, Double_t* bins_me
   delete hOut;
   return;
 }
-

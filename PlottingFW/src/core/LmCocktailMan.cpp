@@ -81,7 +81,7 @@ void LmCocktailMan::SetType(Int_t type) {
     case kRappMee:      fTypename="Rapp";       break;
     case kRappPtee:     fTypename="RappPtee";   break;
     case kFromFileMee:  fTypename="FileMee";    break;
-    case kFromFilePtee: fTypename="FilePtee";   break;		      
+    case kFromFilePtee: fTypename="FilePtee";   break;
     default:            fTypename=Form("Type%i",type); break;
   }
   if (fName.size()==0) SetName(GetTypename());
@@ -230,7 +230,7 @@ void LmCocktailMan::GetHistogramsFromFiles1D(Bool_t IsMee)
     double y[] = { 0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.7,0.8,0.9,1.0};
     TF1 f1("f",[&](double *x, double *){ return fGr1D->Eval(x[0]); },0.0001,1.0,0);
     double integral = f1.Integral(0.15,0.6);
-    std::cout << fsInputfiles.Data() << "  brems integral  " << integral  << std::endl;  
+    std::cout << fsInputfiles.Data() << "  brems integral  " << integral  << std::endl;
     Double_t x_val = 0, z_val = 0;
     for (Int_t m_i = 1; m_i <= fH2D->GetNbinsX(); m_i++) {
       for (Int_t p_i = 1; p_i <= fH2D->GetNbinsY(); p_i++) {
@@ -238,12 +238,12 @@ void LmCocktailMan::GetHistogramsFromFiles1D(Bool_t IsMee)
 	else      x_val = fH2D->GetYaxis()->GetBinCenter(p_i);
         // 1D:
         z_val = fGr1D->Eval(x_val); // linear inter- and extrapolation.
-        //std::cout << "Brems: " << x_val << "  " << z_val <<std::endl;	
-        if(IsMee) z_val *= fH2D->GetXaxis()->GetBinWidth(m_i); 
-	else      z_val *= fH2D->GetYaxis()->GetBinWidth(p_i); 
+        //std::cout << "Brems: " << x_val << "  " << z_val <<std::endl;
+        if(IsMee) z_val *= fH2D->GetXaxis()->GetBinWidth(m_i);
+	else      z_val *= fH2D->GetYaxis()->GetBinWidth(p_i);
         fH2D->SetBinContent(m_i, p_i, z_val);
       }
-      
+
     }
     //for (Int_t p_i = 1; p_i <= fH2D->GetNbinsY(); p_i++)
     //  std::cout << "x_val: " << x_val << " rapp_val: " << z_val << "  " << z_val / fH2D->GetYaxis()->GetBinWidth(p_i) << std::endl;
@@ -272,12 +272,12 @@ void LmCocktailMan::GetHistogramsRapp1D_Mee()
     TH2D* fH2D  = new TH2D(fGr1D->GetName(), fGr1D->GetName(), n_bins_mee, bins_mee, n_bins_ptee, bins_ptee);
     fH2D->SetTitle(";m_{ee};p_{t,ee}");
 
-    
+
     double x[] = { 0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.7,0.8,0.9,1.0};
     double y[] = { 0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.7,0.8,0.9,1.0};
     TF1 f1("f",[&](double *x, double *){ return fGr1D->Eval(x[0]); },0.000,1.0,0);
     double integral = f1.Integral(0.15,0.6);
-    std::cout << fsInputfiles.Data() << "  rapp mee  integral  " << integral * 57.8 * 7 << std::endl;  
+    std::cout << fsInputfiles.Data() << "  rapp mee  integral  " << integral * 57.8 * 7 << std::endl;
 
 
     Double_t m_val = 0, z_val = 0;
@@ -319,7 +319,7 @@ void LmCocktailMan::GetHistogramsRapp1D_Ptee()
     double y[] = { 0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.7,0.8,0.9,1.0};
     TF1 f1("f",[&](double *x, double *){ return fGr1D->Eval(x[0])* x[0]; },0.000,1.0,0);
     double integral = f1.Integral(0.,0.5);
-    std::cout << fsInputfiles.Data() << "  rapp ptee integral  " << integral * 57.8 * 7 << std::endl;  
+    std::cout << fsInputfiles.Data() << "  rapp ptee integral  " << integral * 57.8 * 7 << std::endl;
 
 
 
@@ -495,10 +495,10 @@ void LmCocktailMan::GetHistogramsFromFiles2D(Int_t setting, Int_t doSys)
         TList* llist  = LmHelper::GetList(_file, oaLists->At(posi)->GetName());
         TList* lHists = LmHelper::SelectHistosList(llist, oaHists->At(posi)->GetName(), kTRUE, "-"); // kTRUE means exact match of name needed. Use '-' as delimiter.
         TH2D*  hTemp  = (TH2D*) lHists->At(0)->Clone();
-	std::cout << "hist: " << hTemp->GetMaximum() << std::endl; 
+	std::cout << "hist: " << hTemp->GetMaximum() << std::endl;
         if (lHists->GetEntries()>1) hTemp->Add( (TH2D*) lHists->At(1), -1); // Subtract Like Sign histogram if specified.
         hTemp->Scale( 1.+relUncert.at(posi) ); // Scale by relative uncertainty.
-	std::cout << "HF unc: " << relUncert.at(posi) << std::endl; 
+	std::cout << "HF unc: " << relUncert.at(posi) << std::endl;
         if ( TString(_file->GetName()).Contains("charm", TString::kIgnoreCase) ){std::cout << "naming charm" <<std::endl;  hTemp->SetName("charm");}
         if ( TString(_file->GetName()).Contains("beauty", TString::kIgnoreCase) ) hTemp->SetName("beauty");
         fhMeePteePtr->push_back(hTemp);
@@ -534,8 +534,8 @@ void LmCocktailMan::CalcSumAndClearOthers(const char* histname)
   fhMeePtee.clear(); // remove all contents
   fhMeePtee.push_back(hLFsum);
   if (HasSystematics()) {
-    TH2D *hLFsumLow  = (TH2D*) fhMeePteeLow.at(0) ->Clone(Form("%c_Low",histname));
-    TH2D *hLFsumHigh = (TH2D*) fhMeePteeHigh.at(0)->Clone(Form("%c_High",histname));
+    TH2D *hLFsumLow  = (TH2D*) fhMeePteeLow.at(0) ->Clone(Form("%s_Low",histname)); // used to be %c but this should be a string (const char *)
+    TH2D *hLFsumHigh = (TH2D*) fhMeePteeHigh.at(0)->Clone(Form("%s_High",histname)); // used to be %c but this should be a string (const char *)
     for (UInt_t i=1; i<fhMeePteeLow.size(); i++) {
       hLFsumLow ->Add(fhMeePteeLow.at(i));
       hLFsumHigh->Add(fhMeePteeHigh.at(i));
@@ -571,8 +571,8 @@ Double_t LmCocktailMan::CalcNevents(TList* llist, Int_t posi)
       Nevents = ((TH1*) lHistsNevents->At(0))->Integral(((TH1*) lHistsNevents->At(0))->FindBin(-0.5),((TH1*) lHistsNevents->At(0))->FindBin(0.5)-1);
     }
     else if (Nevents == 0 || Nevents < 10000) {
-      LmHelper::Debug("full", 4-debugCocktailMan); 
-      Nevents = ((TH1*) lHistsNevents->At(0))->GetEntries(); 
+      LmHelper::Debug("full", 4-debugCocktailMan);
+      Nevents = ((TH1*) lHistsNevents->At(0))->GetEntries();
     }
   }
   LmHelper::Debug(Form("  Nevents = %.2f", Nevents), 4-debugCocktailMan);

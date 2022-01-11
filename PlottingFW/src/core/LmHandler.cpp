@@ -335,7 +335,7 @@ Int_t LmHandler::Process(Int_t type, Bool_t recursive)
       }
       break;
     }
-    
+
     case kSubtractCocktail: {
       if (!fCocktailProcessed) Process(kCocktail, kTRUE);
       SubtractCocktailAllBins();
@@ -446,7 +446,7 @@ void LmHandler::CombineSignals()
   //fLmSigCombined->ModifyManager()->SetAcce(fLmSig.at(0)->GetManager()->GetAcce());
   //std::cout << "Acce copy done:" << fLmSigCombined->ModifyManager()->GetAcce() << std::endl;
 
-  
+
   TObjArray* oaConfig = (fLmSig.at(0)->GetManager()->GetConfig()).Tokenize(":");
   if (oaConfig->GetEntriesFast()>=11) {
     fLmSigCombined->ModifyManager()->SetAccefileAndHists(const_cast<char*>(oaConfig->At(8)->GetName()), const_cast<char*>(oaConfig->At(9)->GetName()), const_cast<char*>(oaConfig->At(10)->GetName()));
@@ -516,7 +516,7 @@ void LmHandler::CalcSystematics()
 
   LmHelper::Debug(" CalcSystematics()", 5-debugHandler);
   std::cout << fType << std::endl;
-  
+
   if (fRelSystematics) delete fRelSystematics;
   fRelSystematics = new TH2D( *(fLmSig.at(0)->GetSig2D()) );
   fRelSystematics->Reset();
@@ -542,7 +542,7 @@ void LmHandler::CalcSystematics()
           bc_ref = fLmSigAverage->GetSig2D()->GetBinContent(ix,iy);
           rms = 0.;
           for (int i=0; i<GetNSignals(); i++) {
-	    
+
             bc_i = (GetLmSignalI(i)->GetSig2D()->GetBinContent(ix,iy))/GetLmSignalI(i)->GetNeventsPhysSel() * Nevents;
             rms += TMath::Power(bc_i - bc_ref,2);
             //std::cout << "--> Signal: " << i << "  bc: " << bc_i << "  rms: " << rms << std::endl;
@@ -567,13 +567,13 @@ void LmHandler::CalcSystematics()
           for (int i=0; i<GetNSignals(); i++) {
             bc_i = (GetLmSignalI(i)->GetSig2D()->GetBinContent(ix,iy));
             if(bc_i<min) min = bc_i;
-            if(bc_i>max) max = bc_i;    
+            if(bc_i>max) max = bc_i;
           }
           if(bc_ref == 0)         RelErr = 0.;
           else if (min<=max) RelErr = ((max-min)/sqrt(12))/bc_ref;
           else               RelErr = 0.; // @TODO: this could cause an inconsisteny. Use coarse binning and check that it does not occur.
           std::cout << "mee: " << ix << "   ptee: " << iy << "  min: " << min << "   max: " << max << "relError: " << RelErr << std::endl;
-          fRelSystematics->SetBinContent(ix,iy,RelErr); 
+          fRelSystematics->SetBinContent(ix,iy,RelErr);
         }
       }
       break;
@@ -828,19 +828,19 @@ void LmHandler::SubtractCocktailAllBins()
   /// Subtraction is performed on the projections, i.e. LmHistograms, so everything has to be processed before.
   /// Check LmHistogram::Add() for implementation and possible missing peaces like systematics propagation...
   /// That cocktail shall not be printed anymore, so it is deleted from the handler in the end.
-  
+
   LmHelper::Debug(" SubtractCocktailAllBins()", 5-debugHandler);
-  
+
   if (GetReferenceSignal()->GetMaxBinProj(LmBaseSignal::kProjOnMee) == 0) {
     LmHelper::Error(Form("LmHandler::SubtractCocktail(): create signal projections first, e.g. via handler->Process(LmHandler::kCompare).")); return;
   }
   if (GetLastCocktail()->GetLmCocktailPart(LmCocktailPart::kSum)->GetMaxBinProj(LmBaseSignal::kProjOnMee) == -1) { // this error should never be reached.
     LmHelper::Error(Form("LmHandler::SubtractCocktail(): create cocktail projections first, e.g. via handler->Process(LmHandler::kCocktail).")); return;
   }
-  
+
   UInt_t iBit      = LmSignal::kSubSig;
   std::vector<Double_t> biningX = GetLmSignalI(0)->GetManager()->GetBinningX();
-  std::vector<Double_t> biningY = GetLmSignalI(0)->GetManager()->GetBinningY(); 
+  std::vector<Double_t> biningY = GetLmSignalI(0)->GetManager()->GetBinningY();
 
   Bool_t projOnMee = LmBaseSignal::kProjOnMee;
   for (int bin_number=0; bin_number<=GetReferenceSignal()->GetMaxBinProj(projOnMee); bin_number++) {
@@ -850,11 +850,11 @@ void LmHandler::SubtractCocktailAllBins()
   for (int bin_number=0; bin_number<=GetReferenceSignal()->GetMaxBinProj(projOnMee); bin_number++) {
     SubtractCocktail(iBit,bin_number,projOnMee,biningY);
   }
-  
+
   // remove the subtracted cocktail so it isnt printed and/or used for legend.
   fLmCocktails.pop_back();
   if (fLmCocktails.size()==0){
-    std::cout << "no Cocktails remaining after subtraction" << std::endl;	  
+    std::cout << "no Cocktails remaining after subtraction" << std::endl;
     fCocktailProcessed=kFALSE; // to avoid problems if no cocktail remains...
   }
   else std::cout << fLmCocktails.size() << " Cocktails remaining after subtraction" << std::endl;
@@ -883,9 +883,9 @@ void LmHandler::SubtractCocktail(unsigned int iBit, unsigned int bin_number, Boo
     std::cout << "  LmSignalHist" << std::endl;
     for(int t = 0; t < lmHistData->GetDatahist()->GetNbinsX(); t++)
       std::cout << lmHistData->GetXaxis()->GetXbins()->At(t) << " ";
-    std::cout << std::endl;	      
+    std::cout << std::endl;
     if(GetLmSignalI(i_sig)->GetDoAcceCorr()){
-      
+
       if(projOnMee) GetLmSignalI(i_sig)->GetManager()->SetRebinning2D(binning.size()-1, binning.data(), (GetBinsY_forprojOnX()).size()-1, (GetBinsY_forprojOnX()).data());
       else GetLmSignalI(i_sig)->GetManager()->SetRebinning2D((GetBinsX_forprojOnY()).size()-1, (GetBinsX_forprojOnY()).data(), binning.size()-1, binning.data());
       GetLmSignalI(i_sig)->GetManager()->Process(LmManager::kRebinAcce);
@@ -894,7 +894,7 @@ void LmHandler::SubtractCocktail(unsigned int iBit, unsigned int bin_number, Boo
       else lmAcce = new LmHistogram(hAcce->ProjectionY(Form("proj_%i",bin_number),bin_number+1, bin_number+1));
       std::cout << bin_number << std::endl;
       for(Int_t bin = 1; bin < lmAcce->GetDatahist()->GetNbinsX(); bin++)
-	std::cout << "bin: " << lmAcce->GetDatahist()->GetBinCenter(bin) << "  acce correction: " << lmAcce->GetDatahist()->GetBinContent(bin) << std::endl; 
+	std::cout << "bin: " << lmAcce->GetDatahist()->GetBinCenter(bin) << "  acce correction: " << lmAcce->GetDatahist()->GetBinContent(bin) << std::endl;
       lmHistData->Divide(lmAcce);
     }
   }
@@ -913,26 +913,26 @@ void LmHandler::SubtractCocktail2D()
   TH2D*  hCockSum  = 0x0;
   TH2D*  hCockSysHigh = 0x0;
   TH2D*  hCockSysLow = 0x0;
-  
+
   // dont change into subtracting any other cocktail, it will mess up.
   hCockSum  = GetLastCocktail()->GetLmCocktailPart(LmCocktailPart::kSum)->GetSpectrum2D();
   hCockSysHigh  = GetLastCocktail()->GetLmCocktailPart(LmCocktailPart::kSum)->GetSpectrum2DHigh();
   hCockSysLow   = GetLastCocktail()->GetLmCocktailPart(LmCocktailPart::kSum)->GetSpectrum2DLow();
   for (Int_t i_sig = 0; i_sig < GetNSignals(); ++i_sig) {
     hData = GetLmSignalI(i_sig)->GetSubSig2D();
-    hDataSysHigh = GetLmSignalI(i_sig)->GetSystematicHigh(); 
-    hDataSysLow  = GetLmSignalI(i_sig)->GetSystematicLow(); 
+    hDataSysHigh = GetLmSignalI(i_sig)->GetSystematicHigh();
+    hDataSysLow  = GetLmSignalI(i_sig)->GetSystematicLow();
     /// @TODO: attach grCocktailErr as fExternalSystematicObj or new obj to lmHistData and change its points to the
     /// ones of fSystErr, while keeping its errors. Use grey marker style and maybe marker/drawing type 'E[]',
     /// because it will be drawn on top of remaining cocktail contributions, so it should not have filled boxes.
     LmHelper::Debug(" SubtractCocktail2D()", 5-debugHandler);
     hData->Add(hCockSum, -1.);
     hDataSysHigh->Add(hCockSysHigh,-1.);
-    hDataSysLow->Add(hCockSysLow,-1.); 
-  
+    hDataSysLow->Add(hCockSysLow,-1.);
+
     if(GetLmSignalI(i_sig)->GetDoAcceCorr()){
-      GetLmSignalI(i_sig)->Process(LmSignal::kAcceCorrection2D); 
-    }  
+      GetLmSignalI(i_sig)->Process(LmSignal::kAcceCorrection2D);
+    }
   }
   // remove the subtracted cocktail so it isnt printed and/or used for legend.
   fLmCocktails.pop_back();
@@ -1018,7 +1018,7 @@ void LmHandler::PrintCompare(unsigned int histBits, unsigned int bin_number, Boo
     // move to upper pad and set log if requested.
     can->cd(1)->SetLogy(setLogy);
     can->cd(1)->SetLogx(setLogx);
-    
+
   }
 
   // don't use floats (LmHelper::kSmallDelta will not work)
@@ -1107,7 +1107,7 @@ void LmHandler::PrintCompare(unsigned int histBits, unsigned int bin_number, Boo
           GetLmSignalI(i)->GetLmHist(iBit,bin_number,projOnMee)->SetLineColor(kRed);
           GetLmSignalI(i)->GetLmHist(iBit,bin_number,projOnMee)->SetMarkerColor(kRed);
         }
-    
+
 
         if (fLmSigAverage && iBit == LmSignal::kSubSig) { // average currently only available for SubSig.
           //GetLmSigAverage()->GetLmHist(iBit,bin_number,projOnMee)->SetLineStyle(ihist+1);
@@ -1130,7 +1130,7 @@ void LmHandler::PrintCompare(unsigned int histBits, unsigned int bin_number, Boo
         GetLmSignalI(i)->GetLmHist(iBit,bin_number,projOnMee)->GetXaxis()->SetTitleOffset(gStyle->GetTitleOffset("X")); //PRL
         GetLmSignalI(i)->GetLmHist(iBit,bin_number,projOnMee)->GetYaxis()->SetTitleOffset(gStyle->GetTitleOffset("Y"));
 
-	      
+
 	//GetLmSignalI(i)->GetLmHist(iBit,bin_number,projOnMee)->GetXaxis()->SetTitleOffset(1.2);
         //GetLmSignalI(i)->GetLmHist(iBit,bin_number,projOnMee)->GetYaxis()->SetTitleOffset(gStyle->GetTitleOffset("Y")*(1.-fRatioPadSize));
       }
@@ -1237,7 +1237,7 @@ void LmHandler::PrintCompare(unsigned int histBits, unsigned int bin_number, Boo
       GetLmSigAverage()->GetLmHist(iBit,bin_number,projOnMee)->SetAxisRange(commonXmin, commonXmax, "X");
       GetLmSigAverage()->GetLmHist(iBit,bin_number,projOnMee)->SetAxisRange(commonYmin, commonYmax, "Y");
       GetLmSigAverage()->GetLmHist(iBit,bin_number,projOnMee)->DrawCopy();
-      // GetLmSigAverage()->GetLmHist(iBit,bin_number,projOnMee)->DrawCopy("p E same;p E2 same"); Jerome edit 
+      // GetLmSigAverage()->GetLmHist(iBit,bin_number,projOnMee)->DrawCopy("p E same;p E2 same"); Jerome edit
     }
   }
   // draw axes again, which may have been over-drawn by cocktail or other lines.
@@ -1279,7 +1279,7 @@ void LmHandler::PrintCompare(unsigned int histBits, unsigned int bin_number, Boo
             Double_t xtmp,ytmp;
             grRatioCocktSys[i1]->SetFillColorAlpha(kGray+1,0.5);
             grRatioCocktSys[i1]->GetPoint(igr,xtmp,ytmp);
-            if (ytmp == 0) ytmp = 1e-10; // check if denominator is zero 
+            if (ytmp == 0) ytmp = 1e-10; // check if denominator is zero
             grRatioCocktSys[i1]->SetPoint(igr,xtmp,1.);
             if (ytmp == 0) ytmp = 1e-10; // check if denominator is zero
             grRatioCocktSys[i1]->SetPointError(igr,grRatioCocktSys[i1]->GetErrorXlow(igr),grRatioCocktSys[i1]->GetErrorXhigh(igr),
@@ -1297,7 +1297,7 @@ void LmHandler::PrintCompare(unsigned int histBits, unsigned int bin_number, Boo
       //      Double_t xtmp,ytmp;
       //      grRatioCocktSys[i1]->SetFillColorAlpha(kGray+1,0.5);
       //      grRatioCocktSys[i1]->GetPoint(igr,xtmp,ytmp);
-      //      if (ytmp == 0) ytmp = 1e-10; // check if denominator is zero 
+      //      if (ytmp == 0) ytmp = 1e-10; // check if denominator is zero
       //      grRatioCocktSys[i1]->SetPoint(igr,xtmp,1.);
       //      if (ytmp == 0) ytmp = 1e-10; // check if denominator is zero
       //      grRatioCocktSys[i1]->SetPointError(igr,grRatioCocktSys[i1]->GetErrorXlow(igr),grRatioCocktSys[i1]->GetErrorXhigh(igr),
@@ -1393,14 +1393,14 @@ void LmHandler::PrintCompare(unsigned int histBits, unsigned int bin_number, Boo
             //    Double_t xtmp,ytmp;
             //    grRatioCocktSys[i1]->SetFillColorAlpha(kGray+1,0.5);
             //    grRatioCocktSys[i1]->GetPoint(igr,xtmp,ytmp);
-            //    if (ytmp == 0) ytmp = 1e-10; // check if denominator is zero 
+            //    if (ytmp == 0) ytmp = 1e-10; // check if denominator is zero
             //    grRatioCocktSys[i1]->SetPoint(igr,xtmp,1.);
             //    if (ytmp == 0) ytmp = 1e-10; // check if denominator is zero
             //    grRatioCocktSys[i1]->SetPointError(igr,grRatioCocktSys[i1]->GetErrorXlow(igr),grRatioCocktSys[i1]->GetErrorXhigh(igr),
             //                                       grRatioCocktSys[i1]->GetErrorYlow(igr)/ytmp,grRatioCocktSys[i1]->GetErrorYhigh(igr)/ytmp);
             //  }
             //}
-	    
+
 
             //cocktratioi->Divide(cocktratioi,hDenominator,1,1,"0"); // divide option 0
             //cocktratioi->DrawCopy(Form("%s same", fLmCocktails.at(ic)->GetDrawStyle()));
@@ -1417,7 +1417,7 @@ void LmHandler::PrintCompare(unsigned int histBits, unsigned int bin_number, Boo
         ratioi->DrawCopy("onlysys"); // or draw only its systematics?
       }
       else { // draw all other ratio histograms
-        if (fType!=kCocktailOnly){ 
+        if (fType!=kCocktailOnly){
           //ratioi->DrawCopy("p hist same");
           ratioi->DrawCopy();
 
@@ -1492,7 +1492,7 @@ void LmHandler::PrintCompareRatio(unsigned int histBits, unsigned int bin_min, u
   /// @param filename If starting with '+', the filename is generated automatically, but the string after '+' is appended.
   /// @param can Option to provide canvas. The (generated) filename is set as the canvas title for external printing.
 
-  Bool_t ratioAxis = kFALSE;
+  // Bool_t ratioAxis = kFALSE; // was not used
   Double_t sizefac=0.7;
   int printdebug=0;
   LmHelper::Debug(Form("LmHandler::PrintCompareAll()"), 5-printdebug);
@@ -1529,18 +1529,18 @@ void LmHandler::PrintCompareRatio(unsigned int histBits, unsigned int bin_min, u
     // move to upper pad and set log if requested.
     can->cd(1)->SetLogy(setLogy);
   }
-  
+
   // don't use floats (LmHelper::kSmallDelta will not work)
   Double_t commonXmin=0., commonXmax=0.;
   Double_t commonYmin=0., commonYmax=0.;
-  
+
   // store the common x-range
   if (projOnMee==LmBaseSignal::kProjOnMee) {
     if (fPlotXMeeMin>-1  && fPlotXMeeMax>0)  { commonXmin=fPlotXMeeMin;  commonXmax=fPlotXMeeMax;  }
   } else { // Ptee
     if (fPlotXPteeMin>-1 && fPlotXPteeMax>0) { commonXmin=fPlotXPteeMin; commonXmax=fPlotXPteeMax; }
   }
-  
+
   // store the common y-range
   // determine the common y-axis range for all histograms, if it was not manually set to valid values.
   // in that case also apply the margins.
@@ -1556,7 +1556,7 @@ void LmHandler::PrintCompareRatio(unsigned int histBits, unsigned int bin_min, u
     commonYmax = fPlotYMax;
   }
   LmHelper::Debug(Form("  %s plotting range: ymin = %.2e,   ymax = %.2e", (rangeComputed)?"computed":"specified", commonYmin, commonYmax), 12-printdebug);
-  
+
   unsigned int ihist=0;
   unsigned int reqHist[(int)TMath::Log2(LmSignal::kMAXhist)];
   unsigned int &firstHist=reqHist[0]; // reference, for better readability.
@@ -1582,7 +1582,7 @@ void LmHandler::PrintCompareRatio(unsigned int histBits, unsigned int bin_min, u
     for (unsigned int iBit = 1; iBit < LmSignal::kMAXhist; iBit *= 2) {
       if ( !(iBit & histBits) ) continue; // continue if current histogram was not requested.
       reqHist[ihist] = iBit; // store the bits of all requested histograms.
-  
+
       //if (fCompareSignalsToAverage && fBest[0]>-1) {
       //  GetLmSignalI(fBest[0])->GetLmHist(iBit,bin_i,projOnMee)->SetLineWidth(3);
       //  GetLmSignalI(fBest[1])->GetLmHist(iBit,bin_i,projOnMee)->SetLineWidth(3);
@@ -1591,7 +1591,7 @@ void LmHandler::PrintCompareRatio(unsigned int histBits, unsigned int bin_min, u
       //  GetLmSignalI(fBest[1])->GetLmHist(iBit,bin_i,projOnMee)->SetLineStyle(5);
       //  GetLmSignalI(fBest[2])->GetLmHist(iBit,bin_i,projOnMee)->SetLineStyle(7);
       //}
-  
+
       Int_t Nsignals = GetNSignals();
       if (printOnlyAverage) Nsignals=1;
       // when plotting only the average, this loop is only used once to draw axes with the correct label sizes etc.
@@ -1607,12 +1607,12 @@ void LmHandler::PrintCompareRatio(unsigned int histBits, unsigned int bin_min, u
         // beautify histograms
         GetLmSignalI(i)->GetLmHist(iBit,bin_i,projOnMee)->SetLineColor(LmHelper::GetUniformColor(i, GetNSignals()));
         // GetLmSignalI(i)->GetLmHist(iBit,bin_i,projOnMee)->GetYaxis()->SetTitle("counts (arb. units)");
-  
+
         if (fUseDifferentMarkers == kTRUE && Nsignals < 8){
           GetLmSignalI(i)->GetLmHist(iBit,bin_i,projOnMee)->SetMarkerStyle(LmHelper::GetMarker(i));
         }
         else GetLmSignalI(i)->GetLmHist(iBit,bin_i,projOnMee)->SetMarkerStyle(20);
-  
+
         GetLmSignalI(i)->GetLmHist(iBit,bin_i,projOnMee)->SetMarkerColor(LmHelper::GetUniformColor(i, GetNSignals()));
         GetLmSignalI(i)->GetLmHist(iBit,bin_i,projOnMee)->SetMarkerSize(fMarkerSize);
         GetLmSignalI(i)->GetLmHist(iBit,bin_i,projOnMee)->SetFillStyle(0);
@@ -1631,8 +1631,8 @@ void LmHandler::PrintCompareRatio(unsigned int histBits, unsigned int bin_min, u
             GetLmSignalI(i)->GetLmHist(iBit,bin_i,projOnMee)->SetLineColor(kRed);
             GetLmSignalI(i)->GetLmHist(iBit,bin_i,projOnMee)->SetMarkerColor(kRed);
           }
-      
-  
+
+
           if (fLmSigAverage && iBit == LmSignal::kSubSig) { // average currently only available for SubSig.
             //GetLmSigAverage()->GetLmHist(iBit,bin_i,projOnMee)->SetLineStyle(ihist+1);
             GetLmSigAverage()->GetLmHist(iBit,bin_i,projOnMee)->SetLineStyle(1);
@@ -1670,7 +1670,7 @@ void LmHandler::PrintCompareRatio(unsigned int histBits, unsigned int bin_min, u
         // Draw LmHistogram of each signal. This is done later, after the cocktail was possibly drawn.
         // ...
       } // Nsignals
-  
+
       // create extra gray-colored histograms for additional legend entries.
       //hGray[ihist] = new TH1D( *(GetReferenceSignal()->GetLmHist(iBit,bin_i,projOnMee)->GetDatahist()) );
       //hGray[ihist]->SetTitle(GetReferenceSignal()->GetCharHistBit(iBit));
@@ -1679,7 +1679,7 @@ void LmHandler::PrintCompareRatio(unsigned int histBits, unsigned int bin_min, u
       ihist++;
     } // hist bit loop
     const unsigned int nHists = ihist;
-  
+
     //
     // Printing of cocktail.
     //
@@ -1714,8 +1714,8 @@ void LmHandler::PrintCompareRatio(unsigned int histBits, unsigned int bin_min, u
   TH1D* h1_ref = 0x0;
   for (Int_t i = 0; i < GetNSignals(); ++i){
     for(Int_t bin_i = bin_min; bin_i<=bin_max; bin_i++){
-      std::cout << "test " << bin_i << std::endl; 
-      
+      std::cout << "test " << bin_i << std::endl;
+
       //
       // Printing of datapoints of all signals which are desired according to the configuration of this handler.
       //
@@ -1725,7 +1725,7 @@ void LmHandler::PrintCompareRatio(unsigned int histBits, unsigned int bin_min, u
         if (bin_i==bin_min) {
           h1_ref = GetLmSignalI(i)->GetLmHist(iBit,bin_i,projOnMee)->GetDatahist();
           continue;
-        }                
+        }
         if (!printOnlyAverage) {
           // Draw LmHistogram of each signal. This contains datapoints, systematics graphs, external objects, arrows...
           //for (Int_t i = 0; i < GetNSignals(); ++i){
@@ -1762,22 +1762,22 @@ void LmHandler::PrintCompareRatio(unsigned int histBits, unsigned int bin_min, u
           GetLmSigAverage()->GetLmHist(iBit,bin_i,projOnMee)->SetAxisRange(commonYmin, commonYmax, "Y");
           GetLmSigAverage()->GetLmHist(iBit,bin_i,projOnMee)->Divide(h1_ref);
           GetLmSigAverage()->GetLmHist(iBit,bin_i,projOnMee)->DrawCopy();
-          // GetLmSigAverage()->GetLmHist(iBit,bin_i,projOnMee)->DrawCopy("p E same;p E2 same"); Jerome edit 
+          // GetLmSigAverage()->GetLmHist(iBit,bin_i,projOnMee)->DrawCopy("p E same;p E2 same"); Jerome edit
         }
       }
-    
-      std::cout << "test2 " << bin_i << std::endl; 
+
+      std::cout << "test2 " << bin_i << std::endl;
       // draw axes again, which may have been over-drawn by cocktail or other lines.
       // @TODO: not yet perfect, because the axis line is too narrow... fix it inside LmHistogram::Draw().
       GetReferenceSignal()->GetLmHist(firstHist,bin_i,projOnMee)->Draw("axis same");
-  
+
       TObjArray* oaLabels = GenerateLabels();
       if (oaLabels) {
         FillLabels(oaLabels, bin_i, projOnMee);
         oaLabels->DrawClone("same");
         delete oaLabels;
       }
-      std::cout << "test3 " << bin_i << std::endl; 
+      std::cout << "test3 " << bin_i << std::endl;
       //if (printLegend){
       //  TLegend* leg = GenerateLegend(bin_i, projOnMee, firstHist, nHists>1?nHists:0, printOnlyAverage);
       //  //if (nHists>1) { // add extra entries for the histogram bits (types) to the legend
@@ -1787,7 +1787,7 @@ void LmHandler::PrintCompareRatio(unsigned int histBits, unsigned int bin_min, u
       //  delete leg;
       //}
     }
-    std::cout << "test4 " << i << std::endl; 
+    std::cout << "test4 " << i << std::endl;
     if (fDoRatio) {
       can->cd(2)->SetLogy(fPlotRatioLogy); // somehow it crashes when done further above...
       const int Nratios = 10;
@@ -1807,7 +1807,7 @@ void LmHandler::PrintCompareRatio(unsigned int histBits, unsigned int bin_min, u
                   Double_t xtmp,ytmp;
                   grRatioCocktSys[i1]->SetFillColorAlpha(kGray+1,0.5);
                   grRatioCocktSys[i1]->GetPoint(igr,xtmp,ytmp);
-                  if (ytmp == 0) ytmp = 1e-10; // check if denominator is zero 
+                  if (ytmp == 0) ytmp = 1e-10; // check if denominator is zero
                   grRatioCocktSys[i1]->SetPoint(igr,xtmp,1.);
                   if (ytmp == 0) ytmp = 1e-10; // check if denominator is zero
                   grRatioCocktSys[i1]->SetPointError(igr,grRatioCocktSys[i1]->GetErrorXlow(igr),grRatioCocktSys[i1]->GetErrorXhigh(igr),
@@ -1851,18 +1851,19 @@ void LmHandler::PrintCompareRatio(unsigned int histBits, unsigned int bin_min, u
             ratioi->GetYaxis()->SetTitleOffset(ratioi->GetYaxis()->GetTitleOffset()*fRatioPadSize/(1.-fRatioPadSize) * fRatioTitleOffset);
             ratioi->GetDatahist()->SetTitleSize(ratioi->GetDatahist()->GetTitleSize()/fRatioPadSize*(1.-fRatioPadSize) * fRatioTitleSize,"xy");
             ratioi->GetDatahist()->SetLabelSize(ratioi->GetDatahist()->GetLabelSize()/fRatioPadSize*(1.-fRatioPadSize),"xy");
-            //if (fPlotRatioMax>0) 
-            
+            //if (fPlotRatioMax>0)
+
             ratioi->GetDatahist()->GetYaxis()->SetNdivisions(4, 5, 0, kTRUE); // 4,5,0 = 504
 
             std::cout << "min Ratio: " << fPlotRatioMin << "  max Ratio: " << fPlotRatioMax << std::endl;
             ratioi->SetAxisRange(fPlotRatioMin, fPlotRatioMax, "Y");
             ratioi->GetDatahist()->DrawCopy("axis");
-            ratioAxis == kTRUE;
+            // ratioAxis = kTRUE; // unused variable...
+            // ratioAxis == kTRUE; // this is obviously not right
           }
           // -----
           if (i==FirstReqSig()) { // instead of i==0
-            	  
+
             //else ratioi->GetDatahist()->DrawCopy("same axis");
             haxis = new TH1D(*(ratioi->GetDatahist()));
             for (Int_t i2 =0; i2<fLmCocktails.size(); i2++){
@@ -1877,7 +1878,7 @@ void LmHandler::PrintCompareRatio(unsigned int histBits, unsigned int bin_min, u
             //  l1.SetLineWidth(fLmCocktails.at(0)->GetSum1D(bin_i, projOnMee)->GetLineWidth());
             //}
             l1.DrawClone();
-  
+
             // Draw ratios of sums of additional cocktails. A bit dirty to do it inside the LmSignal loop, but easiest...
             //if (fCocktailProcessed) {
             //  for(UInt_t ic = 1; ic <fLmCocktails.size() ; ++ic) { //fLmCocktails.size()
@@ -1904,29 +1905,29 @@ void LmHandler::PrintCompareRatio(unsigned int histBits, unsigned int bin_min, u
           //  ratioi->DrawCopy("same onlysys"); // or draw only its systematics?
           //}
           //else { // draw all other ratio histograms
-            if (fType!=kCocktailOnly){ 
+            if (fType!=kCocktailOnly){
               //ratioi->DrawCopy("p hist same");
-              if(bin_i == bin_min) continue; 
+              if(bin_i == bin_min) continue;
               ratioi->DrawCopy("same");
-              std::cout << "plotting raios" << std::endl; 
+              std::cout << "plotting raios" << std::endl;
               TFile* file_ = TFile::Open("ratio_2.root", "UPDATE");
               ratioi->GetDatahist()->Write(Form("%s_%i",ratioi->GetDatahist()->GetName(), i ));
               //ratioi->GetSystError()->Write();
               file_->Close();
               delete file_;
-  
+
             }
             // if (fType!=kCocktailOnly) ratioi->DrawCopy("p E same;p E2 same"); Jerome edit
           //}
-        
+
           delete ratioi;
         }
       } // NSignals
       haxis->DrawCopy("axis same"); // draw axes again.
       delete haxis;
     } // doRatio
- 
-    can->cd(1); 
+
+    can->cd(1);
     //std::cout << "End " << bin_i << std::endl;
 
   }
@@ -1996,7 +1997,7 @@ void LmHandler::PrintCompareAll(unsigned int histBits, unsigned int bin_min, uns
   /// @param filename If starting with '+', the filename is generated automatically, but the string after '+' is appended.
   /// @param can Option to provide canvas. The (generated) filename is set as the canvas title for external printing.
 
-  Bool_t ratioAxis = kFALSE;
+  // Bool_t ratioAxis = kFALSE; // not used anywhere
   Double_t sizefac=0.7;
   int printdebug=0;
   LmHelper::Debug(Form("LmHandler::PrintCompareAll()"), 5-printdebug);
@@ -2033,18 +2034,18 @@ void LmHandler::PrintCompareAll(unsigned int histBits, unsigned int bin_min, uns
     // move to upper pad and set log if requested.
     can->cd(1)->SetLogy(setLogy);
   }
-  
+
   // don't use floats (LmHelper::kSmallDelta will not work)
   Double_t commonXmin=0., commonXmax=0.;
   Double_t commonYmin=0., commonYmax=0.;
-  
+
   // store the common x-range
   if (projOnMee==LmBaseSignal::kProjOnMee) {
     if (fPlotXMeeMin>-1  && fPlotXMeeMax>0)  { commonXmin=fPlotXMeeMin;  commonXmax=fPlotXMeeMax;  }
   } else { // Ptee
     if (fPlotXPteeMin>-1 && fPlotXPteeMax>0) { commonXmin=fPlotXPteeMin; commonXmax=fPlotXPteeMax; }
   }
-  
+
   // store the common y-range
   // determine the common y-axis range for all histograms, if it was not manually set to valid values.
   // in that case also apply the margins.
@@ -2060,7 +2061,7 @@ void LmHandler::PrintCompareAll(unsigned int histBits, unsigned int bin_min, uns
     commonYmax = fPlotYMax;
   }
   LmHelper::Debug(Form("  %s plotting range: ymin = %.2e,   ymax = %.2e", (rangeComputed)?"computed":"specified", commonYmin, commonYmax), 12-printdebug);
-  
+
   unsigned int ihist=0;
   unsigned int reqHist[(int)TMath::Log2(LmSignal::kMAXhist)];
   unsigned int &firstHist=reqHist[0]; // reference, for better readability.
@@ -2086,7 +2087,7 @@ void LmHandler::PrintCompareAll(unsigned int histBits, unsigned int bin_min, uns
     for (unsigned int iBit = 1; iBit < LmSignal::kMAXhist; iBit *= 2) {
       if ( !(iBit & histBits) ) continue; // continue if current histogram was not requested.
       reqHist[ihist] = iBit; // store the bits of all requested histograms.
-  
+
       //if (fCompareSignalsToAverage && fBest[0]>-1) {
       //  GetLmSignalI(fBest[0])->GetLmHist(iBit,bin_i,projOnMee)->SetLineWidth(3);
       //  GetLmSignalI(fBest[1])->GetLmHist(iBit,bin_i,projOnMee)->SetLineWidth(3);
@@ -2095,7 +2096,7 @@ void LmHandler::PrintCompareAll(unsigned int histBits, unsigned int bin_min, uns
       //  GetLmSignalI(fBest[1])->GetLmHist(iBit,bin_i,projOnMee)->SetLineStyle(5);
       //  GetLmSignalI(fBest[2])->GetLmHist(iBit,bin_i,projOnMee)->SetLineStyle(7);
       //}
-  
+
       Int_t Nsignals = GetNSignals();
       if (printOnlyAverage) Nsignals=1;
       // when plotting only the average, this loop is only used once to draw axes with the correct label sizes etc.
@@ -2111,12 +2112,12 @@ void LmHandler::PrintCompareAll(unsigned int histBits, unsigned int bin_min, uns
         // beautify histograms
         GetLmSignalI(i)->GetLmHist(iBit,bin_i,projOnMee)->SetLineColor(LmHelper::GetUniformColor(i, GetNSignals()));
         // GetLmSignalI(i)->GetLmHist(iBit,bin_i,projOnMee)->GetYaxis()->SetTitle("counts (arb. units)");
-  
+
         if (fUseDifferentMarkers == kTRUE && Nsignals < 8){
           GetLmSignalI(i)->GetLmHist(iBit,bin_i,projOnMee)->SetMarkerStyle(LmHelper::GetMarker(i));
         }
         else GetLmSignalI(i)->GetLmHist(iBit,bin_i,projOnMee)->SetMarkerStyle(20);
-  
+
         GetLmSignalI(i)->GetLmHist(iBit,bin_i,projOnMee)->SetMarkerColor(LmHelper::GetUniformColor(i, GetNSignals()));
         GetLmSignalI(i)->GetLmHist(iBit,bin_i,projOnMee)->SetMarkerSize(fMarkerSize);
         GetLmSignalI(i)->GetLmHist(iBit,bin_i,projOnMee)->SetFillStyle(0);
@@ -2135,8 +2136,8 @@ void LmHandler::PrintCompareAll(unsigned int histBits, unsigned int bin_min, uns
             GetLmSignalI(i)->GetLmHist(iBit,bin_i,projOnMee)->SetLineColor(kRed);
             GetLmSignalI(i)->GetLmHist(iBit,bin_i,projOnMee)->SetMarkerColor(kRed);
           }
-      
-  
+
+
           if (fLmSigAverage && iBit == LmSignal::kSubSig) { // average currently only available for SubSig.
             //GetLmSigAverage()->GetLmHist(iBit,bin_i,projOnMee)->SetLineStyle(ihist+1);
             GetLmSigAverage()->GetLmHist(iBit,bin_i,projOnMee)->SetLineStyle(1);
@@ -2175,7 +2176,7 @@ void LmHandler::PrintCompareAll(unsigned int histBits, unsigned int bin_min, uns
         // Draw LmHistogram of each signal. This is done later, after the cocktail was possibly drawn.
         // ...
       } // Nsignals
-  
+
       // create extra gray-colored histograms for additional legend entries.
       //hGray[ihist] = new TH1D( *(GetReferenceSignal()->GetLmHist(iBit,bin_i,projOnMee)->GetDatahist()) );
       //hGray[ihist]->SetTitle(GetReferenceSignal()->GetCharHistBit(iBit));
@@ -2184,7 +2185,7 @@ void LmHandler::PrintCompareAll(unsigned int histBits, unsigned int bin_min, uns
       ihist++;
     } // hist bit loop
     const unsigned int nHists = ihist;
-  
+
     //
     // Printing of cocktail.
     //
@@ -2215,7 +2216,7 @@ void LmHandler::PrintCompareAll(unsigned int histBits, unsigned int bin_min, uns
         }
       }
     }
- 
+
     //
     // Printing of datapoints of all signals which are desired according to the configuration of this handler.
     //
@@ -2252,22 +2253,22 @@ void LmHandler::PrintCompareAll(unsigned int histBits, unsigned int bin_min, uns
         GetLmSigAverage()->GetLmHist(iBit,bin_i,projOnMee)->SetAxisRange(commonXmin, commonXmax, "X");
         GetLmSigAverage()->GetLmHist(iBit,bin_i,projOnMee)->SetAxisRange(commonYmin, commonYmax, "Y");
         GetLmSigAverage()->GetLmHist(iBit,bin_i,projOnMee)->DrawCopy();
-        // GetLmSigAverage()->GetLmHist(iBit,bin_i,projOnMee)->DrawCopy("p E same;p E2 same"); Jerome edit 
+        // GetLmSigAverage()->GetLmHist(iBit,bin_i,projOnMee)->DrawCopy("p E same;p E2 same"); Jerome edit
       }
     }
 
-    std::cout << "test2 " << bin_i << std::endl; 
+    std::cout << "test2 " << bin_i << std::endl;
     // draw axes again, which may have been over-drawn by cocktail or other lines.
     // @TODO: not yet perfect, because the axis line is too narrow... fix it inside LmHistogram::Draw().
     GetReferenceSignal()->GetLmHist(firstHist,bin_i,projOnMee)->Draw("axis same");
-  
+
     TObjArray* oaLabels = GenerateLabels();
     if (oaLabels) {
       FillLabels(oaLabels, bin_i, projOnMee);
       oaLabels->DrawClone("same");
       delete oaLabels;
     }
-    std::cout << "test3 " << bin_i << std::endl; 
+    std::cout << "test3 " << bin_i << std::endl;
     if (printLegend){
       TLegend* leg = GenerateLegend(bin_i, projOnMee, firstHist, nHists>1?nHists:0, printOnlyAverage);
       //if (nHists>1) { // add extra entries for the histogram bits (types) to the legend
@@ -2293,7 +2294,7 @@ void LmHandler::PrintCompareAll(unsigned int histBits, unsigned int bin_min, uns
               Double_t xtmp,ytmp;
               grRatioCocktSys[i1]->SetFillColorAlpha(kGray+1,0.5);
               grRatioCocktSys[i1]->GetPoint(igr,xtmp,ytmp);
-              if (ytmp == 0) ytmp = 1e-10; // check if denominator is zero 
+              if (ytmp == 0) ytmp = 1e-10; // check if denominator is zero
               grRatioCocktSys[i1]->SetPoint(igr,xtmp,1.);
               if (ytmp == 0) ytmp = 1e-10; // check if denominator is zero
               grRatioCocktSys[i1]->SetPointError(igr,grRatioCocktSys[i1]->GetErrorXlow(igr),grRatioCocktSys[i1]->GetErrorXhigh(igr),
@@ -2334,18 +2335,18 @@ void LmHandler::PrintCompareAll(unsigned int histBits, unsigned int bin_min, uns
           ratioi->GetYaxis()->SetTitleOffset(ratioi->GetYaxis()->GetTitleOffset()*fRatioPadSize/(1.-fRatioPadSize) * fRatioTitleOffset);
           ratioi->GetDatahist()->SetTitleSize(ratioi->GetDatahist()->GetTitleSize()/fRatioPadSize*(1.-fRatioPadSize) * fRatioTitleSize,"xy");
           ratioi->GetDatahist()->SetLabelSize(ratioi->GetDatahist()->GetLabelSize()/fRatioPadSize*(1.-fRatioPadSize),"xy");
-          //if (fPlotRatioMax>0) 
-          
+          //if (fPlotRatioMax>0)
+
           ratioi->GetDatahist()->GetYaxis()->SetNdivisions(4, 5, 0, kTRUE); // 4,5,0 = 504
 
           std::cout << "min Ratio: " << fPlotRatioMin << "  max Ratio: " << fPlotRatioMax << std::endl;
           ratioi->SetAxisRange(fPlotRatioMin, fPlotRatioMax, "Y");
           ratioi->GetDatahist()->DrawCopy("axis");
-          ratioAxis == kTRUE;
+          // ratioAxis = kTRUE; //was: ratioAxis == kTRUE; that makes no sense also was not used
         }
         // -----
         if (i==FirstReqSig()) { // instead of i==0
-          	  
+
           //else ratioi->GetDatahist()->DrawCopy("same axis");
           haxis = new TH1D(*(ratioi->GetDatahist()));
           for (Int_t i2 =0; i2<fLmCocktails.size(); i2++){
@@ -2360,7 +2361,7 @@ void LmHandler::PrintCompareAll(unsigned int histBits, unsigned int bin_min, uns
           //  l1.SetLineWidth(fLmCocktails.at(0)->GetSum1D(bin_i, projOnMee)->GetLineWidth());
           //}
           l1.DrawClone();
-  
+
           // Draw ratios of sums of additional cocktails. A bit dirty to do it inside the LmSignal loop, but easiest...
           //if (fCocktailProcessed) {
           //  for(UInt_t ic = 1; ic <fLmCocktails.size() ; ++ic) { //fLmCocktails.size()
@@ -2387,17 +2388,17 @@ void LmHandler::PrintCompareAll(unsigned int histBits, unsigned int bin_min, uns
           ratioi->DrawCopy("same onlysys"); // or draw only its systematics?
         }
         else { // draw all other ratio histograms
-          if (fType!=kCocktailOnly){ 
+          if (fType!=kCocktailOnly){
             //ratioi->DrawCopy("p hist same");
-            //if(bin_i == 1) 
+            //if(bin_i == 1)
             ratioi->DrawCopy("same");
-            std::cout << "plotting raios" << std::endl; 
+            std::cout << "plotting raios" << std::endl;
             TFile* file_ = TFile::Open("ratio_3.root", "UPDATE");
             ratioi->GetDatahist()->Write(Form("%s_%i",ratioi->GetDatahist()->GetName(), i ));
             //ratioi->GetSystError()->Write();
             file_->Close();
             delete file_;
-  
+
           }
           // if (fType!=kCocktailOnly) ratioi->DrawCopy("p E same;p E2 same"); Jerome edit
         }
@@ -2406,8 +2407,8 @@ void LmHandler::PrintCompareAll(unsigned int histBits, unsigned int bin_min, uns
       haxis->DrawCopy("axis same"); // draw axes again.
       delete haxis;
     } // doRatio
- 
-    can->cd(1); 
+
+    can->cd(1);
     std::cout << "End " << bin_i << std::endl;
 
   }
@@ -2620,7 +2621,7 @@ TObjArray* LmHandler::GenerateLabels(Bool_t forCorrelPlot)
     //cout << "Eta-range  = " << eta_min << " to " << eta_max << endl;
     pt_min   = GetReferenceSignal()->GetManager()->GetPtRange_min();
     if(pt_min<0.2)
-      pt_min = 0.075; 
+      pt_min = 0.075;
     pt_max   = GetReferenceSignal()->GetManager()->GetPtRange_max();
     cout << "Pt-range  = " << pt_min << " to " << pt_max << " GeV/c" << endl;
     //cent_min = GetReferenceSignal()->GetManager()->GetCentrality_min();
@@ -2702,7 +2703,7 @@ TObjArray* LmHandler::GenerateLabels(Bool_t forCorrelPlot)
     }
     else { // no labels for which a manager is needed.
       obj_array = LmHelper::GetLabelsTemplate(LmHelper::kDefaultNoManager, sizefac, xref + fLabelsOffsetX, yref + fLabelsOffsetY/*historic default, see lmhelper*/);
-  
+
     }
   }
 
@@ -2782,7 +2783,7 @@ etarange = Form("|#it{#eta}_{e}| < %.1f, ", 0.8);
       //pairptrange = Form("%.2f #leq %s #leq %.2f %s (#minus acc.hole)",proj_min,LmBaseSignal::GetProjLabelXvar().Data(),proj_max,LmBaseSignal::GetProjLabelXunit().Data());
       //pairptrange = Form("%.2f < %s < %.2f %s",proj_min,LmBaseSignal::GetProjLabelXvar().Data(),proj_max,LmBaseSignal::GetProjLabelXunit().Data());
       pairptrange = Form("%.2g < %s < %.2g %s",proj_min,LmBaseSignal::GetProjLabelXvar().Data(),proj_max,LmBaseSignal::GetProjLabelXunit().Data());
-      
+
   }
   else { // print both lower and upper projection limit.
     if (projOnMee==LmBaseSignal::kProjOnMee) pairptrange = Form("%.2g < %s < %.2g %s",proj_min,LmBaseSignal::GetProjLabelYvar().Data(),proj_max,LmBaseSignal::GetProjLabelYunit().Data());
@@ -2800,7 +2801,7 @@ etarange = Form("|#it{#eta}_{e}| < %.1f, ", 0.8);
     GetProjRange(bin_number_2, !projOnMee, x_min, x_max);
     if (projOnMee==LmBaseSignal::kProjOnPtee) meerange = Form("%.2g #leq %s #leq %.2g %s",x_min,LmBaseSignal::GetProjLabelYvar().Data(),x_max,LmBaseSignal::GetProjLabelYunit().Data());
     else                                      meerange = Form("%.2g #leq %s #leq %.2g %s",x_min,LmBaseSignal::GetProjLabelXvar().Data(),x_max,LmBaseSignal::GetProjLabelXunit().Data());
-  } 
+  }
 
   ///
   /// Modify some of the given objects depending on their name, e.g. if their title is empty.
@@ -2904,13 +2905,13 @@ TLegend* LmHandler::GenerateLegend(unsigned int bin_number, Bool_t projOnMee, un
     // by default, a new legend is created each time this function is called.
     leg = new TLegend(xlow, yup-ydiff, xup, yup);
     leg->SetFillStyle(0);
-    //leg->SetTextSize(gStyle->GetTitleSize()*sizefac); 
+    //leg->SetTextSize(gStyle->GetTitleSize()*sizefac);
     leg->SetTextSize(gStyle->GetTextSize()/**sizefac*/); //PRL
     leg->SetTextFont(gStyle->GetTextFont()/**sizefac*/); //PRL
     leg->SetMargin(leg->GetMargin() * fLegendLineSizeFactor);
     leg->SetMargin(0.15);//0.15 // or some other value)
   }
-  
+
   else {
     leg->SetMargin(leg->GetMargin() * fLegendLineSizeFactor);
 
@@ -2952,12 +2953,12 @@ TLegend* LmHandler::GenerateLegend(unsigned int bin_number, Bool_t projOnMee, un
       for(UInt_t ic = 0; ic < fLmCocktails.size(); ++ic) {
 	if(ic==1) continue;
         std::vector<TString> partnames = fLmCocktails.at(ic)->GetPartNames();
-        for (unsigned int i = 0; i < partnames.size(); ++i){    
+        for (unsigned int i = 0; i < partnames.size(); ++i){
 	  if(partnames.at(i) == "sum") {
 	    //leg->AddEntry(fLmCocktails.back()->GetSpectra1D(bin_number,projOnMee)->At(i), "Rapp Sum", "l"); //LEGEND jerome edit
-            //leg->AddEntry(fLmCocktails.back()->GetSumErr1D(bin_number,projOnMee), "Uncertainty", "lF"); 
+            //leg->AddEntry(fLmCocktails.back()->GetSumErr1D(bin_number,projOnMee), "Uncertainty", "lF");
             //leg->AddEntry(fLmCocktails.back()->GetSpectra1D(bin_number,projOnMee)->At(i), "Cocktail sum", "lF");
-            //leg->AddEntry(fLmCocktails.back()->GetSumErr1D(bin_number,projOnMee), "Cocktail uncertainty", "lF"); 
+            //leg->AddEntry(fLmCocktails.back()->GetSumErr1D(bin_number,projOnMee), "Cocktail uncertainty", "lF");
             TH1D* dummy = (TH1D*)(fLmCocktails.back()->GetSpectra1D(bin_number,projOnMee)->At(i))->Clone("dummy");
 	    dummy->SetFillColor(kGray);
             //leg->AddEntry(dummy, "Cocktail sum", "lF");
@@ -2977,7 +2978,7 @@ TLegend* LmHandler::GenerateLegend(unsigned int bin_number, Bool_t projOnMee, un
 	}
         //if(fLegendOnlyFirstCocktail) break;
       }
-      leg->AddEntry((TH1D*)0x0, "", ""); 
+      leg->AddEntry((TH1D*)0x0, "", "");
       leg->AddEntry((TH1D*)0x0, " 0.6 #leq #it{m}_{ee} #leq 1.1 GeV/#it{c}^{2}", "");
       //leg->AddEntry((TH1D*)0x0, "", "");
       //leg->AddEntry((TH1D*)0x0, "", "");
@@ -3342,7 +3343,7 @@ std::vector<TH1D*> LmHandler::CollectProjections(unsigned int histBits, unsigned
         histi->SetMarkerStyle(20);
         histi->SetMarkerColor(LmHelper::GetUniformColor(i, GetNSignals()));
         // attach to vector
-        std::cout << "Check 99: " << histi->GetName() << std::endl;	
+        std::cout << "Check 99: " << histi->GetName() << std::endl;
         vProj.push_back(histi);
       }
       break; // quit loop over bits
