@@ -39,7 +39,8 @@
 *~
 
 # Specific folders in the framework
+./*/build
+./*/plots
 ./*/output
 ./*/input
 ./*/obj
-
