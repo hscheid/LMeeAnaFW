@@ -34,7 +34,7 @@ set(SRCS
   src/core/LmCocktailMan.cpp
   src/core/LmFitFunctions.cpp
   src/core/LmHelper.cpp
-  src/core/LmManager_save.cpp
+  # src/core/LmManager_save.cpp
   src/core/LmRebinner.cpp
   src/core/LmBaseSignal.cpp
   src/core/LmCocktailPart.cpp
@@ -81,4 +81,8 @@ endfunction()
 # add the command-line plotting app
 add_plotting_executable(sebastian
   SOURCES src/user/sebastian.cpp src/user/sebastian.h
+)
+
+add_plotting_executable(jerome
+  SOURCES src/user/jerome.cpp src/user/jerome.h
 )
