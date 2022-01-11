@@ -22,7 +22,7 @@ if(APPLE)
   set(CMAKE_MACOSX_RPATH ON)
 endif(APPLE)
 
-set(MODULE PlottingFramework)
+set(MODULE LMeePlottingFW)
 set(SRCS
   src/core/LmBackground.cpp
   src/core/LmCocktail.cpp
@@ -58,7 +58,7 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/inc
 )
 
-# create PlottingFramework library
+# create LMeePlottingFW library
 add_library(${MODULE} SHARED ${SRCS} ${HDRS})
 target_link_libraries(${MODULE} PUBLIC
   ROOT::Gui
@@ -67,14 +67,14 @@ target_link_libraries(${MODULE} PUBLIC
   ${CXX_FILESYSTEM_LIBRARIES}
 )
 
-# helper function to add executables that are linked to the PlottingFramework
+# helper function to add executables that are linked to the LMeePlottingFW
 function(add_plotting_executable APP_NAME)
   cmake_parse_arguments(PARSE_ARGV 1 APP "" "" "SOURCES;ADD_FILES")
   if(APP_UNPARSED_ARGUMENTS)
     message(FATAL_ERROR "Got trailing arguments ${APP_UNPARSED_ARGUMENTS}")
   endif()
   add_executable(${APP_NAME} ${APP_SOURCES} ${APP_ADD_FILES})
-  target_link_libraries(${APP_NAME} PlottingFramework)
+  target_link_libraries(${APP_NAME} LMeePlottingFW)
   message(STATUS "Creating executable ${APP_NAME} from file(s) ${APP_SOURCES}")
 endfunction()
 
