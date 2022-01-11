@@ -94,7 +94,7 @@ std::cout << "ptee: "<< vPteeBinsDef.data() << '\n';
   sig->PrintUnlike();
 
   std::vector<double> binsPtee_forMee = {0.,8};
-  std::vector<double> binsMee_forPtee = {0.14,0.7,1.1,3.1,5.};
+  std::vector<double> binsMee_forPtee = {0.0,0.14,0.7,1.1,3.1,5.};
   double plotMeeMin = 0.0;
   double plotPteeMin= 0.0;
   double plotMeeMax = 5.;
