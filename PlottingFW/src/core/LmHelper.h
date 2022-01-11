@@ -19,6 +19,7 @@
 class LmHelper{
 public:
   LmHelper();
+  static void   SetDebugLvl(Int_t debug_) {debug = debug_;};
 
   // functions for printout / debugging
   static void   Info(const std::string str);
@@ -98,5 +99,6 @@ public:
 private:
   static std::vector<std::string> v_error;
   static Int_t FI;
+  static Int_t debug;
 };
 #endif

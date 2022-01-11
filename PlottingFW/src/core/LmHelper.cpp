@@ -15,7 +15,7 @@ using namespace std;
 #include "LmHelper.h"
 #include "TGaxis.h"
 
-extern Int_t debug; // to be set in the config.h
+Int_t LmHelper::debug{1000}; // initialise static member variable
 
 std::vector<std::string> LmHelper::v_error;
 Int_t LmHelper::FI;
@@ -41,7 +41,7 @@ LmHelper::LmHelper(){
 
   // Canvas
   Float_t cstretch = 1.2;  //1.2
-  
+
   //IRC wide
   //SetCanvasWidth(7./4* 580*cstretch); // 580x600 ok to get vertical pdf when importing to ppt.
   //SetCanvasHeight(600*cstretch);
@@ -67,7 +67,7 @@ LmHelper::LmHelper(){
   //PRL height
 //  gStyle->SetPadLeftMargin(0.13); //0.11  // 0.1 = root default
 //  gStyle->SetPadRightMargin(0.03);  //0.11
-//  gStyle->SetPadTopMargin(0.04);    //0.01 // room for title. and the canvas is higher than wide. 
+//  gStyle->SetPadTopMargin(0.04);    //0.01 // room for title. and the canvas is higher than wide.
 //  gStyle->SetPadBottomMargin(0.07); //0.13
 //  gStyle->SetCanvasColor(0);
 //  gStyle->SetPadColor(0);           // kRed useful for debugging setup of multiple pads.
@@ -110,7 +110,7 @@ LmHelper::LmHelper(){
 
   Float_t legendTextSize = 20; //was 20  38
   Float_t labelSize      = 30; //36 44
-  Float_t titleSize      = 32;  //32  40 
+  Float_t titleSize      = 32;  //32  40
 
   gStyle->SetTextFont(textFont);
   gStyle->SetLabelFont(textFont);
