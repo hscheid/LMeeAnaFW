@@ -46,6 +46,8 @@ int main(int argc, char const* argv[])
   LmHelper lmHelper; // for styles etc.
   lmHelper.SetDebugLvl(debug);
 
+  LmBaseSignal::SetInputLabelZ("DCA_{ee}", "#sigma", "DCAee");
+
   LmManager* mgr = new LmManager(const_cast<char*>(configString[0].Data()));
   // set all kinds of configuration for the manager
   mgr->SetInputhistAndDim(const_cast<char*>(inputhist.Data()), inputdim);
@@ -59,7 +61,11 @@ int main(int argc, char const* argv[])
   // if (kDoEffiCorrectionFirst) {
   //   mgr->SetDoEffiCorr();
   // }
-  mgr->SetRebinning2D(vMeeBinsDef.size(), vMeeBinsDef.data(), vPteeBinsDef.size(), vPteeBinsDef.data()); // Check which binning to use...
+
+std::cout << "Bins" << '\n';
+std::cout << "mee: "<< vMeeBinsDef.data() << '\n';
+std::cout << "ptee: "<< vPteeBinsDef.data() << '\n';
+  mgr->SetRebinning2D(vMeeBinsDef.size()-1, vMeeBinsDef.data(), vPteeBinsDef.size()-1, vPteeBinsDef.data()); // Check which binning to use...
   mgr->SetEtaRange(-0.8, 0.8);
   mgr->SetPtRange(kSetMinPtLabel, kSetMaxPtLabel);
   mgr->Process();
@@ -85,11 +91,12 @@ int main(int argc, char const* argv[])
   // sig->SetVtxRecEffee(kVtxRecEffee);
   // sig->SetDoNormVtxRecEffee(kDoNormVtxRecEffee);
   sig->Process(LmSignal::kStd);
+  sig->PrintUnlike();
 
-  std::vector<double> binsPtee_forMee = {0.,10};
-  std::vector<double> binsMee_forPtee = {0.14,0.7,1.1,3.1,8.};
-  double plotMeeMin = 0.;
-  double plotPteeMin= 0.;
+  std::vector<double> binsPtee_forMee = {0.,8};
+  std::vector<double> binsMee_forPtee = {0.14,0.7,1.1,3.1,5.};
+  double plotMeeMin = 0.0;
+  double plotPteeMin= 0.0;
   double plotMeeMax = 5.;
   double plotPteeMax= 8.;
 
