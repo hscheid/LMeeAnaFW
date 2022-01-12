@@ -741,7 +741,8 @@ void LmHandler::PrintCorrelation(unsigned int histBitX, unsigned int histBitY, u
     haxis->SetTitle( Form(";%s;%s",vProjX.at(0)->GetYaxis()->GetTitle(),vProjY.at(0)->GetYaxis()->GetTitle()) );
   }
 
-  haxis->GetXaxis()->SetLabelSize(haxis->GetXaxis()->GetLabelSize()-4);
+  haxis->GetXaxis()->SetLabelSize(haxis->GetXaxis()->GetLabelSize());
+  // haxis->GetXaxis()->SetLabelSize(haxis->GetXaxis()->GetLabelSize()-4);
   haxis->GetXaxis()->SetTitleOffset(1.0);
 
   // construct filename of plot
@@ -1138,7 +1139,8 @@ void LmHandler::PrintCompare(unsigned int histBits, unsigned int bin_number, Boo
       GetLmSignalI(i)->GetLmHist(iBit,bin_number,projOnMee)->GetDatahist()->SetLabelOffset(gStyle->GetLabelOffset("X"),"X"); //PRL -8 ptee wide
       GetLmSignalI(i)->GetLmHist(iBit,bin_number,projOnMee)->GetDatahist()->SetLabelOffset(gStyle->GetLabelOffset("Y"),"Y"); //PRL -8 ptee wide
       GetLmSignalI(i)->GetLmHist(iBit,bin_number,projOnMee)->GetDatahist()->SetLabelSize(gStyle->GetLabelSize(),"XY"); //PRL -8 ptee wide
-      GetLmSignalI(i)->GetLmHist(iBit,bin_number,projOnMee)->GetDatahist()->SetLabelSize(gStyle->GetLabelSize()-6,"Y"); //PRL -8 ptee wide
+      GetLmSignalI(i)->GetLmHist(iBit,bin_number,projOnMee)->GetDatahist()->SetLabelSize(gStyle->GetLabelSize(),"Y"); //PRL -8 ptee wide
+      // GetLmSignalI(i)->GetLmHist(iBit,bin_number,projOnMee)->GetDatahist()->SetLabelSize(gStyle->GetLabelSize()-6,"Y"); //PRL -8 ptee wide
       GetLmSignalI(i)->GetLmHist(iBit,bin_number,projOnMee)->GetDatahist()->SetLabelFont(gStyle->GetLabelFont(),"XY");
       GetLmSignalI(i)->GetLmHist(iBit,bin_number,projOnMee)->GetDatahist()->SetTitleOffset(gStyle->GetTitleOffset("X"),"X");
       GetLmSignalI(i)->GetLmHist(iBit,bin_number,projOnMee)->GetDatahist()->SetTitleOffset(gStyle->GetTitleOffset("Y"),"Y");

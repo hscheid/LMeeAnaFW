@@ -96,11 +96,11 @@ LmHelper::LmHelper(){
   gStyle->SetTitleOffset(1.6,"y"); // ptee height wide
 
 
-  gStyle->SetLabelOffset(0.0001,"x");
+  gStyle->SetLabelOffset(0.005,"x");
   //gStyle->SetTitleOffset(3.1,"x"); // mee wide
   //gStyle->SetTitleOffset(3.,"x"); //ptee wide
   // gStyle->SetTitleOffset(3.5,"x"); //ptee height
-  gStyle->SetTitleOffset(.7,"x");// 1.2 //ptee height
+  gStyle->SetTitleOffset(1.1,"x");// 1.2 //ptee height
 
   //TGaxis::SetMaxDigits(1);
 
@@ -108,9 +108,9 @@ LmHelper::LmHelper(){
   Int_t titleFont = 43;
   Int_t labelFont = 43;
 
-  Float_t legendTextSize = 20; //was 20  38
-  Float_t labelSize      = 30; //36 44
-  Float_t titleSize      = 32;  //32  40
+  Float_t legendTextSize = 24; //was 20  38
+  Float_t labelSize      = 24; //36 44
+  Float_t titleSize      = 24;  //32  40
 
   gStyle->SetTextFont(textFont);
   gStyle->SetLabelFont(textFont);
