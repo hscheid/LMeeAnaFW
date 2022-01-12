@@ -48,7 +48,7 @@ int main(int argc, char const* argv[])
 
   LmBaseSignal::SetInputLabelZ("DCA_{ee}", "#sigma", "DCAee");
 
-  LmManager* mgr = new LmManager(const_cast<char*>(configString[0].Data()));
+  LmManager* mgr = new LmManager(const_cast<char*>(configString[1].Data()));
   // set all kinds of configuration for the manager
   mgr->SetInputhistAndDim(const_cast<char*>(inputhist.Data()), inputdim);
   mgr->SetProjOption(projoption);
@@ -62,10 +62,7 @@ int main(int argc, char const* argv[])
   //   mgr->SetDoEffiCorr();
   // }
 
-std::cout << "Bins" << '\n';
-std::cout << "mee: "<< vMeeBinsDef.data() << '\n';
-std::cout << "ptee: "<< vPteeBinsDef.data() << '\n';
-  mgr->SetRebinning2D(vMeeBinsDef.size()-1, vMeeBinsDef.data(), vPteeBinsDef.size()-1, vPteeBinsDef.data()); // Check which binning to use...
+  mgr->SetRebinning2D(vMeeBinsQM.size()-1, vMeeBinsQM.data(), vPteeBinsQM.size()-1, vPteeBinsQM.data()); // Check which binning to use...
   mgr->SetEtaRange(-0.8, 0.8);
   mgr->SetPtRange(kSetMinPtLabel, kSetMaxPtLabel);
   mgr->Process();
@@ -94,7 +91,7 @@ std::cout << "ptee: "<< vPteeBinsDef.data() << '\n';
   sig->PrintUnlike();
 
   std::vector<double> binsPtee_forMee = {0.,8};
-  std::vector<double> binsMee_forPtee = {0.0,0.14,0.7,1.1,3.1,5.};
+  std::vector<double> binsMee_forPtee = {0.0,0.14,0.7,1.04,3.1,5.};
   double plotMeeMin = 0.0;
   double plotPteeMin= 0.0;
   double plotMeeMax = 5.;
@@ -107,12 +104,12 @@ std::cout << "ptee: "<< vPteeBinsDef.data() << '\n';
 
   for (int i = 0; i < binsPtee_forMee.size(); i++) {
     /* code */
-    hanCompare->PrintCompareSoverB_Mee(i,Form("soverb_mee_%d.pdf",i));
-    hanCompare->PrintCompareSignif_Mee(i,Form("signif_mee_%d.pdf",i));
+    hanCompare->PrintCompareSoverB_Mee(i,0,Form("../plots/soverb_mee_%d.pdf",i));
+    hanCompare->PrintCompareSignif_Mee(i,0,Form("../plots/signif_mee_%d.pdf",i));
   }
   for (int i = 0; i < binsMee_forPtee.size(); i++) {
-    hanCompare->PrintCompareSoverB_Ptee(i,Form("soverb_ptee_%d.pdf",i));
-    hanCompare->PrintCompareSignif_Ptee(i,Form("signif_ptee_%d.pdf",i));
+    hanCompare->PrintCompareSoverB_Ptee(i,0,Form("../plots/soverb_ptee_%d.pdf",i));
+    hanCompare->PrintCompareSignif_Ptee(i,0,Form("../plots/signif_ptee_%d.pdf",i));
   }
 
   return 0;
