@@ -78,7 +78,7 @@ function(add_plotting_executable APP_NAME)
   message(STATUS "Creating executable ${APP_NAME} from file(s) ${APP_SOURCES}")
 endfunction()
 
-# add the command-line plotting app
+# create the user executables for use in the command line
 add_plotting_executable(sebastian
   SOURCES src/user/sebastian.cpp src/user/sebastian.h
 )

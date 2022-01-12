@@ -12,4 +12,4 @@ To build you need to
 2. create a build directory with `mkdir build`
 3. enter the directory with `cd build`
 4. configure the makefile with `cmake ..`
-5. now you can build a specific target executable with `make TARGET`
+5. now you can build a user executable with `make TARGET` (these are specified in the `CMakeLists.txt`)
