@@ -39,7 +39,7 @@ LmSignal::LmSignal(std::string name, Int_t type) :
 	fDoSubtraction(kFALSE),
 	fSubtractionDone(kFALSE),
 	fEffiApplied(kFALSE),
-        fAcceApplied(kFALSE),
+  fAcceApplied(kFALSE),
 	fDoSignifRaw(kTRUE), //TRUE! should always be the default.
 	fOwnerMgr(kFALSE),
 	fSubSig_projMee(), // initialize because of use in GetMaxBinProj().
@@ -83,7 +83,7 @@ LmSignal::LmSignal(const LmSignal& sig, std::string name) :
 	fDoSubtraction(sig.fDoSubtraction),
 	fSubtractionDone(sig.fSubtractionDone),
 	fEffiApplied(sig.fEffiApplied),
-        fAcceApplied(sig.fAcceApplied),
+  fAcceApplied(sig.fAcceApplied),
 	fDoSignifRaw(sig.fDoSignifRaw),
 	fOwnerMgr(kFALSE),
 	fSubSig_projMee(), // initialize because of use in GetMaxBinProj().
@@ -104,10 +104,10 @@ LmSignal::LmSignal(const LmSignal& sig, std::string name) :
 	if (name.compare("") != 0) fName = name.data(); // set new name if specified.
 	// initialize inherited variables:
 	SetNeventsPhysSel(sig.GetNeventsPhysSel());
-	SetCrossSection(sig.GetCrossSection());    
-	SetTrgEff(sig.GetTrgEff());                
-	SetVtxRecEff(sig.GetVtxRecEff());          
-	SetVtxRecEffee(sig.GetVtxRecEffee());      
+	SetCrossSection(sig.GetCrossSection());
+	SetTrgEff(sig.GetTrgEff());
+	SetVtxRecEff(sig.GetVtxRecEff());
+	SetVtxRecEffee(sig.GetVtxRecEffee());
 
 	SetDoNormBinwidth(sig.GetDoNormBinwidth());
 	SetDoNormNevents(sig.GetDoNormNevents());
@@ -158,7 +158,7 @@ LmSignal::LmSignal(LmManager &mgr, LmBackground &bkg, std::string name) :
 	fDoSubtraction(kTRUE), //TRUE!
 	fSubtractionDone(kFALSE),
 	fEffiApplied(kFALSE),
-        fAcceApplied(kFALSE),
+  fAcceApplied(kFALSE),
 	fDoSignifRaw(kTRUE), //TRUE!
 	fOwnerMgr(kFALSE),
 	fSubSig_projMee(), // initialize because of use in GetMaxBinProj().
@@ -217,11 +217,11 @@ fDoSignifRaw(s1.fDoSignifRaw),
 fOwnerMgr(kFALSE)
 {
   SetNeventsPhysSel    (s1.GetNeventsPhysSel());
-  SetCrossSection      (s1.GetCrossSection());    
-  SetTrgEff            (s1.GetTrgEff());                
-  SetVtxRecEff         (s1.GetVtxRecEff());          
-  SetVtxRecEffee       (s1.GetVtxRecEffee());     
- 
+  SetCrossSection      (s1.GetCrossSection());
+  SetTrgEff            (s1.GetTrgEff());
+  SetVtxRecEff         (s1.GetVtxRecEff());
+  SetVtxRecEffee       (s1.GetVtxRecEffee());
+
   SetDoNormBinwidth    (s1.GetDoNormBinwidth());
   SetDoNormNevents     (s1.GetDoNormNevents());
   SetDoNormNentries    (s1.GetDoNormNentries());
@@ -385,14 +385,14 @@ void LmSignal::Process(Int_t type, Bool_t recursive)
       //TODO remember 2D rebinning of acceptance correction first
       //if (GetAcceCorr2D()   ) Rebin2DHistogram(*GetAcceCorr2D()   );
       if (fLmMgr && fLmMgr->GetEnableAcceCorr() && !GetAcceApplied() && GetEffiApplied()){
-	if(fLmMgr->GetAcce()) 
+	if(fLmMgr->GetAcce())
           ApplyAcceptance2D(fLmMgr->GetAcce());
 	else{
 	  LmHelper::Error("LmSignal::Process(kAcceCorrection2D): no Acceptance correction histogram. Cannot process!");
           return;
 	}
       }
-        
+
       break;
 
 
@@ -792,7 +792,7 @@ void LmSignal::CalcConfidenceLevel(Double_t CL, Bool_t projOnMee, Bool_t cockRef
         }
       }
 
- 
+
 
     } // histogram bins
   } // projections
@@ -1134,7 +1134,7 @@ void LmSignal::ApplyEfficiency2D(TH2D& hIn, const TH2D* hEffi)
     LmHelper::Error("LmSignal::ApplyEfficiency2D(): inconsistent binning in Y! not correcting for efficiency!"); return;
   }
 
-  
+
   for(Int_t ix = 1; ix <= hEffi->GetNbinsX(); ++ix){
     for(Int_t iy = 1; iy <= hEffi->GetNbinsY(); ++iy){
       if (ix > hOut->GetNbinsX()) break;
@@ -1179,7 +1179,7 @@ void LmSignal::ApplyEfficiency2D_all(const TH2D* hEffi)
 //_______________________________________________________________________________________________
 void LmSignal::ApplyAcceptance2D(const TH2D* hAcce)
 {
-  
+
   TH2D* hIn  = fSubSig;
   TH2D* hOut = new TH2D(*hIn);
   LmHelper::Debug(Form(" ApplyAcceptance2D(hIn:'%s')",hIn->GetName()), 5-debugSignal);
