@@ -2851,16 +2851,16 @@ TLegend* LmHandler::GenerateLegend(unsigned int bin_number, Bool_t projOnMee, un
   if (printOnlyAverage)     number_of_entries  = 1 + nExtraEntries;
   if (fCocktailProcessed)   number_of_entries += fLmCocktails.back()->GetPartNames().size(); // add space for number of cocktail particles
   if (fType==kCocktailOnly) number_of_entries -= GetNRequestedSig();
-  //Double_t sizefac=0.7 * fLegendSize;
-  //Double_t ylow=0.77 / fLegendSizeInYScaling + fLegendOffsetY, yup=0.87 + fLegendOffsetY;
-  //Double_t xup=0.78;// + fLegendOffsetX;
-  //Double_t xlow=0.57;// + fLegendOffsetX;
+  Double_t sizefac=0.7 * fLegendSize;
+  Double_t ylow=0.77 / fLegendSizeInYScaling + fLegendOffsetY, yup=0.87 + fLegendOffsetY;
+  Double_t xup=0.95;// + fLegendOffsetX;
+  Double_t xlow=0.62;// + fLegendOffsetX;
 
   //correlation plot
-  Double_t sizefac=0.7 * fLegendSize;
-  Double_t ylow=0.17 / fLegendSizeInYScaling + fLegendOffsetY, yup=0.27 + fLegendOffsetY;
-  Double_t xup=0.78;// + fLegendOffsetX;
-  Double_t xlow=0.57;// + fLegendOffsetX;
+  // Double_t sizefac=0.7 * fLegendSize;
+  // Double_t ylow=0.17 / fLegendSizeInYScaling + fLegendOffsetY, yup=0.27 + fLegendOffsetY;
+  // Double_t xup=0.78;// + fLegendOffsetX;
+  // Double_t xlow=0.57;// + fLegendOffsetX;
 
 
 
@@ -2881,11 +2881,11 @@ TLegend* LmHandler::GenerateLegend(unsigned int bin_number, Bool_t projOnMee, un
 
 
 
-  //if (fType==kCompare) xup = 0.55;
+  // if (fType==kCompare) xup = 0.55; // this value does not make any sense
   if      (number_of_entries<= 4) ylow=yup-0.035*number_of_entries * fLegendSizeInYScaling;
-  //else if (number_of_entries<= 8) ylow=yup-0.025*number_of_entries * fLegendSizeInYScaling;
-  //else if (number_of_entries<= 8) ylow=yup-0.035*number_of_entries * fLegendSizeInYScaling; //PRL weight
-  else if (number_of_entries<= 8) ylow=yup-0.025*number_of_entries * fLegendSizeInYScaling; //PRL height
+  else if (number_of_entries<= 8) ylow=yup-0.025*number_of_entries * fLegendSizeInYScaling;
+  // else if (number_of_entries<= 8) ylow=yup-0.035*number_of_entries * fLegendSizeInYScaling; //PRL weight
+  // else if (number_of_entries<= 8) ylow=yup-0.025*number_of_entries * fLegendSizeInYScaling; //PRL height
 
   else if (number_of_entries<= 12) ylow=yup-0.025*(number_of_entries) * fLegendSizeInYScaling;
   else {
