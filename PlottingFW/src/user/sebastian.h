@@ -16,19 +16,42 @@ Int_t debug = 0;
 TString fileName[] = {
   "../input/data/AnalysisResults_c1.root",
   "../input/data/AnalysisResults_c2.root",
-  "../input/data/LHC16q_pass2.root", // merged input only ine cut setting
+  "../input/data/LHC16q_pass2.root", // merged input only one cut setting
+  "../input/data/AnalysisResults_c1-2.root", // fast, with first 10 cut settings
+  "../input/data/AnalysisResults_c1-2.root", // woSDD, with first 10 cut settings
+  "../input/data/LHC16q_pass2_cutVar_1.root" // merged input with first 10 cut settings (cut one is analysis default)
 };
 TString tree_name[] = {"Histos_diel_lowmass"};
 TString cut_setting[] = {
   // always adapt to input data files!
-  "aodTrackCuts01" // 001
+  "aodTrackCuts01", // 001
+  "aodTrackCuts02", // this is obviously retarded
+  "aodTrackCuts03", // this is obviously retarded
+  "aodTrackCuts04", // this is obviously retarded
+  "aodTrackCuts05", // this is obviously retarded
+  "aodTrackCuts06", // this is obviously retarded
+  "aodTrackCuts07", // this is obviously retarded
+  "aodTrackCuts08", // this is obviously retarded
+  "aodTrackCuts09", // this is obviously retarded
+  "aodTrackCuts10"  // this is obviously retarded
 };
 TString inputhist = "pInvMass_pPt_DCAsigma";
 Int_t inputdim = 3;
 
 const TString configString[] = {
   (coll_system + ":" + fileName[0] + ":" + tree_name[0] + ":" + cut_setting[0] + ":" + "data"),
-  (coll_system + ":" + fileName[2] + ":" + tree_name[0] + ":" + cut_setting[0] + ":" + "data")
+  (coll_system + ":" + fileName[2] + ":" + tree_name[0] + ":" + cut_setting[0] + ":" + "data"),
+  (coll_system + ":" + fileName[5] + ":" + tree_name[0] + ":" + cut_setting[0] + ":" + "data"),
+  (coll_system + ":" + fileName[5] + ":" + tree_name[0] + ":" + cut_setting[1] + ":" + "data"),
+  (coll_system + ":" + fileName[5] + ":" + tree_name[0] + ":" + cut_setting[2] + ":" + "data"),
+  (coll_system + ":" + fileName[5] + ":" + tree_name[0] + ":" + cut_setting[3] + ":" + "data"),
+  (coll_system + ":" + fileName[5] + ":" + tree_name[0] + ":" + cut_setting[4] + ":" + "data"),
+  (coll_system + ":" + fileName[5] + ":" + tree_name[0] + ":" + cut_setting[5] + ":" + "data"),
+  (coll_system + ":" + fileName[5] + ":" + tree_name[0] + ":" + cut_setting[6] + ":" + "data"),
+  (coll_system + ":" + fileName[5] + ":" + tree_name[0] + ":" + cut_setting[7] + ":" + "data"),
+  (coll_system + ":" + fileName[5] + ":" + tree_name[0] + ":" + cut_setting[8] + ":" + "data"),
+  (coll_system + ":" + fileName[5] + ":" + tree_name[0] + ":" + cut_setting[9] + ":" + "data"),
+  (coll_system + ":" + fileName[5] + ":" + tree_name[0] + ":" + cut_setting[10] + ":" + "data")
 };
 // (coll_system + ":" + fileName[0] + ":" + tree_name[0] + ":" + cut_setting[0] + ":" + "data" + ":" + effi_name[76] + ":" + effi_gen[3] + ":" + effi_rec[15])};
 
