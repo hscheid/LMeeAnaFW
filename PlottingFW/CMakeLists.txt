@@ -42,6 +42,7 @@ set(SRCS
   src/core/LmHistogram.cpp
   src/core/LmMultiQA.cpp
   src/core/LmSignal.cpp
+  # src/core/LmEfficiency.cpp
 )
 string(REPLACE ".cpp" ".h" HDRS "${SRCS}")
 # string(REPLACE "src" "inc" HDRS "${HDRS}")
