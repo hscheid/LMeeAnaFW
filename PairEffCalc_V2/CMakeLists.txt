@@ -66,6 +66,6 @@ function(add_plotting_executable APP_NAME)
 endfunction()
 
 # create the user executables for use in the command line
-add_plotting_executable(main
+add_plotting_executable(calcEffi
   SOURCES src/main.cpp
 )
