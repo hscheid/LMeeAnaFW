@@ -457,7 +457,7 @@ void PairEfficiency::CalcEfficiency()
         TH2D ResoGen = fGenHisto[0];
 
         TH2D ResoEff = ResoRec;
-        ResoEff.SetAxisRange(0., 0.3, "Z");
+        ResoEff.SetAxisRange(0., 0.5, "Z");
         ResoEff.Divide(&ResoGen);
         ResoEff.SetName(Form("eff_%s", ResoEff.GetName()));
         ResoEff.Draw("colz");
@@ -468,7 +468,7 @@ void PairEfficiency::CalcEfficiency()
         TH2D CharmGen = fGenHisto_ULS[0];
 
         TH2D CharmEff = CharmRec;
-        CharmEff.SetAxisRange(0., 0.3, "Z");
+        CharmEff.SetAxisRange(0., 0.5, "Z");
         CharmEff.Divide(&CharmGen);
         CharmEff.SetName(Form("eff_%s", CharmEff.GetName()));
         CharmEff.Draw("colz");
@@ -478,7 +478,7 @@ void PairEfficiency::CalcEfficiency()
         TH2D SumEff = ResoRec;
         SumEff.Reset();
         SumEff.SetName(Form("eff_sum_%s", fCutSettings[iTrackCuts].c_str()));
-        SumEff.SetAxisRange(0., 0.05, "Z");
+        SumEff.SetAxisRange(0., 0.5, "Z");
 
         for (int bin_x = 1; bin_x < SumEff.GetNbinsX() + 1; ++bin_x) {
           for (int bin_y = 1; bin_y < SumEff.GetNbinsY() + 1; ++bin_y) {
@@ -567,7 +567,7 @@ void PairEfficiency::CalcEfficiency()
         TH2D effffi = fRecHisto[i];
         effffi.Divide(&(fGenHisto[j]));
         effffi.SetStats(false);
-        effffi.SetAxisRange(0., 0.3, "Z");
+        effffi.SetAxisRange(0., 0.5, "Z");
         effffi.SetStats(false);
         effffi.SetContour(255);
         effffi.DrawCopy("colz");
@@ -582,7 +582,7 @@ void PairEfficiency::CalcEfficiency()
         TH2D effi = fRecHisto_ULS[i];
         effi.Divide(&(fGenHisto_ULS[j]));
         effi.SetStats(false);
-        effi.SetAxisRange(0., 0.3, "Z");
+        effi.SetAxisRange(0., 0.5, "Z");
         effi.SetStats(false);
         effi.SetContour(255);
         effi.DrawCopy("colz");
