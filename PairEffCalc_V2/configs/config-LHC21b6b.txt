@@ -1,6 +1,4 @@
 # config for the pair efficiency calculation
-# This is parsed by the executable.
-
 
 # input
 # the input file name as it came from the train
