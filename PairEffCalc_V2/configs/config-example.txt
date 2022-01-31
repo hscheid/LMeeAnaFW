@@ -1,0 +1,27 @@
+# config for the pair efficiency calculation
+
+# input
+
+inputFilename   = "/Users/misc/analysis/LMeeAnaFW/input/mc/mcQA/LHC21b6b.root"
+outputFilename  = "./output/mcQA/LHC21b6b.root"
+
+# cocktailWeights = "input/cocktail/pt200-400-0080/cocktail.root" // no cocktail weights
+cocktailWeights = "/Users/misc/analysis/LMeeAnaFW/input/cocktail/Cocktail_withSys_21_01_2021_bigbins_powheg_00_10_Daiki_jpsi_2018.root"
+cocktailParticlesLF = "pi02D;eta2D;etaprim2D;rho2D;omega2D;phi2D;jpsi2D"
+cocktailParticlesHF = "ccbar2D;bbbar2D"
+
+histFolderGen = "efficiency0/Pairs/GeneratedSmeared"
+histFolderRec = "efficiency0/Pairs/"
+
+cutSettings = "aodTrackCuts01"
+
+prefixGen = "Ngen_"
+prefixRec = "Nrec_"
+
+MCSignal_Pair = "sameMother"
+MCSignal_ULSLS = "eleFinalStateFromD"
+MCSignal_Basesignal = "eleFinalState"
+
+mee_bins_string =  "0.00,0.02,0.04,0.06,0.08,0.10,0.12,0.14,0.20,0.30,0.40,0.50,0.60,0.70,0.80,0.90,1.00,1.10,1.20,1.40,1.60,1.80,2.00,2.20,2.40,2.60,2.80,3.00,3.06,3.10,3.30,3.50,4.00"
+
+ptee_bins_string = "0.,1.,2.,3.,4.,5.,6.,7.,8."
