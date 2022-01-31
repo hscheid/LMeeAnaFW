@@ -1,0 +1,4 @@
+# Ignore executable and plots that are somehow still written here
+*.png
+*.pdf
+calcEffi
