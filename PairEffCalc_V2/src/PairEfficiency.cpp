@@ -11,7 +11,7 @@
 #include "TStyle.h"
 #include "TF2.h"
 
-#include "../../PlottingFW/src/LmHelper.h"
+#include "../../PlottingFW/src/core/LmHelper.h"
 
 void PairEfficiency::SetCutSettings(const std::string& settings){
   fCutSettings_string = settings;
@@ -31,12 +31,49 @@ void PairEfficiency::SetMCSignal_ULSLS(const std::string& settings){
   FillVector(fMCSignalULSLSString, fMCSignalULSLS);
 }
 
+void PairEfficiency::SetCocktailParticles(const std::string& settings){
+  fCocktailParticles_string = settings;
+  std::cout << "CocktailParticles in vector: ";
+  FillVector(fCocktailParticles_string, fCocktailParticles);
+}
+
+void PairEfficiency::SetCocktailParticlesHF(const std::string& settings){
+  fCocktailParticlesHF_string = settings;
+  std::cout << "CocktailParticlesHF in vector: ";
+  FillVector(fCocktailParticlesHF_string, fCocktailParticlesHF);
+}
+
+void PairEfficiency::SetRebinnerBinningMass(const std::string& binning){
+  std::cout << "Setting Mass binning for rebinning: ";
+  FillBinning(binning, fMass_bins);
+}
+
+void PairEfficiency::SetRebinnerBinningPtee(const std::string& binning){
+  std::cout << "Setting PTee binning for rebinning: ";
+  FillBinning(binning, fPtee_bins);
+}
+
+
+
 void PairEfficiency::FillVector(std::string string, std::vector<std::string>& vec){
   TString tstring = string;
   auto* arr = tstring.Tokenize(";");
   for (int i = 0; i < arr->GetEntriesFast(); i++){
     std::cout << arr->At(i)->GetName() << ", ";
     vec.push_back (arr->At(i)->GetName());
+  }
+  std::cout << std::endl;
+  delete arr;
+}
+
+void PairEfficiency::FillBinning(std::string string, std::vector<double>& vec){
+  TString tstring = string;
+  auto* arr = tstring.Tokenize(",");
+  for (int i = 0; i < arr->GetEntriesFast(); i++){
+    TString number_string = (arr->At(i)->GetName());
+    //std::cout << number_string.Atof() << ", ";
+    vec.push_back (number_string.Atof());
+    std::cout << vec[i] << ", ";
   }
   std::cout << std::endl;
   delete arr;
@@ -73,7 +110,8 @@ double PairEfficiency::GetWeight(bool isReso, double mass, double ptee){
 
   if ((result > 1 || result < 0) && isReso)  LmHelper::Error(Form("in bin mass = %f, ptee = %f the weight in reso  is result = %f, weight = %f, weight_sum = %f", mass, ptee, result, weight, weight_sum));
   if ((result > 1 || result < 0) && !isReso) LmHelper::Error(Form("in bin mass = %f, ptee = %f the weight in charm is result = %f, weight = %f, weight_sum = %f", mass, ptee, result, weight, weight_sum));
-  return weight / weight_sum;
+  if(result > 1) return 1;
+  return result;
 }
 double PairEfficiency::GetYield(double mass, double ptee, const TH2D& cocktailPart){
   double yield = 0;
@@ -84,10 +122,14 @@ double PairEfficiency::GetYield(double mass, double ptee, const TH2D& cocktailPa
 }
 
 void PairEfficiency::ReadCocktailFile(){
-  TFile* file_in = TFile::Open(fCocktailFileName.c_str(), "READ");
+  TFile* file_in = LmHelper::SafelyOpenRootfile(fCocktailFileName.c_str());
+  //TFile* file_in = TFile::Open(fCocktailFileName.c_str(), "READ");
   // fWeightsSum   = *(dynamic_cast<TH2D*>(file_in->Get("Sum")));
-  fWeightsCharm = *(dynamic_cast<TH2D*>(file_in->Get("Charm")));
-  fWeightsBeauty= *(dynamic_cast<TH2D*>(file_in->Get("Beauty")));
+  //fWeightsCharm = *(dynamic_cast<TH2D*>(file_in->Get("Charm")));
+  //fWeightsBeauty= *(dynamic_cast<TH2D*>(file_in->Get("Beauty")));
+  fWeightsCharm = *(dynamic_cast<TH2D*>(file_in->Get(fCocktailParticlesHF[0].c_str())));
+  fWeightsBeauty= *(dynamic_cast<TH2D*>(file_in->Get(fCocktailParticlesHF[1].c_str())));
+
 
   fRebinner.Rebin2DHistogram(fWeightsCharm);
   fRebinner.Rebin2DHistogram(fWeightsBeauty);
@@ -96,13 +138,21 @@ void PairEfficiency::ReadCocktailFile(){
   fWeightsCharm.Add(&fWeightsBeauty);
 
   // fRebinner.Rebin2DHistogram(fWeightsReso);
-  TH2D Pion  = *(dynamic_cast<TH2D*>(file_in->Get("Pion")));
-  TH2D Eta   = *(dynamic_cast<TH2D*>(file_in->Get("Eta")));
-  TH2D EtaP  = *(dynamic_cast<TH2D*>(file_in->Get("EtaPrime")));
-  TH2D Rho   = *(dynamic_cast<TH2D*>(file_in->Get("Rho")));
-  TH2D Omega = *(dynamic_cast<TH2D*>(file_in->Get("Omega")));
-  TH2D Phi   = *(dynamic_cast<TH2D*>(file_in->Get("Phi")));
-  TH2D JPsi  = *(dynamic_cast<TH2D*>(file_in->Get("Jpsi")));
+  //TH2D Pion  = *(dynamic_cast<TH2D*>(file_in->Get("Pion")));
+  //TH2D Eta   = *(dynamic_cast<TH2D*>(file_in->Get("Eta")));
+  //TH2D EtaP  = *(dynamic_cast<TH2D*>(file_in->Get("EtaPrime")));
+  //TH2D Rho   = *(dynamic_cast<TH2D*>(file_in->Get("Rho")));
+  //TH2D Omega = *(dynamic_cast<TH2D*>(file_in->Get("Omega")));
+  //TH2D Phi   = *(dynamic_cast<TH2D*>(file_in->Get("Phi")));
+  //TH2D JPsi  = *(dynamic_cast<TH2D*>(file_in->Get("Jpsi")));
+  TH2D Pion  = *(dynamic_cast<TH2D*>(file_in->Get(fCocktailParticles[0].c_str())));
+  TH2D Eta   = *(dynamic_cast<TH2D*>(file_in->Get(fCocktailParticles[1].c_str())));
+  TH2D EtaP  = *(dynamic_cast<TH2D*>(file_in->Get(fCocktailParticles[2].c_str())));
+  TH2D Rho   = *(dynamic_cast<TH2D*>(file_in->Get(fCocktailParticles[3].c_str())));
+  TH2D Omega = *(dynamic_cast<TH2D*>(file_in->Get(fCocktailParticles[4].c_str())));
+  TH2D Phi   = *(dynamic_cast<TH2D*>(file_in->Get(fCocktailParticles[5].c_str())));
+  TH2D JPsi  = *(dynamic_cast<TH2D*>(file_in->Get(fCocktailParticles[6].c_str())));
+
   fRebinner.Rebin2DHistogram(Pion);
   fRebinner.Rebin2DHistogram(Eta);
   fRebinner.Rebin2DHistogram(EtaP);
@@ -141,9 +191,9 @@ void PairEfficiency::CalcEfficiency(){
   bool scale = false; // scale to binwidth
   bool rebin2D = true; // rebin in 2D
   bool fitToBaseline = false;
-  bool plotStuff = false;
+  bool plotStuff = true;
   bool doWeightedSum = true;
-  bool WriteOnlySum = true;
+  bool WriteOnlySum = false;
 
   TFile fOut(fOutputFilename.c_str(),"RECREATE");
 
@@ -161,9 +211,10 @@ void PairEfficiency::CalcEfficiency(){
   // #######################################################################################################
   // Getting list from file
   // TList *list_gen = LmHelper::GetList(&fIn, fHistFolderGen.c_str());
-  TList *list_gen_2 = dynamic_cast<TList*>(fIn.Get("efficiency3"));
-  TList *list_gen_1 = dynamic_cast<TList*>(list_gen_2->FindObject("Pairs"));
-  TList *list_gen   = dynamic_cast<TList*>(list_gen_1->FindObject("GeneratedSmeared"));
+  //TList *list_gen_2 = dynamic_cast<TList*>(fIn.Get("efficiency"));
+  //TList *list_gen_1 = dynamic_cast<TList*>(list_gen_2->FindObject("Pairs"));
+  //TList *list_gen   = dynamic_cast<TList*>(list_gen_1->FindObject("Generated")); //TODO: fix this!
+  TList *list_gen   = LmHelper::GetList(&fIn, fHistFolderGen);
   for (unsigned int iMCSignal = 0; iMCSignal < fMCSignalPair.size(); ++iMCSignal){
     std::string histoGenName = fPrefixGen + fMCSignalPair[iMCSignal];
 
@@ -234,8 +285,8 @@ void PairEfficiency::CalcEfficiency(){
   }
 
   delete list_gen;
-  delete list_gen_1;
-  delete list_gen_2;
+  //delete list_gen_1;
+  //delete list_gen_2;
 
   // #######################################################################################################
   // Reading reconstructed histograms
@@ -244,16 +295,18 @@ void PairEfficiency::CalcEfficiency(){
   for (unsigned int iTrackCuts = 0; iTrackCuts < fCutSettings.size(); ++iTrackCuts){
     std::vector<TH2D> vec_temp; // used to save the reconstructed MC signals per cutsetting to add them later
 
-    std::string histFolderRecPerCut = fHistFolderRec + fCutSettings[iTrackCuts];
+    std::string histFolderRecPerCut = fHistFolderRec.Data() + fCutSettings[iTrackCuts];
     // TList *list_rec = LmHelper::GetList(&fIn, histFolderRecPerCut.c_str());
 
-    TList *list_rec_2 = dynamic_cast<TList*>(fIn.Get("efficiency3"));
-    TList *list_rec_1   = dynamic_cast<TList*>(list_rec_2->FindObject("Pairs"));
+    //TList *list_rec_2 = dynamic_cast<TList*>(fIn.Get("efficiency"));
+    //TList *list_rec_1   = dynamic_cast<TList*>(list_rec_2->FindObject("Pairs"));
+    TList *list_rec_1   = LmHelper::GetList(&fIn, fHistFolderRec);
     TList *list_rec   = dynamic_cast<TList*>(list_rec_1->FindObject(fCutSettings[iTrackCuts].c_str()));
+
 
     for (unsigned int iMCSignal = 0; iMCSignal < fMCSignalPair.size(); ++iMCSignal){
       std::string histoRecName = fPrefixRec + fMCSignalPair[iMCSignal];
-
+      std::cout << histoRecName << std::endl;
       TH2D hRecInput = *(dynamic_cast<TH2D*>(list_rec->FindObject(histoRecName.c_str())) ); // Read histograms from file
       hRecInput.SetName(Form("Nrec_%s_%s", fCutSettings[iTrackCuts].c_str(), fMCSignalPair[iMCSignal].c_str()));
 
@@ -319,7 +372,7 @@ void PairEfficiency::CalcEfficiency(){
     }
     delete list_rec;
     delete list_rec_1;
-    delete list_rec_2;
+    //delete list_rec_2;
 
   }
 

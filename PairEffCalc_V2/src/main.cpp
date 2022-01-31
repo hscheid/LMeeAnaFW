@@ -8,6 +8,8 @@
 #include "TError.h"
 #include "TString.h"
 #include "TSystem.h"
+#include "TObjArray.h"
+
 // project includes
 #include "PairEfficiency.h"
 Bool_t debug = kFALSE; // Does nothing. Is only used to avoid linker errors
@@ -32,7 +34,14 @@ std::string MCSignal_Basesignal = "";
 
 std::string cocktailWeightsFileName = "";
 
+std::string cocktailParticlesLF = "";
+std::string cocktailParticlesHF = "";
+
 std::string parametrizeEfficiency = "";
+
+std::string mee_bins_string = "";
+std::string ptee_bins_string = "";
+
 
 void GetValue(std::string s, std::string &val);
 void GetValue(std::string s, Double_t &val);
@@ -41,6 +50,9 @@ void CreateOutputPath(TString sIn, Bool_t stringIsAFile=kFALSE);
 
 int main(int argc, const char* argv[])
 {
+
+
+
 
   gErrorIgnoreLevel = kBreak;
   std::string cFileName("config.txt");
@@ -77,6 +89,17 @@ int main(int argc, const char* argv[])
         GetValue(line,MCSignal_Basesignal);
       if(line.find("cocktailWeights") < std::string::npos)
         GetValue(line,cocktailWeightsFileName);
+      if(line.find("cocktailParticlesLF") < std::string::npos)
+        GetValue(line,cocktailParticlesLF);
+      if(line.find("cocktailParticlesHF") < std::string::npos)
+        GetValue(line,cocktailParticlesHF);
+      if(line.find("mee_bins_string") < std::string::npos)
+        GetValue(line,mee_bins_string);
+      if(line.find("ptee_bins_string") < std::string::npos)
+        GetValue(line,ptee_bins_string);
+
+
+
       if(line.find("parametrizeEfficiency") < std::string::npos)
         GetValue(line,parametrizeEfficiency);
     }
@@ -84,37 +107,69 @@ int main(int argc, const char* argv[])
   }
   else { std::cout << "Could not read config file. ABORT" << std::endl; return 1;}
 
-  printf("Configuration: \n");
-  printf("Output filename:    \"%s\"\n",outputFilename.data());
-  printf("Input filename:     \"%s\"\n",inputFilename.data());
-  printf("Gen. Pairs Folder:  \"%s\"\n",histFolderGen.data());
-  printf("Rec. Pairs Folder:  \"%s\"\n",histFolderRec.data());
-  printf("Cutsettings:        \"%s\"\n",cutSettings.data());
-  printf("PrefixGen:          \"%s\"\n",prefixGen.data());
-  printf("PrefixRec:          \"%s\"\n",prefixRec.data());
-  printf("MCSignal_Pair:      \"%s\"\n",MCSignal_Pair.data());
-  printf("MCSignal_ULSLS:     \"%s\"\n",MCSignal_ULSLS.data());
-  printf("MCSignal_Basesignal:\"%s\"\n",MCSignal_Basesignal.data());
-  printf("cocktailWeights:    \"%s\"\n",cocktailWeightsFileName.data());
-  printf("parametrizeEfficiency:  \"%s\"\n",parametrizeEfficiency.data());
-  printf("\n");
-  CreateOutputPath(outputFilename.data(), kTRUE);
+  std::vector<std::string> vec_input_filename;
+  auto* arr_in = TString(inputFilename.c_str()).Tokenize(";");
+  for (int i = 0; i < arr_in->GetEntriesFast(); i++){
+    std::cout << arr_in->At(i)->GetName() << std::endl;
+    vec_input_filename.push_back (arr_in->At(i)->GetName());
+  }
+  std::vector<std::string> vec_output_filename;
+  auto* arr_out = TString(outputFilename.c_str()).Tokenize(";");
+  for (int i = 0; i < arr_out->GetEntriesFast(); i++){
+    std::cout << arr_out->At(i)->GetName() << std::endl;
+    vec_output_filename.push_back (arr_out->At(i)->GetName());
+  }
+  delete arr_out;
+  delete arr_in;
 
-  PairEfficiency paireff;
-  paireff.SetOutputFilename(outputFilename);
-  paireff.SetInputFilename(inputFilename);
-  paireff.SetHistFolderGen(histFolderGen);
-  paireff.SetHistFolderRec(histFolderRec);
-  paireff.SetCutSettings(cutSettings);
-  paireff.SetPrefixGen(prefixGen);
-  paireff.SetPrefixRec(prefixRec);
-  paireff.SetMCSignal_Pair(MCSignal_Pair);
-  paireff.SetMCSignal_ULSLS(MCSignal_ULSLS);
-  paireff.SetMCSignal_Basesignal(MCSignal_Basesignal);
-  paireff.SetCocktailFile(cocktailWeightsFileName);
-  paireff.ParametrizeEfficiency(parametrizeEfficiency);
+  if (vec_output_filename.size() != vec_input_filename.size()) std::cout << "number of input and output filenames are not equal - FIX IT!" << std::endl;
 
-  paireff.CalcEfficiency();
+  for (unsigned int i = 0; i < vec_output_filename.size(); ++i ){
+    printf("Configuration: \n");
+    printf("Output filename:    \"%s\"\n",vec_output_filename[i].data());
+    printf("Input filename:     \"%s\"\n",vec_input_filename[i].data());
+    printf("Gen. Pairs Folder:  \"%s\"\n",histFolderGen.data());
+    printf("Rec. Pairs Folder:  \"%s\"\n",histFolderRec.data());
+    printf("Cutsettings:        \"%s\"\n",cutSettings.data());
+    printf("PrefixGen:          \"%s\"\n",prefixGen.data());
+    printf("PrefixRec:          \"%s\"\n",prefixRec.data());
+    printf("MCSignal_Pair:      \"%s\"\n",MCSignal_Pair.data());
+    printf("MCSignal_ULSLS:     \"%s\"\n",MCSignal_ULSLS.data());
+    printf("MCSignal_Basesignal:\"%s\"\n",MCSignal_Basesignal.data());
+    printf("cocktailWeights:    \"%s\"\n",cocktailWeightsFileName.data());
+    printf("cocktailParticlesLF:  \"%s\"\n",cocktailParticlesLF.data());
+    printf("cocktailParticlesHF:  \"%s\"\n",cocktailParticlesHF.data());
+    printf("parametrizeEfficiency:  \"%s\"\n",parametrizeEfficiency.data());
+    printf("Mee rebinning:          \"%s\"\n",mee_bins_string.data());
+    printf("Ptee rebinning:         \"%s\"\n",ptee_bins_string.data());
+    printf("\n");
+    CreateOutputPath(vec_output_filename[i].data(), kTRUE);
+
+    PairEfficiency paireff;
+    paireff.SetOutputFilename(vec_output_filename[i]);
+    paireff.SetInputFilename(vec_input_filename[i]);
+    paireff.SetHistFolderGen(histFolderGen);
+    paireff.SetHistFolderRec(histFolderRec);
+    paireff.SetCutSettings(cutSettings);
+    paireff.SetPrefixGen(prefixGen);
+    paireff.SetPrefixRec(prefixRec);
+    paireff.SetMCSignal_Pair(MCSignal_Pair);
+    paireff.SetMCSignal_ULSLS(MCSignal_ULSLS);
+    paireff.SetMCSignal_Basesignal(MCSignal_Basesignal);
+    paireff.SetCocktailFile(cocktailWeightsFileName);
+    paireff.SetCocktailParticles(cocktailParticlesLF);
+    paireff.SetCocktailParticlesHF(cocktailParticlesHF);
+
+    paireff.ParametrizeEfficiency(parametrizeEfficiency);
+
+    paireff.SetRebinnerBinningMass(mee_bins_string);
+    paireff.SetRebinnerBinningPtee(ptee_bins_string);
+    paireff.SetRebinner();
+
+
+    paireff.CalcEfficiency();
+
+  }
   return 0;
 }
 //______________________________________________________________________________________
