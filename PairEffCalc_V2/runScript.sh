@@ -5,3 +5,4 @@
 ./calcEffi ./configs/config-LHC20f11c_oob.txt
 ./calcEffi ./configs/config-LHC21b6b_oob.txt
 ./calcEffi ./configs/config-LHC21b6_oob.txt
+./calcEffi ./configs/config-LHC18f3.txt
