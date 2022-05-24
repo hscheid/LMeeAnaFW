@@ -54,12 +54,15 @@ string fCocktailFileName = "../input/cocktail/Cocktail_withSys_21_01_2021_finebi
 //        3.06,3.07,3.08,3.09,3.10,3.30,3.50,4.00
 //};
 
-std::vector<double> vec_mass_bins{
-  0.00, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.08, 0.10,
-  0.12, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50,
-  0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95,
-  1.00, 1.05, 1.10, 1.20, 1.40, 1.60, 1.80, 2.00, 2.20,
-  2.40, 2.60, 2.80, 3.00, 3.06, 3.10, 3.30, 3.50, 4.00};
+// std::vector<double> vec_mass_bins{
+//   0.00, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.08, 0.10,
+//   0.12, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50,
+//   0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95,
+//   1.00, 1.05, 1.10, 1.20, 1.40, 1.60, 1.80, 2.00, 2.20,
+//   2.40, 2.60, 2.80, 3.00, 3.06, 3.10, 3.30, 3.50, 4.00};
+
+// Need to adjust binning to analysis bins
+std::vector<double> vec_mass_bins{0.00, 0.02, 0.04, 0.06, 0.08, 0.10, 0.12, 0.14, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90, 1.00, 1.10, 1.20, 1.40, 1.60, 1.80, 2.00, 2.20, 2.40, 2.60, 2.80, 3.00, 3.06, 3.10, 3.30, 3.50, 4.00};
 
 //std::vector<double> vec_ptee_bins{
 //	 0.00,0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,
@@ -76,11 +79,8 @@ std::vector<double> vec_mass_bins{
 //         4.50,5.00,5.50,6.00,6.50,7.00,8.00,10.00
 //};
 
-std::vector<double> vec_ptee_bins{
-  0.000, 0.050, 0.100, 0.200, 0.300, 0.400, 0.500, 0.600, 0.700, 0.800, 0.900,
-  1.000, 1.100, 1.200, 1.300, 1.400, 1.500, 1.600, 1.700, 1.800, 1.900, 2.000,
-  2.100, 2.200, 2.300, 2.400, 2.500, 2.600, 2.700, 2.800, 2.900, 3.000, 3.100,
-  3.200, 3.300, 3.400, 3.500, 3.600, 3.700, 3.800, 3.900, 4.000, 4.500, 5.000, 6.000, 8.000, 10.};
+// Need to adjust binning to analysis bins
+std::vector<double> vec_ptee_bins{0., 1., 2., 3., 4., 5., 6., 7., 8.};
 
 TH2D fWeightsHF;
 TH2D fWeightsCharm;
@@ -112,8 +112,7 @@ void AddEfficienciesWeighted()
   //LHC18qr
   //TString filename_in[]    = {"./pair_effv2_LMEE_LEGO1062_LHC20g8a1234_2.root","./pair_effv2_LMEE_LEGO1061_LHC20g8b1234_2_fromD.root","./pair_effv2_LMEE_LEGO1061_LHC20g8b1234_2_fromB.root"};
   //TString filename_out     = "./pair_effv2_CockWeighted_PbPb2018_v7_cut2_200.root";
-  TSring baseDir = {"./output/pass1/"}
-  TString filename_in[] = {"LHC18f3.root", "LHC19h9_charm.root", "LHC19h9_beauty.root"};
+  TSring baseDir = {"./output/pass1/"} TString filename_in[] = {"LHC18f3.root", "LHC19h9_charm.root", "LHC19h9_beauty.root"};
   TString filename_out = "./pair_effv2_CockWeighted_PbPb2018_sys_199_400_central.root";
   TString settingname = "cut_9";
 
@@ -131,11 +130,10 @@ void AddEfficienciesWeighted()
 
   TFile* file = 0x0;
 
-
   TString str1, str2;
   for (Int_t i1 = 0; i1 < components; i1++) {
 
-    file = TFile::Open(baseDir+filename_in[i1], "READ");
+    file = TFile::Open(baseDir + filename_in[i1], "READ");
     if (file->IsOpen()) cout << "File opened successfully" << endl;
 
     str1 = (gens[i1] + "_" + typnames[i1]).Data();
@@ -294,7 +292,7 @@ void AddEfficienciesWeighted()
             double weight_reso = GetWeight(true, genPairs->GetXaxis()->GetBinCenter(bin_x), genPairs->GetYaxis()->GetBinCenter(bin_y));
             double weight_hf = GetWeight(false, genPairs->GetXaxis()->GetBinCenter(bin_x), genPairs->GetYaxis()->GetBinCenter(bin_y));
 
-// can probably be removed
+            // can probably be removed
             if (DoHF) {
               weight_hf = 1;
               weight_reso = 0;
@@ -303,7 +301,7 @@ void AddEfficienciesWeighted()
               weight_hf = 0;
               weight_reso = 1;
             }
-//
+            //
             // std::cout << "weight_reso = " << weight_reso << "   weight_charm = " << weight_charm << std::endl;
             if (weight_reso <= 0) {
               weight_hf = 1.;
