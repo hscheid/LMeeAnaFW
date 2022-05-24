@@ -14,12 +14,12 @@ Int_t debug = 0;
 
 // input files dataset
 TString fileName[] = {
-  "../input/data/AnalysisResults_c1.root",
-  "../input/data/AnalysisResults_c2.root",
-  "../input/data/LHC16q_pass2.root", // merged input only one cut setting
-  "../input/data/AnalysisResults_c1-2.root", // fast, with first 10 cut settings
-  "../input/data/AnalysisResults_c1-2.root", // woSDD, with first 10 cut settings
-  "../input/data/LHC16q_pass2_cutVar_1.root" // merged input with first 10 cut settings (cut one is analysis default)
+  "../../input/data/AnalysisResults_c1.root",
+  "../../input/data/AnalysisResults_c2.root",
+  "../../input/data/LHC16q_pass2.root", // merged input only one cut setting
+  "../../input/data/AnalysisResults_c1-2.root", // fast, with first 10 cut settings
+  "../../input/data/AnalysisResults_c1-2.root", // woSDD, with first 10 cut settings
+  "../../input/data/LHC16q_pass2_cutVar_1.root" // merged input with first 10 cut settings (cut one is analysis default)
 };
 TString tree_name[] = {"Histos_diel_lowmass"};
 TString cut_setting[] = {
