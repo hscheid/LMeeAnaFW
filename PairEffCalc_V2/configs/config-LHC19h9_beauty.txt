@@ -1,0 +1,38 @@
+# config for the pair efficiency calculation
+
+# input
+# the input file name as it came from the train
+inputFilename   = "/Users/misc/analysis/LMeeAnaFW/input/mc/efficiency/LHC19h9_656_660.root"
+#output file name
+outputFilename  = "./output/pass1/LHC19h9_beauty.root"
+
+# At the moment it is necessary to have a coccktail file
+cocktailWeights = "/Users/misc/analysis/LMeeAnaFW/input/cocktail/Cocktail_withSys_21_01_2021_bigbins_powheg_00_10_Daiki_jpsi_2018.root"
+# Here we can specifie the LF and HF inputs
+cocktailParticlesLF = "pi02D;eta2D;etaprim2D;rho2D;omega2D;phi2D;jpsi2D"
+cocktailParticlesHF = "ccbar2D;bbbar2D"
+
+# The path to the generated and reconstrucetd lists that we want to use
+histFolderGen = "efficiency0/Pairs/GeneratedSmeared"
+histFolderRec = "efficiency0/Pairs/"
+
+# This is a string containing the cut sets that are relevant.
+# Here we can add several separated by a ";"
+cutSettings = "aodTrackCuts01;aodTrackCuts02;aodTrackCuts03;aodTrackCuts04;aodTrackCuts05;aodTrackCuts06;aodTrackCuts07;aodTrackCuts08;aodTrackCuts09;aodTrackCuts10;aodTrackCuts11;aodTrackCuts12;aodTrackCuts13;aodTrackCuts14;aodTrackCuts15;aodTrackCuts16;aodTrackCuts17;aodTrackCuts18;aodTrackCuts19;aodTrackCuts20;aodTrackCuts21;aodTrackCuts22;aodTrackCuts23;aodTrackCuts24;aodTrackCuts25;aodTrackCuts25;aodTrackCuts27;aodTrackCuts28;aodTrackCuts29;aodTrackCuts30"
+
+# Prefix to find the generated and reconstructed
+prefixGen = "Ngen_"
+prefixRec = "Nrec_"
+
+# Signal to consider for the LF
+MCSignal_Pair = "sameMother"
+# Signal for the HF (to do: make separate charm and beauty)
+MCSignal_ULSLS = "eleFinalStateFromB"
+# need to check what this is
+MCSignal_Basesignal = "eleFinalState"
+
+
+# binnings for the mass and pair pt. Make sure this is consistent with data and cocktail inputs
+mee_bins_string =  "0.00,0.02,0.04,0.06,0.08,0.10,0.12,0.14,0.20,0.30,0.40,0.50,0.60,0.70,0.80,0.90,1.00,1.10,1.20,1.40,1.60,1.80,2.00,2.20,2.40,2.60,2.80,3.00,3.06,3.10,3.30,3.50,4.00"
+
+ptee_bins_string = "0.,1.,2.,3.,4.,5.,6.,7.,8."
