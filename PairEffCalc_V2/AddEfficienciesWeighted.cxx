@@ -29,7 +29,7 @@
 #include <string>
 #include <climits>
 #include <iostream>
-#include "../../PlottingFW/src/core/LmRebinner.h"
+#include "../PlottingFW/src/core/LmRebinner.h"
 
 //string fCocktailFileName = "../input/cocktail/Cocktail_withSys_21_01_2021_finebins_powheg_30_50_Daiki_jpsi_2018.root";
 string fCocktailFileName = "../input/cocktail/Cocktail_withSys_21_01_2021_bigbins_powheg_00_10_Daiki_jpsi_2018.root";
@@ -112,10 +112,14 @@ void AddEfficienciesWeighted()
   //LHC18qr
   //TString filename_in[]    = {"./pair_effv2_LMEE_LEGO1062_LHC20g8a1234_2.root","./pair_effv2_LMEE_LEGO1061_LHC20g8b1234_2_fromD.root","./pair_effv2_LMEE_LEGO1061_LHC20g8b1234_2_fromB.root"};
   //TString filename_out     = "./pair_effv2_CockWeighted_PbPb2018_v7_cut2_200.root";
-  TSring baseDir = {"./output/pass1/"};
+  TString baseDir = {"./output/pass1/"};
   TString filename_in[] = {"LHC18f3.root", "LHC19h9_charm.root", "LHC19h9_beauty.root"};
   TString filename_out = "./pair_effv2_CockWeighted.root";
-  TString settingname = "aodTrackCuts01";
+  // TString settingname = "aodTrackCuts01";
+  std::vector<TString> settingname;
+  for (int i = 1; i <= 10; ++i) {
+    settingname.push_back(Form("aodTrackCuts%02d", i));
+  }
 
   TString gens[] = {"Ngen", "Ngen_ULS", "Ngen_ULS"};
   TString recs[] = {"Nrec", "Nrec_ULS", "Nrec_ULS"};
@@ -131,407 +135,413 @@ void AddEfficienciesWeighted()
 
   TFile* file = 0x0;
 
-  TString str1, str2;
-  for (Int_t i1 = 0; i1 < components; i1++) {
-
-    file = TFile::Open(baseDir + filename_in[i1], "READ");
-    if (file->IsOpen()) cout << "File opened successfully" << endl;
-
-    str1 = (gens[i1] + "_" + typnames[i1]).Data();
-    str2 = (recs[i1] + "_" + settingname + "_" + typnames[i1]).Data();
-
-    h2_gen[i1] = (TH2D*)file->Get(str1);
-    h2_reco[i1] = (TH2D*)file->Get(str2);
-
-    cout << "gen histo: " << str1 << endl;
-    cout << "rec histo: " << str2 << endl;
-
-    if (DoRebinning) {
-      Int_t Nbins_mass = vec_mass_bins.size() - 1;
-      Double_t* mass_binning = vec_mass_bins.data();
-      Int_t Nbins_ptee = vec_ptee_bins.size() - 1;
-      Double_t* ptee_binning = vec_ptee_bins.data();
-
-      Rebin2DHistogram(*h2_gen[i1], Nbins_mass, mass_binning, Nbins_ptee, ptee_binning);
-      Rebin2DHistogram(*h2_reco[i1], Nbins_mass, mass_binning, Nbins_ptee, ptee_binning);
-
-      cout << Nbins_mass << "  " << Nbins_ptee << endl;
-    }
-    cout << h2_gen[i1] << "  " << h2_reco[i1] << endl;
-  }
-
   TFile* file_out = TFile::Open(filename_out, "RECREATE");
   if (file_out->IsOpen()) cout << "File opened successfully" << endl;
+  TDirectoryFile* fDir = nullptr;
+  TString str1, str2;
 
-  TH2D* clone_LF = (TH2D*)h2_reco[0]->Clone("eff_LF");
-  clone_LF->GetZaxis()->SetRangeUser(0, 0.3);
-  clone_LF->Divide(h2_gen[0]);
-  clone_LF->Write();
-
-  TH2D* clone_HF1 = (TH2D*)h2_reco[1]->Clone("eff_ccbar");
-  clone_HF1->GetZaxis()->SetRangeUser(0, 0.3);
-  clone_HF1->Divide(h2_gen[1]);
-  clone_HF1->Write();
-
-  TH2D* clone_HF2 = (TH2D*)h2_reco[2]->Clone("eff_bbbar");
-  clone_HF2->GetZaxis()->SetRangeUser(0, 0.3);
-  clone_HF2->Divide(h2_gen[2]);
-  clone_HF2->Write();
-
-  TH2D* clone_HF = (TH2D*)h2_reco[1]->Clone("eff_HF");
-  clone_HF->Add(h2_reco[2]);
-  TH2D* clone_HFgen = (TH2D*)h2_gen[1]->Clone("gen_HF");
-  clone_HFgen->Add(h2_gen[2]);
-
-  clone_HF->GetZaxis()->SetRangeUser(0, 0.3);
-  clone_HF->Divide(clone_HFgen);
-  clone_HF->Write();
-
-  clone_LF->Divide(clone_HF); // Check difference of LF and HF efficiency
-  clone_LF->GetZaxis()->SetRangeUser(0.5, 2.0);
-  clone_LF->Write("eff_ratio");
-
-  // Add without cocktail weights
-  TH2D* clone1 = (TH2D*)h2_reco[0]->Clone("NrecoPairsRecAdded");
-  TH2D* clone2 = (TH2D*)h2_gen[0]->Clone("NgenPairsRecAdded");
-  for (Int_t i1 = 1; i1 < components; i1++) {
-    clone1->Add(h2_reco[i1]);
-    clone2->Add(h2_gen[i1]);
-  }
-  clone1->Write("NrecoPairsRecAdded");
-  clone2->Write("NgenPairsRecAdded");
-  TH2D* clone3 = (TH2D*)clone1->Clone("eff_PairsAdded");
-  clone3->Divide(clone2);
-  clone3->Write("eff_PairsAdded");
-
-  cout << "Starting" << endl;
-
-  TH2D* genPairs = 0;
-  TH2D* recoPairs = 0;
-  if (DoWeighting) {
-    cout << "Making HF efficiency, write to array" << endl;
+  for (auto it : settingname) {
     for (Int_t i1 = 0; i1 < components; i1++) {
-      if (DoCombineHF && (i1 == 1)) { // make sure not combined twice (ie when going to beauty) revisit...
-        h2_reco[i1]->Add(h2_reco[i1 + 1]);
-        h2_gen[i1]->Add(h2_gen[i1 + 1]);
-        components--;
+      file = TFile::Open(baseDir + filename_in[i1], "READ");
+      if (file->IsOpen()) cout << "File opened successfully" << endl;
+      str1 = (gens[i1] + "_" + typnames[i1]).Data();
+      str2 = (recs[i1] + "_" + it + "_" + typnames[i1]).Data();
+      // str2 = (recs[i1] + "_" + settingname.at(0) + "_" + typnames[i1]).Data();
+
+      h2_gen[i1] = (TH2D*)file->Get(str1);
+      h2_reco[i1] = (TH2D*)file->Get(str2);
+
+      cout << "gen histo: " << str1 << endl;
+      cout << "rec histo: " << str2 << endl;
+
+      if (DoRebinning) {
+        Int_t Nbins_mass = vec_mass_bins.size() - 1;
+        Double_t* mass_binning = vec_mass_bins.data();
+        Int_t Nbins_ptee = vec_ptee_bins.size() - 1;
+        Double_t* ptee_binning = vec_ptee_bins.data();
+
+        Rebin2DHistogram(*h2_gen[i1], Nbins_mass, mass_binning, Nbins_ptee, ptee_binning);
+        Rebin2DHistogram(*h2_reco[i1], Nbins_mass, mass_binning, Nbins_ptee, ptee_binning);
+
+        cout << Nbins_mass << "  " << Nbins_ptee << endl;
       }
-      h2_PairEffs[i1] = h2_reco[i1];
-      h2_PairEffs[i1]->Divide(h2_gen[i1]);
-    }
-    if (DoSmooth) {
-      h2_PairEffs[0]->Smooth(5, "k3a");
-      h2_PairEffs[0]->Write("NrecoPairsRecResonancesSmooth");
+      cout << h2_gen[i1] << "  " << h2_reco[i1] << endl;
     }
 
-    h2_PairEffs[0]->Write("NrecoPairsRecResonances");
-    if (DoCombineHF)
-      h2_PairEffs[1]->Write("NrecoPairsRecHF");
-    else {
-      h2_PairEffs[1]->Write("NrecoPairsRecCharm");
-      h2_PairEffs[2]->Write("NrecoPairsRecBeauty");
+    file_out->cd();
+    // TDirectoryFile* fDir = new TDirectoryFile(settingname.at(0), settingname.at(0));
+    fDir = new TDirectoryFile(it, it);
+    fDir->cd();
+
+    TH2D* clone_LF = (TH2D*)h2_reco[0]->Clone("eff_LF");
+    clone_LF->GetZaxis()->SetRangeUser(0, 0.3);
+    clone_LF->Divide(h2_gen[0]);
+    clone_LF->Write();
+
+    TH2D* clone_HF1 = (TH2D*)h2_reco[1]->Clone("eff_ccbar");
+    clone_HF1->GetZaxis()->SetRangeUser(0, 0.3);
+    clone_HF1->Divide(h2_gen[1]);
+    clone_HF1->Write();
+
+    TH2D* clone_HF2 = (TH2D*)h2_reco[2]->Clone("eff_bbbar");
+    clone_HF2->GetZaxis()->SetRangeUser(0, 0.3);
+    clone_HF2->Divide(h2_gen[2]);
+    clone_HF2->Write();
+
+    TH2D* clone_HF = (TH2D*)h2_reco[1]->Clone("eff_HF");
+    clone_HF->Add(h2_reco[2]);
+    TH2D* clone_HFgen = (TH2D*)h2_gen[1]->Clone("gen_HF");
+    clone_HFgen->Add(h2_gen[2]);
+
+    clone_HF->GetZaxis()->SetRangeUser(0, 0.3);
+    clone_HF->Divide(clone_HFgen);
+    clone_HF->Write();
+
+    clone_LF->Divide(clone_HF); // Check difference of LF and HF efficiency
+    clone_LF->GetZaxis()->SetRangeUser(0.5, 2.0);
+    clone_LF->Write("eff_ratio");
+
+    // Add without cocktail weights
+    TH2D* clone1 = (TH2D*)h2_reco[0]->Clone("NrecoPairsRecAdded");
+    TH2D* clone2 = (TH2D*)h2_gen[0]->Clone("NgenPairsRecAdded");
+    for (Int_t i1 = 1; i1 < components; i1++) {
+      clone1->Add(h2_reco[i1]);
+      clone2->Add(h2_gen[i1]);
     }
+    clone1->Write("NrecoPairsRecAdded");
+    clone2->Write("NgenPairsRecAdded");
+    TH2D* clone3 = (TH2D*)clone1->Clone("eff_PairsAdded");
+    clone3->Divide(clone2);
+    clone3->Write("eff_PairsAdded");
 
-    if (DoFiller) {
-      for (int i = 0; i < 100; i++) {
+    cout << "Starting" << endl;
 
-        EfficiencyFillerLvL1(h2_PairEffs[0]);
-        EfficiencyFillerLvL1(h2_PairEffs[1]);
-        if (i % 10 == 0) {
-          h2_PairEffs[0]->Write(Form("ResoFillerLvL1_%d", i));
-          h2_PairEffs[1]->Write(Form("CharmFillerLvL1_%d", i));
+    TH2D* genPairs = 0;
+    TH2D* recoPairs = 0;
+    if (DoWeighting) {
+      cout << "Making HF efficiency, write to array" << endl;
+      for (Int_t i1 = 0; i1 < components; i1++) {
+        if (DoCombineHF && (i1 == 1)) { // make sure not combined twice (ie when going to beauty) revisit...
+          h2_reco[i1]->Add(h2_reco[i1 + 1]);
+          h2_gen[i1]->Add(h2_gen[i1 + 1]);
+          components--;
         }
+        h2_PairEffs[i1] = h2_reco[i1];
+        h2_PairEffs[i1]->Divide(h2_gen[i1]);
       }
-      for (int i = 0; i < 100; i++) {
-
-        EfficiencyFillerLvL2(h2_PairEffs[0]);
-        EfficiencyFillerLvL2(h2_PairEffs[1]);
-        if (i % 10 == 0) {
-          h2_PairEffs[0]->Write(Form("ResoFillerLvL2_%d", i));
-          h2_PairEffs[1]->Write(Form("CharmFillerLvL2_%d", i));
-        }
+      if (DoSmooth) {
+        h2_PairEffs[0]->Smooth(5, "k3a");
+        h2_PairEffs[0]->Write("NrecoPairsRecResonancesSmooth");
       }
 
-      //h2_PairEffs[0]->Smooth(1, "k3a");
-      //h2_PairEffs[1]->Smooth(1, "k3a");
-
-      //h2_PairEffs[0]->Write("ResoSmooth");
-      //h2_PairEffs[1]->Write("CharmSmooth");
-    }
-
-    if (DoCombineHF) {
-      cout << "Combining HF" << endl;
-      genPairs = (TH2D*)h2_gen[0]->Clone("NgenPairsRec");
-      for (Int_t i1 = 1; i1 < components; i1++) {
-        genPairs->Add(h2_gen[i1]);
+      h2_PairEffs[0]->Write("NrecoPairsRecResonances");
+      if (DoCombineHF)
+        h2_PairEffs[1]->Write("NrecoPairsRecHF");
+      else {
+        h2_PairEffs[1]->Write("NrecoPairsRecCharm");
+        h2_PairEffs[2]->Write("NrecoPairsRecBeauty");
       }
-      recoPairs = (TH2D*)genPairs->Clone("NrecoPairsRec");
-      recoPairs->Reset();
-      double eff_reso = 0, eff_hf = 0, eff_reso_err = 0, eff_hf_err = 0;
 
-      cout << "  Starting " << genPairs->GetNbinsX() << "  " << genPairs->GetNbinsY() << endl;
+      if (DoFiller) {
+        for (int i = 0; i < 100; i++) {
 
-      for (int bin_x = 1; bin_x < genPairs->GetNbinsX() + 1; ++bin_x) {
-        for (int bin_y = 1; bin_y < genPairs->GetNbinsY() + 1; ++bin_y) {
-          cout << "  Checking " << genPairs->GetBinContent(bin_x, bin_y) << endl;
-
-          if (genPairs->GetBinContent(bin_x, bin_y)) {
-            genPairs->SetBinContent(bin_x, bin_y, 1.);
-
-            //          cout << "binx: " << genPairs->GetNbinsX() << "  biny: " << genPairs->GetNbinsY() << endl;
-            cout << "x: " << genPairs->GetXaxis()->GetBinCenter(bin_x) << "  y: " << genPairs->GetYaxis()->GetBinCenter(bin_y) << endl;
-
-            eff_reso = h2_PairEffs[0]->GetBinContent(bin_x, bin_y);
-            eff_reso_err = h2_PairEffs[0]->GetBinError(bin_x, bin_y);
-            eff_hf = h2_PairEffs[1]->GetBinContent(bin_x, bin_y);
-            eff_hf_err = h2_PairEffs[1]->GetBinError(bin_x, bin_y);
-            //eff_charm       = h2_PairEffs[1]->GetBinContent(bin_x,bin_y);
-            //eff_charm_err   = h2_PairEffs[1]->GetBinError(bin_x,bin_y);
-            //eff_beauty      = h2_PairEffs[1]->GetBinContent(bin_x,bin_y);
-            //eff_beauty_err  = h2_PairEffs[1]->GetBinError(bin_x,bin_y);
-
-            double weight_reso = GetWeight(true, genPairs->GetXaxis()->GetBinCenter(bin_x), genPairs->GetYaxis()->GetBinCenter(bin_y));
-            double weight_hf = GetWeight(false, genPairs->GetXaxis()->GetBinCenter(bin_x), genPairs->GetYaxis()->GetBinCenter(bin_y));
-
-            // can probably be removed
-            if (DoHF) {
-              weight_hf = 1;
-              weight_reso = 0;
-            }
-            if (DoReso) {
-              weight_hf = 0;
-              weight_reso = 1;
-            }
-            //
-            // std::cout << "weight_reso = " << weight_reso << "   weight_charm = " << weight_charm << std::endl;
-            if (weight_reso <= 0) {
-              weight_hf = 1.;
-              weight_reso = 0.;
-            } else if (weight_hf <= 0) {
-              weight_reso = 1.;
-              weight_hf = 0.;
-            } else if (std::isnan(weight_reso) || std::isnan(weight_hf)) {
-              weight_reso = 0;
-              weight_hf = 0;
-            }
-
-            if (eff_reso == 0) {
-              weight_hf = 1;
-              weight_reso = 0.;
-            }
-            if (eff_hf == 0) {
-              weight_reso = 1;
-              weight_hf = 0.;
-            }
-            if (eff_reso == 0 && eff_hf == 0) {
-              weight_reso = 0;
-              weight_hf = 0;
-            }
-
-            if (eff_reso > 0.6) { // if efficiency is larger than 0.6 it is probably a stat fluctuation... this should be checked!
-              weight_reso = 0;
-              weight_hf = 1;
-            }
-            //if (genPairs->GetXaxis()->GetBinCenter(bin_x) > 2.){weight_hf = 1; weight_reso = 0.;}
-
-            //if (weight_reso + weight_hf > 1.0001 || weight_reso + weight_hf < 0.9999) {
-            //  LmHelper::Error(Form("Weights in m=%f GeV/c2 and pT=%f GeV/c do not add up to 1: weight_reso + weight_charm = %f + %f = %f", bin_x, bin_y, weight_reso, weight_hf, weight_reso + weight_hf));
-            //}
-
-            cout << "weight reso: " << weight_reso << "  weight_hf: " << weight_hf << endl;
-
-            double eff_pair = weight_reso * eff_reso + weight_hf * eff_hf;
-            double eff_pair_err = TMath::Sqrt(weight_reso * eff_reso_err * weight_reso * eff_reso_err + weight_hf * eff_hf_err * weight_hf * eff_hf_err);
-
-            //if ((eff_pair < eff_reso && eff_pair < eff_hf) || (eff_pair > eff_reso && eff_pair > eff_hf) ) LmHelper::Error(std::string("U Suck"));
-            //cout << "reso: " << eff_reso << " charm: " << eff_hf << " combined: "<< eff_pair << "  " << endl;
-
-            if (genPairs->GetXaxis()->GetBinCenter(bin_x) > 2.7) {
-              cout << "  weight reso: " << weight_reso << "  weight_hf: " << weight_hf << endl;
-              cout << "  reso: " << eff_reso << " hf: " << eff_hf << endl;
-            }
-
-            if (weight_reso + weight_hf > 1) {
-
-              cout << "  weight reso: " << weight_reso << "  weight_hf: " << weight_hf << endl;
-            }
-
-            recoPairs->SetBinContent(bin_x, bin_y, eff_pair);
-            recoPairs->SetBinError(bin_x, bin_y, eff_pair_err);
+          EfficiencyFillerLvL1(h2_PairEffs[0]);
+          EfficiencyFillerLvL1(h2_PairEffs[1]);
+          if (i % 10 == 0) {
+            h2_PairEffs[0]->Write(Form("ResoFillerLvL1_%d", i));
+            h2_PairEffs[1]->Write(Form("CharmFillerLvL1_%d", i));
           }
         }
+        for (int i = 0; i < 100; i++) {
+
+          EfficiencyFillerLvL2(h2_PairEffs[0]);
+          EfficiencyFillerLvL2(h2_PairEffs[1]);
+          if (i % 10 == 0) {
+            h2_PairEffs[0]->Write(Form("ResoFillerLvL2_%d", i));
+            h2_PairEffs[1]->Write(Form("CharmFillerLvL2_%d", i));
+          }
+        }
+
+        //h2_PairEffs[0]->Smooth(1, "k3a");
+        //h2_PairEffs[1]->Smooth(1, "k3a");
+
+        //h2_PairEffs[0]->Write("ResoSmooth");
+        //h2_PairEffs[1]->Write("CharmSmooth");
       }
 
-    } else {
+      if (DoCombineHF) {
+        cout << "Combining HF" << endl;
+        genPairs = (TH2D*)h2_gen[0]->Clone("NgenPairsRec");
+        for (Int_t i1 = 1; i1 < components; i1++) {
+          genPairs->Add(h2_gen[i1]);
+        }
+        recoPairs = (TH2D*)genPairs->Clone("NrecoPairsRec");
+        recoPairs->Reset();
+        double eff_reso = 0, eff_hf = 0, eff_reso_err = 0, eff_hf_err = 0;
 
-      genPairs = (TH2D*)h2_gen[0]->Clone("NgenPairsRec");
-      for (Int_t i1 = 1; i1 < components; i1++)
-        genPairs->Add(h2_gen[i1]);
+        cout << "  Starting " << genPairs->GetNbinsX() << "  " << genPairs->GetNbinsY() << endl;
 
-      recoPairs = (TH2D*)genPairs->Clone("NrecoPairsRec");
-      recoPairs->Reset();
-      double eff_reso = 0, eff_ccbar = 0, eff_bbbar = 0, eff_reso_err = 0, eff_ccbar_err = 0, eff_bbbar_err = 0;
+        for (int bin_x = 1; bin_x < genPairs->GetNbinsX() + 1; ++bin_x) {
+          for (int bin_y = 1; bin_y < genPairs->GetNbinsY() + 1; ++bin_y) {
+            cout << "  Checking " << genPairs->GetBinContent(bin_x, bin_y) << endl;
 
-      for (int bin_x = 1; bin_x < genPairs->GetNbinsX() + 1; ++bin_x) {
-        for (int bin_y = 1; bin_y < genPairs->GetNbinsY() + 1; ++bin_y) {
-          if (genPairs->GetBinContent(bin_x, bin_y)) {
-            genPairs->SetBinContent(bin_x, bin_y, 1.);
+            if (genPairs->GetBinContent(bin_x, bin_y)) {
+              genPairs->SetBinContent(bin_x, bin_y, 1.);
 
-            //          cout << "binx: " << genPairs->GetNbinsX() << "  biny: " << genPairs->GetNbinsY() << endl;
-            cout << "x: " << genPairs->GetXaxis()->GetBinCenter(bin_x) << "  y: " << genPairs->GetYaxis()->GetBinCenter(bin_y) << endl;
+              //          cout << "binx: " << genPairs->GetNbinsX() << "  biny: " << genPairs->GetNbinsY() << endl;
+              cout << "x: " << genPairs->GetXaxis()->GetBinCenter(bin_x) << "  y: " << genPairs->GetYaxis()->GetBinCenter(bin_y) << endl;
 
-            eff_reso = h2_PairEffs[0]->GetBinContent(bin_x, bin_y);
-            eff_reso_err = h2_PairEffs[0]->GetBinError(bin_x, bin_y);
-            eff_ccbar = h2_PairEffs[1]->GetBinContent(bin_x, bin_y);
-            eff_ccbar_err = h2_PairEffs[1]->GetBinError(bin_x, bin_y);
-            eff_bbbar = h2_PairEffs[2]->GetBinContent(bin_x, bin_y);
-            eff_bbbar_err = h2_PairEffs[2]->GetBinError(bin_x, bin_y);
-            double eff_hf = eff_ccbar + eff_bbbar;
+              eff_reso = h2_PairEffs[0]->GetBinContent(bin_x, bin_y);
+              eff_reso_err = h2_PairEffs[0]->GetBinError(bin_x, bin_y);
+              eff_hf = h2_PairEffs[1]->GetBinContent(bin_x, bin_y);
+              eff_hf_err = h2_PairEffs[1]->GetBinError(bin_x, bin_y);
+              //eff_charm       = h2_PairEffs[1]->GetBinContent(bin_x,bin_y);
+              //eff_charm_err   = h2_PairEffs[1]->GetBinError(bin_x,bin_y);
+              //eff_beauty      = h2_PairEffs[1]->GetBinContent(bin_x,bin_y);
+              //eff_beauty_err  = h2_PairEffs[1]->GetBinError(bin_x,bin_y);
 
-            double weight_reso = GetWeight(0, genPairs->GetXaxis()->GetBinCenter(bin_x), genPairs->GetYaxis()->GetBinCenter(bin_y));
-            double weight_ccbar = GetWeight(1, genPairs->GetXaxis()->GetBinCenter(bin_x), genPairs->GetYaxis()->GetBinCenter(bin_y));
-            double weight_bbbar = GetWeight(2, genPairs->GetXaxis()->GetBinCenter(bin_x), genPairs->GetYaxis()->GetBinCenter(bin_y));
-            double weight_hf = weight_ccbar + weight_bbbar;
+              double weight_reso = GetWeight(true, genPairs->GetXaxis()->GetBinCenter(bin_x), genPairs->GetYaxis()->GetBinCenter(bin_y));
+              double weight_hf = GetWeight(false, genPairs->GetXaxis()->GetBinCenter(bin_x), genPairs->GetYaxis()->GetBinCenter(bin_y));
 
-            //std::cout << "weight_reso = " << weight_reso << "   weight_charm = " << weight_ccbar << "   weight_beauty = " << weight_bbbar << std::endl;
-            if (weight_reso <= 0 && weight_hf > 0) {
-              weight_ccbar /= weight_hf;
-              weight_bbbar /= weight_hf;
-              weight_reso = 0.;
-            } else if (weight_hf <= 0) {
-              weight_reso = 1.;
-              weight_ccbar = 0.;
-              weight_bbbar = 0.;
-            } else if (std::isnan(weight_reso) || std::isnan(weight_hf)) {
-              weight_reso = 0;
-              weight_ccbar = 0.;
-              weight_bbbar = 0.;
-            }
-            if (eff_reso == 0) {
-              if (weight_hf < 0.001) {
-                weight_ccbar = 0.5;
-                weight_bbbar = 0.5;
+              // can probably be removed
+              if (DoHF) {
+                weight_hf = 1;
                 weight_reso = 0;
-              } else {
+              }
+              if (DoReso) {
+                weight_hf = 0;
+                weight_reso = 1;
+              }
+              //
+              // std::cout << "weight_reso = " << weight_reso << "   weight_charm = " << weight_charm << std::endl;
+              if (weight_reso <= 0) {
+                weight_hf = 1.;
+                weight_reso = 0.;
+              } else if (weight_hf <= 0) {
+                weight_reso = 1.;
+                weight_hf = 0.;
+              } else if (std::isnan(weight_reso) || std::isnan(weight_hf)) {
+                weight_reso = 0;
+                weight_hf = 0;
+              }
+
+              if (eff_reso == 0) {
+                weight_hf = 1;
+                weight_reso = 0.;
+              }
+              if (eff_hf == 0) {
+                weight_reso = 1;
+                weight_hf = 0.;
+              }
+              if (eff_reso == 0 && eff_hf == 0) {
+                weight_reso = 0;
+                weight_hf = 0;
+              }
+
+              if (eff_reso > 0.6) { // if efficiency is larger than 0.6 it is probably a stat fluctuation... this should be checked!
+                weight_reso = 0;
+                weight_hf = 1;
+              }
+              //if (genPairs->GetXaxis()->GetBinCenter(bin_x) > 2.){weight_hf = 1; weight_reso = 0.;}
+
+              //if (weight_reso + weight_hf > 1.0001 || weight_reso + weight_hf < 0.9999) {
+              //  LmHelper::Error(Form("Weights in m=%f GeV/c2 and pT=%f GeV/c do not add up to 1: weight_reso + weight_charm = %f + %f = %f", bin_x, bin_y, weight_reso, weight_hf, weight_reso + weight_hf));
+              //}
+
+              cout << "weight reso: " << weight_reso << "  weight_hf: " << weight_hf << endl;
+
+              double eff_pair = weight_reso * eff_reso + weight_hf * eff_hf;
+              double eff_pair_err = TMath::Sqrt(weight_reso * eff_reso_err * weight_reso * eff_reso_err + weight_hf * eff_hf_err * weight_hf * eff_hf_err);
+
+              //if ((eff_pair < eff_reso && eff_pair < eff_hf) || (eff_pair > eff_reso && eff_pair > eff_hf) ) LmHelper::Error(std::string("U Suck"));
+              //cout << "reso: " << eff_reso << " charm: " << eff_hf << " combined: "<< eff_pair << "  " << endl;
+
+              if (genPairs->GetXaxis()->GetBinCenter(bin_x) > 2.6) {
+                cout << "  weight reso: " << weight_reso << "  weight_hf: " << weight_hf << endl;
+                cout << "  reso: " << eff_reso << " hf: " << eff_hf << endl;
+              }
+
+              if (weight_reso + weight_hf > 1) {
+
+                cout << "  weight reso: " << weight_reso << "  weight_hf: " << weight_hf << endl;
+              }
+
+              recoPairs->SetBinContent(bin_x, bin_y, eff_pair);
+              recoPairs->SetBinError(bin_x, bin_y, eff_pair_err);
+            }
+          }
+        }
+
+      } else {
+
+        genPairs = (TH2D*)h2_gen[0]->Clone("NgenPairsRec");
+        for (Int_t i1 = 1; i1 < components; i1++)
+          genPairs->Add(h2_gen[i1]);
+
+        recoPairs = (TH2D*)genPairs->Clone("NrecoPairsRec");
+        recoPairs->Reset();
+        double eff_reso = 0, eff_ccbar = 0, eff_bbbar = 0, eff_reso_err = 0, eff_ccbar_err = 0, eff_bbbar_err = 0;
+
+        for (int bin_x = 1; bin_x < genPairs->GetNbinsX() + 1; ++bin_x) {
+          for (int bin_y = 1; bin_y < genPairs->GetNbinsY() + 1; ++bin_y) {
+            if (genPairs->GetBinContent(bin_x, bin_y)) {
+              genPairs->SetBinContent(bin_x, bin_y, 1.);
+
+              //          cout << "binx: " << genPairs->GetNbinsX() << "  biny: " << genPairs->GetNbinsY() << endl;
+              cout << "x: " << genPairs->GetXaxis()->GetBinCenter(bin_x) << "  y: " << genPairs->GetYaxis()->GetBinCenter(bin_y) << endl;
+
+              eff_reso = h2_PairEffs[0]->GetBinContent(bin_x, bin_y);
+              eff_reso_err = h2_PairEffs[0]->GetBinError(bin_x, bin_y);
+              eff_ccbar = h2_PairEffs[1]->GetBinContent(bin_x, bin_y);
+              eff_ccbar_err = h2_PairEffs[1]->GetBinError(bin_x, bin_y);
+              eff_bbbar = h2_PairEffs[2]->GetBinContent(bin_x, bin_y);
+              eff_bbbar_err = h2_PairEffs[2]->GetBinError(bin_x, bin_y);
+              double eff_hf = eff_ccbar + eff_bbbar;
+
+              double weight_reso = GetWeight(0, genPairs->GetXaxis()->GetBinCenter(bin_x), genPairs->GetYaxis()->GetBinCenter(bin_y));
+              double weight_ccbar = GetWeight(1, genPairs->GetXaxis()->GetBinCenter(bin_x), genPairs->GetYaxis()->GetBinCenter(bin_y));
+              double weight_bbbar = GetWeight(2, genPairs->GetXaxis()->GetBinCenter(bin_x), genPairs->GetYaxis()->GetBinCenter(bin_y));
+              double weight_hf = weight_ccbar + weight_bbbar;
+
+              //std::cout << "weight_reso = " << weight_reso << "   weight_charm = " << weight_ccbar << "   weight_beauty = " << weight_bbbar << std::endl;
+              if (weight_reso <= 0 && weight_hf > 0) {
+                weight_ccbar /= weight_hf;
+                weight_bbbar /= weight_hf;
+                weight_reso = 0.;
+              } else if (weight_hf <= 0) {
+                weight_reso = 1.;
+                weight_ccbar = 0.;
+                weight_bbbar = 0.;
+              } else if (std::isnan(weight_reso) || std::isnan(weight_hf)) {
+                weight_reso = 0;
+                weight_ccbar = 0.;
+                weight_bbbar = 0.;
+              }
+              if (eff_reso == 0) {
+                if (weight_hf < 0.001) {
+                  weight_ccbar = 0.5;
+                  weight_bbbar = 0.5;
+                  weight_reso = 0;
+                } else {
+                  weight_ccbar /= weight_hf;
+                  weight_bbbar /= weight_hf;
+                  weight_reso = 0.;
+                }
+              }
+              if (eff_hf == 0) {
+                weight_reso = 1;
+                weight_ccbar = 0.;
+                weight_bbbar = 0.;
+              }
+              if (eff_reso == 0 && eff_hf == 0) {
+                weight_reso = 0;
+                weight_ccbar = 0.;
+                weight_bbbar = 0.;
+              }
+
+              if (eff_reso > 0.6 && weight_hf > 0.05 && weight_reso < 0.9) {
+                weight_reso = 0;
+                weight_ccbar /= weight_hf;
+                weight_bbbar /= weight_hf;
+              } else if (eff_reso > 0.6) {
+                weight_reso = 0;
+                weight_ccbar = 0;
+                weight_bbbar = 0;
+              } else if (genPairs->GetXaxis()->GetBinCenter(bin_x) > 2. && weight_hf > 0.05) {
                 weight_ccbar /= weight_hf;
                 weight_bbbar /= weight_hf;
                 weight_reso = 0.;
               }
+
+              //if (weight_reso + weight_hf > 1.0001 || weight_reso + weight_hf < 0.9999) {
+              //  LmHelper::Error(Form("Weights in m=%f GeV/c2 and pT=%f GeV/c do not add up to 1: weight_reso + weight_charm = %f + %f = %f", bin_x, bin_y, weight_reso, weight_hf, weight_reso + weight_hf));
+              //}
+
+              //            cout << "  weight reso: " << weight_reso << "  weight_charm: " << weight_ccbar << "  weight_beauty: " << weight_bbbar << endl;
+
+              double eff_pair = weight_reso * eff_reso + weight_ccbar * eff_ccbar + weight_bbbar * eff_bbbar;
+              double eff_pair_err = TMath::Sqrt(weight_reso * eff_reso_err * weight_reso * eff_reso_err + weight_ccbar * eff_ccbar_err * weight_ccbar * eff_ccbar_err + weight_bbbar * eff_bbbar_err * weight_bbbar * eff_bbbar_err);
+
+              //if ((eff_pair < eff_reso && eff_pair < eff_hf) || (eff_pair > eff_reso && eff_pair > eff_hf) ) LmHelper::Error(std::string("U Suck"));
+              if (genPairs->GetXaxis()->GetBinCenter(bin_x) > 2.6) {
+                cout << "  weight reso: " << weight_reso << "  weight_charm: " << weight_ccbar << "  weight_beauty: " << weight_bbbar << endl;
+                cout << "  reso: " << eff_reso << " charm: " << eff_ccbar << " beauty: " << eff_bbbar << " combined: " << eff_pair << "  " << endl;
+              }
+
+              if (weight_reso + weight_ccbar + weight_bbbar > 1) {
+
+                cout << "  weight reso: " << weight_reso << "  weight_charm: " << weight_ccbar << "  weight_beauty: " << weight_bbbar << endl;
+              }
+              recoPairs->SetBinContent(bin_x, bin_y, eff_pair);
+              recoPairs->SetBinError(bin_x, bin_y, eff_pair_err);
             }
-            if (eff_hf == 0) {
-              weight_reso = 1;
-              weight_ccbar = 0.;
-              weight_bbbar = 0.;
-            }
-            if (eff_reso == 0 && eff_hf == 0) {
-              weight_reso = 0;
-              weight_ccbar = 0.;
-              weight_bbbar = 0.;
-            }
-
-            if (eff_reso > 0.6 && weight_hf > 0.05 && weight_reso < 0.9) {
-              weight_reso = 0;
-              weight_ccbar /= weight_hf;
-              weight_bbbar /= weight_hf;
-            } else if (eff_reso > 0.6) {
-              weight_reso = 0;
-              weight_ccbar = 0;
-              weight_bbbar = 0;
-            } else if (genPairs->GetXaxis()->GetBinCenter(bin_x) > 2. && weight_hf > 0.05) {
-              weight_ccbar /= weight_hf;
-              weight_bbbar /= weight_hf;
-              weight_reso = 0.;
-            }
-
-            //if (weight_reso + weight_hf > 1.0001 || weight_reso + weight_hf < 0.9999) {
-            //  LmHelper::Error(Form("Weights in m=%f GeV/c2 and pT=%f GeV/c do not add up to 1: weight_reso + weight_charm = %f + %f = %f", bin_x, bin_y, weight_reso, weight_hf, weight_reso + weight_hf));
-            //}
-
-            //            cout << "  weight reso: " << weight_reso << "  weight_charm: " << weight_ccbar << "  weight_beauty: " << weight_bbbar << endl;
-
-            double eff_pair = weight_reso * eff_reso + weight_ccbar * eff_ccbar + weight_bbbar * eff_bbbar;
-            double eff_pair_err = TMath::Sqrt(weight_reso * eff_reso_err * weight_reso * eff_reso_err + weight_ccbar * eff_ccbar_err * weight_ccbar * eff_ccbar_err + weight_bbbar * eff_bbbar_err * weight_bbbar * eff_bbbar_err);
-
-            //if ((eff_pair < eff_reso && eff_pair < eff_hf) || (eff_pair > eff_reso && eff_pair > eff_hf) ) LmHelper::Error(std::string("U Suck"));
-            if (genPairs->GetXaxis()->GetBinCenter(bin_x) > 2.7) {
-              cout << "  weight reso: " << weight_reso << "  weight_charm: " << weight_ccbar << "  weight_beauty: " << weight_bbbar << endl;
-              cout << "  reso: " << eff_reso << " charm: " << eff_ccbar << " beauty: " << eff_bbbar << " combined: " << eff_pair << "  " << endl;
-            }
-
-            if (weight_reso + weight_ccbar + weight_bbbar > 1) {
-
-              cout << "  weight reso: " << weight_reso << "  weight_charm: " << weight_ccbar << "  weight_beauty: " << weight_bbbar << endl;
-            }
-            recoPairs->SetBinContent(bin_x, bin_y, eff_pair);
-            recoPairs->SetBinError(bin_x, bin_y, eff_pair_err);
           }
         }
       }
-    }
-    TH2D* eff_weighted = (TH2D*)recoPairs->Clone("eff_weighted");
-    eff_weighted->Divide(genPairs);
-    eff_weighted->GetZaxis()->SetRangeUser(0, 0.3);
-    eff_weighted->Write("eff_weighted");
+      TH2D* eff_weighted = (TH2D*)recoPairs->Clone("eff_weighted");
+      eff_weighted->Divide(genPairs);
+      eff_weighted->GetZaxis()->SetRangeUser(0, 0.3);
+      eff_weighted->Write("eff_weighted");
 
-    if (DoRandomRejection) {
-      TString filename = "../input/RandomRejection/LMEE_RandomRejection_PbPb.root";
-      TString list1 = "jjung_RandomRejection_out";
-      TString list2 = "pT200_PF0wPID0wInvMass40wOp50v4_TrCuts0_PIDCuts136wTOFwITS_SCMAPcut2_noV0";
+      if (DoRandomRejection) {
+        TString filename = "../input/RandomRejection/LMEE_RandomRejection_PbPb.root";
+        TString list1 = "jjung_RandomRejection_out";
+        TString list2 = "pT200_PF0wPID0wInvMass40wOp50v4_TrCuts0_PIDCuts136wTOFwITS_SCMAPcut2_noV0";
 
-      TFile* file = TFile::Open(filename, "READ");
-      if (file->IsOpen()) cout << "File opened successfully: " << file << endl;
-      cout << file->Get(list1) << endl;
-      cout << file->Get(list1)->FindObject(list2) << endl;
-      cout << file->Get(list1)->FindObject(list2)->FindObject("RandRej_RejPair") << endl;
-      cout << file->Get(list1)->FindObject(list2)->FindObject("RandRej_RejPair")->FindObject("InvMass_PairPt") << endl;
+        TFile* file = TFile::Open(filename, "READ");
+        if (file->IsOpen()) cout << "File opened successfully: " << file << endl;
+        cout << file->Get(list1) << endl;
+        cout << file->Get(list1)->FindObject(list2) << endl;
+        cout << file->Get(list1)->FindObject(list2)->FindObject("RandRej_RejPair") << endl;
+        cout << file->Get(list1)->FindObject(list2)->FindObject("RandRej_RejPair")->FindObject("InvMass_PairPt") << endl;
 
-      TH2D* rejected = (TH2D*)file->Get(list1)->FindObject(list2)->FindObject("RandRej_RejPair")->FindObject("InvMass_PairPt");
-      TH2D* paired = (TH2D*)file->Get(list1)->FindObject(list2)->FindObject("RandRej_Pair")->FindObject("InvMass_PairPt");
+        TH2D* rejected = (TH2D*)file->Get(list1)->FindObject(list2)->FindObject("RandRej_RejPair")->FindObject("InvMass_PairPt");
+        TH2D* paired = (TH2D*)file->Get(list1)->FindObject(list2)->FindObject("RandRej_Pair")->FindObject("InvMass_PairPt");
 
-      Int_t Nbins_mass = vec_mass_bins.size() - 1;
-      Double_t* mass_binning = vec_mass_bins.data();
-      Int_t Nbins_ptee = vec_ptee_bins.size() - 1;
-      Double_t* ptee_binning = vec_ptee_bins.data();
+        Int_t Nbins_mass = vec_mass_bins.size() - 1;
+        Double_t* mass_binning = vec_mass_bins.data();
+        Int_t Nbins_ptee = vec_ptee_bins.size() - 1;
+        Double_t* ptee_binning = vec_ptee_bins.data();
 
-      Rebin2DHistogram(*rejected, Nbins_mass, mass_binning, Nbins_ptee, ptee_binning);
-      Rebin2DHistogram(*paired, Nbins_mass, mass_binning, Nbins_ptee, ptee_binning);
+        Rebin2DHistogram(*rejected, Nbins_mass, mass_binning, Nbins_ptee, ptee_binning);
+        Rebin2DHistogram(*paired, Nbins_mass, mass_binning, Nbins_ptee, ptee_binning);
 
-      rejected->Divide(paired);
-      TH2F* unity = (TH2F*)paired->Clone("unity");
-      for (int binx = 1; binx <= unity->GetNbinsX(); binx++) {
-        for (int biny = 1; biny <= unity->GetNbinsY(); biny++) {
-          if (unity->GetBinContent(binx, biny) > 0.) {
-            unity->SetBinContent(binx, biny, 1. - rejected->GetBinContent(binx, biny));
+        rejected->Divide(paired);
+        TH2F* unity = (TH2F*)paired->Clone("unity");
+        for (int binx = 1; binx <= unity->GetNbinsX(); binx++) {
+          for (int biny = 1; biny <= unity->GetNbinsY(); biny++) {
+            if (unity->GetBinContent(binx, biny) > 0.) {
+              unity->SetBinContent(binx, biny, 1. - rejected->GetBinContent(binx, biny));
+            }
+            if (unity->GetBinContent(binx, biny) > 1.)
+              unity->SetBinContent(binx, biny, 1.);
           }
-          if (unity->GetBinContent(binx, biny) > 1.)
-            unity->SetBinContent(binx, biny, 1.);
         }
+
+        file_out->cd();
+        unity->Write("PF_eff");
+        eff_weighted->Multiply(unity);
+        eff_weighted->Write("eff_weighted_PF");
+
+        recoPairs->Multiply(unity);
       }
+    } else {
 
-      file_out->cd();
-      unity->Write("PF_eff");
-      eff_weighted->Multiply(unity);
-      eff_weighted->Write("eff_weighted_PF");
+      genPairs = (TH2D*)h2_gen[0]->Clone("NgenPairsRec");
+      if (!DoReso) genPairs->Reset();
+      if (DoHF) genPairs->Add(h2_gen[1]);
+      if (DoHF) genPairs->Add(h2_gen[2]);
 
-      recoPairs->Multiply(unity);
+      recoPairs = (TH2D*)h2_reco[0]->Clone("NrecoPairsRec");
+      if (DoReso) recoPairs->Reset();
+      if (DoHF) recoPairs->Add(h2_reco[1]);
+      if (DoHF) recoPairs->Add(h2_reco[2]);
     }
-  } else {
 
-    genPairs = (TH2D*)h2_gen[0]->Clone("NgenPairsRec");
-    if (!DoReso) genPairs->Reset();
-    if (DoHF) genPairs->Add(h2_gen[1]);
-    if (DoHF) genPairs->Add(h2_gen[2]);
-
-    recoPairs = (TH2D*)h2_reco[0]->Clone("NrecoPairsRec");
-    if (DoReso) recoPairs->Reset();
-    if (DoHF) recoPairs->Add(h2_reco[1]);
-    if (DoHF) recoPairs->Add(h2_reco[2]);
+    genPairs->Write();
+    recoPairs->Write();
   }
-
-  genPairs->Write();
-  recoPairs->Write();
 }
-
 void EfficiencyFillerLvL1(TH2D* h2_eff)
 {
 
