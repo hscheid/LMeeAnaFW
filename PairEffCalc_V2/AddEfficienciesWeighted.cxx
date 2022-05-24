@@ -29,10 +29,10 @@
 #include <string>
 #include <climits>
 #include <iostream>
-#include "../../PlottingFW/src/LmRebinner.h"
+#include "../../PlottingFW/src/core/LmRebinner.h"
 
 //string fCocktailFileName = "../input/cocktail/Cocktail_withSys_21_01_2021_finebins_powheg_30_50_Daiki_jpsi_2018.root";
-string fCocktailFileName = "../input/cocktail/Cocktail_withSys_21_01_2021_finebins_powheg_00_10_Daiki_jpsi_2018.root";
+string fCocktailFileName = "../input/cocktail/Cocktail_withSys_21_01_2021_bigbins_powheg_00_10_Daiki_jpsi_2018.root";
 //string fCocktailFileName = "../input/cocktail/Cocktail_withSys_27_09_2021_pythia_smallbins_00_10_nophimtscaling.root";
 
 //LmRebinner fRebinner;
@@ -115,7 +115,7 @@ void AddEfficienciesWeighted()
   TSring baseDir = {"./output/pass1/"};
   TString filename_in[] = {"LHC18f3.root", "LHC19h9_charm.root", "LHC19h9_beauty.root"};
   TString filename_out = "./pair_effv2_CockWeighted.root";
-  TString settingname = "cut_9";
+  TString settingname = "aodTrackCuts01";
 
   TString gens[] = {"Ngen", "Ngen_ULS", "Ngen_ULS"};
   TString recs[] = {"Nrec", "Nrec_ULS", "Nrec_ULS"};
