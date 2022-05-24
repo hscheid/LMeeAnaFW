@@ -112,8 +112,9 @@ void AddEfficienciesWeighted()
   //LHC18qr
   //TString filename_in[]    = {"./pair_effv2_LMEE_LEGO1062_LHC20g8a1234_2.root","./pair_effv2_LMEE_LEGO1061_LHC20g8b1234_2_fromD.root","./pair_effv2_LMEE_LEGO1061_LHC20g8b1234_2_fromB.root"};
   //TString filename_out     = "./pair_effv2_CockWeighted_PbPb2018_v7_cut2_200.root";
-  TSring baseDir = {"./output/pass1/"} TString filename_in[] = {"LHC18f3.root", "LHC19h9_charm.root", "LHC19h9_beauty.root"};
-  TString filename_out = "./pair_effv2_CockWeighted_PbPb2018_sys_199_400_central.root";
+  TSring baseDir = {"./output/pass1/"};
+  TString filename_in[] = {"LHC18f3.root", "LHC19h9_charm.root", "LHC19h9_beauty.root"};
+  TString filename_out = "./pair_effv2_CockWeighted.root";
   TString settingname = "cut_9";
 
   TString gens[] = {"Ngen", "Ngen_ULS", "Ngen_ULS"};
