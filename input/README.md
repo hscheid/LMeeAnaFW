@@ -1,7 +1,8 @@
 Input data and MC simulations for the 2016 p-Pb data analysis
 =============================================================
 
-The different analysis inputs will be summarised with the respective trains that they were produced with. Lets try to do some bookkeeping...
+The different analysis inputs will be summarised with the respective trains that they were produced with. Lets
+try to do some bookkeeping...
 
 Data
 ----
@@ -16,7 +17,15 @@ MC
 --
 
 The outputs can be found with the information in the table on the train website: [DQ_pPbMC_AOD](https://alimonitor.cern.ch/trains/train.jsp?train_id=119)
+Used for efficiency corrections pass1 analysis.
+| **File**      | **Dataset** | **Reco Pass** | **Train number** | **comments**                                                             | `path/to/file/`                            |
+|:-------------:|:-----------:|:-------------:|:----------------:|:------------------------------------------------------------------------:|:------------------------------------------:|
+| LHC19h9_fast  |   LHC16q    |     pass1     |       656        |                 HF enhanced [JIRA][1]                                    |  `./mc/efficiecny/LHC19h9_fast_656.root`   |
+| LHC19h9_woSDD |   LHC16q    |     pass1     |       660        |                 HF enhanced [JIRA][1]                                    |  `./mc/efficiency/LHC19h9_woSDD_660.root`  |
+|    LHC18f3    |   LHC16q    |     pass1     |       659        |                 GP (fast+woSDD) [JIRA][5]                                |    `./mc/efficiency/LHC18f3_559.root`      |
 
+
+Used for MC QA for pass2 anchored productions
 | **File**      | **Dataset** | **Reco Pass** | **Train number** | **comments**                                                             | `path/to/file/`                |
 |:-------------:|:-----------:|:-------------:|:----------------:|:------------------------------------------------------------------------:|:------------------------------:|
 | LHC19h9_fast  |   LHC16q    |     pass1     |       643        |                 HF enhanced, no OOB rejection [JIRA][1]                  |  `./mc/mcQALHC19h9_fast.root`  |
