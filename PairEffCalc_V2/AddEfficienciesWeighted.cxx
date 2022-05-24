@@ -112,7 +112,8 @@ void AddEfficienciesWeighted()
   //LHC18qr
   //TString filename_in[]    = {"./pair_effv2_LMEE_LEGO1062_LHC20g8a1234_2.root","./pair_effv2_LMEE_LEGO1061_LHC20g8b1234_2_fromD.root","./pair_effv2_LMEE_LEGO1061_LHC20g8b1234_2_fromB.root"};
   //TString filename_out     = "./pair_effv2_CockWeighted_PbPb2018_v7_cut2_200.root";
-  TString filename_in[] = {"./pair_effv2_LMEE_LEGO1214_LHC20g8a1_fromLF.root", "./pair_effv2_LMEE_LEGO1215_LHC20g8b1_fromD.root", "./pair_effv2_LMEE_LEGO1215_LHC20g8b1_fromB.root"};
+  TSring baseDir = {"./output/pass1/"}
+  TString filename_in[] = {"LHC18f3.root", "LHC19h9_charm.root", "LHC19h9_beauty.root"};
   TString filename_out = "./pair_effv2_CockWeighted_PbPb2018_sys_199_400_central.root";
   TString settingname = "cut_9";
 
@@ -130,10 +131,11 @@ void AddEfficienciesWeighted()
 
   TFile* file = 0x0;
 
+
   TString str1, str2;
   for (Int_t i1 = 0; i1 < components; i1++) {
 
-    file = TFile::Open(filename_in[i1], "READ");
+    file = TFile::Open(baseDir+filename_in[i1], "READ");
     if (file->IsOpen()) cout << "File opened successfully" << endl;
 
     str1 = (gens[i1] + "_" + typnames[i1]).Data();
