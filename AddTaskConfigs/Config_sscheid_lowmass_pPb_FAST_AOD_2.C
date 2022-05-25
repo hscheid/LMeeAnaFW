@@ -979,10 +979,10 @@ void InitHistograms(AliDielectron* die, Int_t cutDefinition)
 
   TVectorD* PhiVBins = AliDielectronHelper::MakeLinBinning(50, 0., 3.2);
 
-  histos->UserHistogram("Pair", "InvMass_pPt_phiV", "", MeeBins, PteeBins, DCABins,
+  histos->UserHistogram("Pair", "InvMass_pPt_phiV", ";m_{ee} (GeV/c^{2});p_{T,ee} (GeV/c);#phi_{V,ee} (mrad)", MeeBins, PteeBins, PhiVBins,
                         AliDielectronVarManager::kM, AliDielectronVarManager::kPt, AliDielectronVarManager::kPhivPair);
 
-  histos->UserHistogram("Pair", "InvMass_pPt_DCAsigma", "", MeeBins, PteeBins, DCABins,
+  histos->UserHistogram("Pair", "InvMass_pPt_DCAsigma", ";m_{ee} (GeV/c^{2});p_{T,ee} (GeV/c);DCA_{ee} (#sigma)", MeeBins, PteeBins, DCABins,
                         AliDielectronVarManager::kM, AliDielectronVarManager::kPt, AliDielectronVarManager::kPairDCAsigXY);
   // histos->UserHistogram("Pair","InvMass_DCAsigma_pPt","",
   //                       250,0.,5, 40,0.,20., 80,0.,8.,
