@@ -174,17 +174,17 @@ void AddEfficienciesWeighted()
     fDir->cd();
 
     TH2D* clone_LF = (TH2D*)h2_reco[0]->Clone("eff_LF");
-    clone_LF->GetZaxis()->SetRangeUser(0, 0.3);
+    clone_LF->GetZaxis()->SetRangeUser(0, 0.5);
     clone_LF->Divide(h2_gen[0]);
     clone_LF->Write();
 
     TH2D* clone_HF1 = (TH2D*)h2_reco[1]->Clone("eff_ccbar");
-    clone_HF1->GetZaxis()->SetRangeUser(0, 0.3);
+    clone_HF1->GetZaxis()->SetRangeUser(0, 0.5);
     clone_HF1->Divide(h2_gen[1]);
     clone_HF1->Write();
 
     TH2D* clone_HF2 = (TH2D*)h2_reco[2]->Clone("eff_bbbar");
-    clone_HF2->GetZaxis()->SetRangeUser(0, 0.3);
+    clone_HF2->GetZaxis()->SetRangeUser(0, 0.5);
     clone_HF2->Divide(h2_gen[2]);
     clone_HF2->Write();
 
@@ -193,7 +193,7 @@ void AddEfficienciesWeighted()
     TH2D* clone_HFgen = (TH2D*)h2_gen[1]->Clone("gen_HF");
     clone_HFgen->Add(h2_gen[2]);
 
-    clone_HF->GetZaxis()->SetRangeUser(0, 0.3);
+    clone_HF->GetZaxis()->SetRangeUser(0, 0.5);
     clone_HF->Divide(clone_HFgen);
     clone_HF->Write();
 
@@ -480,7 +480,7 @@ void AddEfficienciesWeighted()
       }
       TH2D* eff_weighted = (TH2D*)recoPairs->Clone("eff_weighted");
       eff_weighted->Divide(genPairs);
-      eff_weighted->GetZaxis()->SetRangeUser(0, 0.3);
+      eff_weighted->GetZaxis()->SetRangeUser(0, 0.5);
       eff_weighted->Write("eff_weighted");
 
       if (DoRandomRejection) {
