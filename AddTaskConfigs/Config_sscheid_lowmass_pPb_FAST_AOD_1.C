@@ -88,7 +88,7 @@ AliDielectron* Config_sscheid_lowmass(Int_t cutDefinition, Bool_t isRandomRej)
   return die;
 }
 
-AliDielectron* Config_sscheid_lowmass_pPb_FAST_AOD(Int_t cutDefinition, Bool_t isRandomRej)
+AliDielectron* Config_sscheid_lowmass_pPb_FAST_AOD_1(Int_t cutDefinition, Bool_t isRandomRej)
 {
   // Essentially a wrapper function for Config_sscheid_lowmass
   // Exec() of macro calls a function that is called like the Makro/file
