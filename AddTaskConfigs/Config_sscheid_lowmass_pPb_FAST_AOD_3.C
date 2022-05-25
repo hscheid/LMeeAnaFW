@@ -1221,7 +1221,7 @@ void SetEtaCorrectionTPCMean(AliDielectron* die, Int_t corrXdim, Int_t corrYdim,
   TFile* _file = TFile::Open(file_name.c_str());
   std::cout << _file << std::endl;
   if (_file == 0x0) {
-    gSystem->Exec("alien_cp alien:///alice/cern.ch/user/h/hscheid/supportFiles/PIDrecalibration/TPC/outputTPC.root .");
+    gSystem->Exec("alien_cp alien:///alice/cern.ch/user/h/hscheid/supportFiles/PIDrecalibration/TPC/outputTPC.root file:.");
     std::cout << "Copy TPC correction from Alien" << std::endl;
     _file = TFile::Open("outputTPC.root");
     if (_file == 0x0) {
@@ -1252,7 +1252,7 @@ void SetEtaCorrectionTPCRMS(AliDielectron* die, Int_t corrXdim, Int_t corrYdim, 
   std::cout << _file << std::endl;
   // printf("%s",file_name);
   if (_file == 0x0) {
-    gSystem->Exec("alien_cp alien:///alice/cern.ch/user/h/hscheid/supportFiles/PIDrecalibration/TPC/outputTPC.root .");
+    gSystem->Exec("alien_cp alien:///alice/cern.ch/user/h/hscheid/supportFiles/PIDrecalibration/TPC/outputTPC.root file:.");
     std::cout << "Copy TPC correction from Alien" << std::endl;
     _file = TFile::Open("outputTPC.root");
     if (_file == 0x0) {
@@ -1283,7 +1283,7 @@ void SetEtaCorrectionTOFMean(AliDielectron* die, Int_t corrXdim, Int_t corrYdim,
   TFile* _file = TFile::Open(file_name.c_str());
   std::cout << _file << std::endl;
   if (_file == 0x0) {
-    gSystem->Exec("alien_cp alien:///alice/cern.ch/user/h/hscheid/supportFiles/PIDrecalibration/TOF/outputTOF.root .");
+    gSystem->Exec("alien_cp alien:///alice/cern.ch/user/h/hscheid/supportFiles/PIDrecalibration/TOF/outputTOF.root file:.");
     std::cout << "Copy TOF correction from Alien" << std::endl;
     _file = TFile::Open("outputTOF.root");
     if (_file == 0x0) {
@@ -1313,7 +1313,7 @@ void SetEtaCorrectionTOFRMS(AliDielectron* die, Int_t corrXdim, Int_t corrYdim, 
   TFile* _file = TFile::Open(file_name.c_str());
   std::cout << _file << std::endl;
   if (_file == 0x0) {
-    gSystem->Exec("alien_cp alien:///alice/cern.ch/user/h/hscheid/supportFiles/PIDrecalibration/TOF/outputTOF.root .");
+    gSystem->Exec("alien_cp alien:///alice/cern.ch/user/h/hscheid/supportFiles/PIDrecalibration/TOF/outputTOF.root file:.");
     std::cout << "Copy TOF correction from Alien" << std::endl;
     _file = TFile::Open("outputTOF.root");
     if (_file == 0x0) {
