@@ -10,10 +10,8 @@ AliESDtrackCuts* SetupPreFilterESDtrackCuts(Int_t cutDefinition);
 AliAnalysisCuts* SetupPIDcuts(Int_t cutDefinition);
 
 AliDielectronEventCuts* GetEventCuts();
-void SetEtaCorrectionTPCMean(AliDielectron* die, Int_t corrXdim, Int_t corrYdim, Int_t corrZdim, Bool_t runwise);
-void SetEtaCorrectionTPCRMS(AliDielectron* die, Int_t corrXdim, Int_t corrYdim, Int_t corrZdim, Bool_t runwise);
-void SetEtaCorrectionTOFMean(AliDielectron* die, Int_t corrXdim, Int_t corrYdim, Int_t corrZdim, Bool_t runwise);
-void SetEtaCorrectionTOFRMS(AliDielectron* die, Int_t corrXdim, Int_t corrYdim, Int_t corrZdim, Bool_t runwise);
+void SetEtaCorrectionTPC(AliDielectron* die, Int_t corrXdim, Int_t corrYdim, Int_t corrZdim, Bool_t runwise);
+void SetEtaCorrectionTOF(AliDielectron* die, Int_t corrXdim, Int_t corrYdim, Int_t corrZdim);
 
 AliDielectron* Config_sscheid_lowmass_pPb_FAST_AOD_3(Int_t cutDefinition = 1, Bool_t isRandomRej = kFALSE);
 AliDielectron* Config_sscheid_lowmass(Int_t cutDefinition = 1, Bool_t isRandomRej = kFALSE);
@@ -34,6 +32,8 @@ Bool_t kRot = 0;
 Bool_t kMix = 1;
 
 Bool_t randomizeDau = kFALSE;
+
+Bool_t dcaAnalysis = kFALSE;
 
 TObjArray* arrNames = names.Tokenize(";");
 const Int_t nDie = arrNames->GetEntriesFast();
@@ -164,15 +164,12 @@ void SetupCuts(AliDielectron* die, Int_t cutDefinition)
   die->GetTrackFilter().AddCuts(SetupPIDcuts(cutDefinition + 20));
   die->GetTrackFilter().AddCuts(SetupTrackCuts(cutDefinition + 20));
 
-  SetEtaCorrectionTPCRMS(die, AliDielectronVarManager::kP, AliDielectronVarManager::kEta, AliDielectronVarManager::kRefMultTPConly, kFALSE);
-  SetEtaCorrectionTPCMean(die, AliDielectronVarManager::kP, AliDielectronVarManager::kEta, AliDielectronVarManager::kRefMultTPConly, kFALSE);
-
-  SetEtaCorrectionTOFRMS(die, AliDielectronVarManager::kP, AliDielectronVarManager::kEta, AliDielectronVarManager::kRefMultTPConly, kFALSE);
-  SetEtaCorrectionTOFMean(die, AliDielectronVarManager::kP, AliDielectronVarManager::kEta, AliDielectronVarManager::kRefMultTPConly, kFALSE);
+  SetEtaCorrectionTPC(die, AliDielectronVarManager::kP, AliDielectronVarManager::kEta, AliDielectronVarManager::kRefMultTPConly, kFALSE);
+  SetEtaCorrectionTOF(die, AliDielectronVarManager::kP, AliDielectronVarManager::kEta, AliDielectronVarManager::kRefMultTPConly);
 
   die->SetPreFilterUnlikeOnly(kTRUE);
 
-  // die->GetPairFilter().AddCuts(phiVcut);
+  if(dcaAnalysis) die->GetPairFilter().AddCuts(phiVcut);
   die->GetTrackFilter().AddCuts(noconv);
   die->GetTrackFilter().AddCuts(nSharedClsITS);
 
@@ -588,10 +585,10 @@ AliDielectronVarCuts* SetupTrackCuts(Int_t cutDefinition)
 
   AliDielectronVarCuts* fTrackCuts = new AliDielectronVarCuts("fTrackCuts", "fTrackCuts");
   //global
-  fTrackCuts->AddCut(AliDielectronVarManager::kPt, 0.4, 100.);        //SetPtRange( 0.2 , 100. );
-  fTrackCuts->AddCut(AliDielectronVarManager::kEta, -0.8, 0.8);       //SetEtaRange( -0.8 , 0.8 );
-  fTrackCuts->AddCut(AliDielectronVarManager::kImpactParXY, -1., 1.); //SetMaxDCAToVertexZ(3.);
-  fTrackCuts->AddCut(AliDielectronVarManager::kImpactParZ, -3., 3.);  //SetMaxDCAToVertexXY(1.);
+  fTrackCuts->AddCut(AliDielectronVarManager::kPt, 0.2, 100.);         //SetPtRange( 0.2 , 100. );
+  fTrackCuts->AddCut(AliDielectronVarManager::kEta, -0.8, 0.8);        //SetEtaRange( -0.8 , 0.8 );
+  fTrackCuts->AddCut(AliDielectronVarManager::kImpactParXY, -1., 1.);  //SetMaxDCAToVertexZ(3.);
+  fTrackCuts->AddCut(AliDielectronVarManager::kImpactParZ, -3., 3.);   //SetMaxDCAToVertexXY(1.);
 
   if (cutDefinition == 0) {
     // fTrackCuts->AddCut(AliDielectronVarManager::kNclsTPC,       100., 160.);  //SetMinNClustersTPC(100);
@@ -926,7 +923,8 @@ void InitHistograms(AliDielectron* die, Int_t cutDefinition)
   histos->UserHistogram("Event", "ZVertex", "ZVertex;ZVertex/cm", 120, -12., 12., AliDielectronVarManager::kZvPrim);
 
   //add histograms to track class
-  histos->UserHistogram("Track", "Pt", "Pt;Pt [GeV];#tracks", 500, 0., 10., AliDielectronVarManager::kPt);
+  histos->UserHistogram("Track", "P", "P;P [GeV];#tracks", 500, 0., 10., AliDielectronVarManager::kP);
+  histos->UserHistogram("Track", "PIn", "PIn;PIn [GeV];#tracks", 500, 0., 10., AliDielectronVarManager::kPIn);
   // histos->UserHistogram("Track","highPt","Pt;Pt [GeV];#tracks",500,0.,100.,AliDielectronVarManager::kPt);
   // histos->UserHistogram("Track","P","P;P [GeV];#tracks",500,0.,10.,AliDielectronVarManager::kP);
   // histos->UserHistogram("Track","PIn","PIn;PIn [GeV];#tracks",500,0.,10.,AliDielectronVarManager::kPIn);
@@ -945,8 +943,8 @@ void InitHistograms(AliDielectron* die, Int_t cutDefinition)
   // histos->UserHistogram("Track","NSharedClusterITS","NSharedClusterITS; NSharedClusterITS ;#tracks",8,-0.5,7.5,AliDielectronVarManager::kNclsSITS);
   // histos->UserHistogram("Track","ITSchi2perCls","ITSchi2perCls; ITSchi2perCls ;#tracks",100,0.,10.,AliDielectronVarManager::kITSchi2Cl);
   //
-  // histos->UserHistogram("Track","ImpactParXYsigmaPt","ImpactParXYsigma vs Pt; Pt; ImpactParXYsigma ;#tracks",100,0.,10.,100,-20.,20.,AliDielectronVarManager::kPt,AliDielectronVarManager::kImpactParXYsigma);
-  // histos->UserHistogram("Track","ImpactParXYPt","ImpactParXY vs Pt; Pt; ImpactParXY ;#tracks",100,0.,10.,100,-2.,2.,AliDielectronVarManager::kPt,AliDielectronVarManager::kImpactParXY);
+  histos->UserHistogram("Track", "ImpactParXYsigmaPt", "ImpactParXYsigma vs Pt; Pt; ImpactParXYsigma ;#tracks", 100, 0., 10., 400, -10., 10., AliDielectronVarManager::kPt, AliDielectronVarManager::kImpactParXYsigma);
+  histos->UserHistogram("Track", "ImpactParXYPt", "ImpactParXY vs Pt; Pt; ImpactParXY ;#tracks", 100, 0., 10., 400, -2., 2., AliDielectronVarManager::kPt, AliDielectronVarManager::kImpactParXY);
   //
 
   // histos->UserHistogram("Track","ITSdEdx_P","dEdx;P [GeV];ITS signal (arb units) vs Momentum;Mom;ITSsignal",     200,0.,10.,150,  0.,150. ,AliDielectronVarManager::kPIn,AliDielectronVarManager::kITSsignal);
@@ -978,13 +976,12 @@ void InitHistograms(AliDielectron* die, Int_t cutDefinition)
   // TVectorD *PteeBins = AliDielectronHelper::MakeArbitraryBinning("0.100,0.200,0.300,0.400,0.500,0.600,0.700,0.800,0.900,1.000,1.100,1.200,1.300,1.400,1.500,1.600,1.700,1.800,1.900,2.000,2.100,2.200,2.300,2.400,2.500,2.600,2.700,2.800,2.900,3.000,3.100,3.200,3.300,3.400,3.500,3.600,3.700,3.800,3.900,4.000,4.100,4.200,4.300,4.400,4.500,5.000,5.500,6.000,6.500,7.000,8.000");
   TVectorD* PteeBins = AliDielectronHelper::MakeArbitraryBinning("0.000,0.050,0.100,0.150,0.200,0.250,0.300,0.350,0.400,0.450,0.500,0.550,0.600,0.650,0.700,0.750,0.800,0.850,0.900,0.950,1.000,1.100,1.200,1.300,1.400,1.500,1.600,1.700,1.800,1.900,2.000,2.100,2.200,2.300,2.400,2.500,2.600,2.700,2.800,2.900,3.000,3.100,3.200,3.300,3.400,3.500,3.600,3.700,3.800,3.900,4.000,4.100,4.200,4.300,4.400,4.500,5.000,5.500,6.000,6.500,7.000,8.000");
 
-  TVectorD* PhiVBins = AliDielectronHelper::MakeLinBinning(50, 0., 3.2);
+  TVectorD* PhiVBins = AliDielectronHelper::MakeLinBinning(30, 0., TMath::Pi());
 
-  histos->UserHistogram("Pair", "InvMass_pPt_phiV", ";m_{ee} (GeV/c^{2});p_{T,ee} (GeV/c);#phi_{V,ee} (mrad)", MeeBins, PteeBins, PhiVBins,
-                        AliDielectronVarManager::kM, AliDielectronVarManager::kPt, AliDielectronVarManager::kPhivPair);
-
-  histos->UserHistogram("Pair", "InvMass_pPt_DCAsigma", ";m_{ee} (GeV/c^{2});p_{T,ee} (GeV/c);DCA_{ee} (#sigma)", MeeBins, PteeBins, DCABins,
-                        AliDielectronVarManager::kM, AliDielectronVarManager::kPt, AliDielectronVarManager::kPairDCAsigXY);
+  if (dcaAnalysis)
+    histos->UserHistogram("Pair", "InvMass_pPt_DCAsigma", ";m_{ee} (GeV/c^{2});p_{T,ee} (GeV/c);DCA_{ee} (#sigma)", MeeBins, PteeBins, DCABins, AliDielectronVarManager::kM, AliDielectronVarManager::kPt, AliDielectronVarManager::kPairDCAsigXY);
+  else
+    histos->UserHistogram("Pair", "InvMass_pPt_phiV", ";m_{ee} (GeV/c^{2}); p_{T,ee} (GeV/c); #phi_{V,ee} (mrad)", MeeBins, PteeBins, PhiVBins, AliDielectronVarManager::kM, AliDielectronVarManager::kPt, AliDielectronVarManager::kPhivPair);
   // histos->UserHistogram("Pair","InvMass_DCAsigma_pPt","",
   //                       250,0.,5, 40,0.,20., 80,0.,8.,
   //                       AliDielectronVarManager::kM, AliDielectronVarManager::kPairDCAsigXY, AliDielectronVarManager::kPt);
@@ -1216,7 +1213,8 @@ AliDielectronEventCuts* GetEventCuts()
   return eventCuts;
 }
 
-void SetEtaCorrectionTPCMean(AliDielectron* die, Int_t corrXdim, Int_t corrYdim, Int_t corrZdim, Bool_t runwise)
+
+void SetEtaCorrectionTPC(AliDielectron* die, Int_t corrXdim, Int_t corrYdim, Int_t corrZdim, Bool_t runwise)
 {
   //
   // eta correction for the centroid and width of electron sigmas in the TPC, can be one/two/three-dimensional
@@ -1231,54 +1229,28 @@ void SetEtaCorrectionTPCMean(AliDielectron* die, Int_t corrXdim, Int_t corrYdim,
     std::cout << "Copy TPC correction from Alien" << std::endl;
     _file = TFile::Open("outputTPC.root");
     if (_file == 0x0) {
-      printf("Did not find the file for mean\n");
+      printf("Did not find the file for TPC recalibration\n");
       return;
     } else
       printf("Correction loaded\n");
   } else {
-    std::cout << "Correction loaded" << std::endl;
+    printf("Correction loaded\n");
   }
   if (runwise) {
     TObjArray* arr_mean = dynamic_cast<TObjArray*>(_file->Get("mean_correction_arr"));
     die->SetWidthCorrArr(arr_mean, kTRUE, corrXdim, corrYdim, corrZdim);
+    TH3D* width = dynamic_cast<TH3D*>(_file->Get("sum_width_correction"));
+    die->SetWidthCorrFunction(width, corrXdim, corrYdim, corrZdim);
   } else {
     TH3D* mean = dynamic_cast<TH3D*>(_file->Get("sum_mean_correction"));
     die->SetCentroidCorrFunction(mean, corrXdim, corrYdim, corrZdim);
-  }
-}
-void SetEtaCorrectionTPCRMS(AliDielectron* die, Int_t corrXdim, Int_t corrYdim, Int_t corrZdim, Bool_t runwise)
-{
-  //
-  // eta correction for the centroid and width of electron sigmas in the TPC, can be one/two/three-dimensional
-  //
-  std::cout << "Set eta correction width\n";
-  std::string file_name = "~/analysis/pPb/PID/summary_TPC/outputTPC.root";
-
-  TFile* _file = TFile::Open(file_name.c_str());
-  std::cout << _file << std::endl;
-  // printf("%s",file_name);
-  if (_file == 0x0) {
-    gSystem->Exec("alien_cp alien:///alice/cern.ch/user/h/hscheid/supportFiles/PIDrecalibration/TPC/outputTPC.root file:.");
-    std::cout << "Copy TPC correction from Alien" << std::endl;
-    _file = TFile::Open("outputTPC.root");
-    if (_file == 0x0) {
-      printf("Did not find the file for sigma\n");
-      return;
-    } else
-      printf("correction loaded\n");
-  } else {
-    std::cout << "Correction loaded" << std::endl;
-  }
-  if (runwise) {
-    TObjArray* arr_width = dynamic_cast<TObjArray*>(_file->Get("width_correction_arr"));
-    die->SetWidthCorrArr(arr_width, kTRUE, corrXdim, corrYdim, corrZdim);
-  } else {
     TH3D* width = dynamic_cast<TH3D*>(_file->Get("sum_width_correction"));
     die->SetWidthCorrFunction(width, corrXdim, corrYdim, corrZdim);
+    printf("======== TPC Recalibration setup done ========\n");
   }
 }
 
-void SetEtaCorrectionTOFMean(AliDielectron* die, Int_t corrXdim, Int_t corrYdim, Int_t corrZdim, Bool_t runwise)
+void SetEtaCorrectionTOF(AliDielectron* die, Int_t corrXdim, Int_t corrYdim, Int_t corrZdim)
 {
   //
   // eta correction for the centroid and width of electron sigmas in the TPC, can be one/two/three-dimensional
@@ -1298,45 +1270,12 @@ void SetEtaCorrectionTOFMean(AliDielectron* die, Int_t corrXdim, Int_t corrYdim,
     } else
       printf("Correction loaded\n");
   } else {
-    std::cout << "Correction loaded" << std::endl;
+    printf("Correction loaded\n");
   }
-  if (runwise) {
-    TObjArray* arr_mean = dynamic_cast<TObjArray*>(_file->Get("mean_correction_arr"));
-    die->SetWidthCorrArr(arr_mean, kTRUE, corrXdim, corrYdim, corrZdim);
-  } else {
-    TH3D* mean = dynamic_cast<TH3D*>(_file->Get("sum_mean_correction"));
-    die->SetCentroidCorrFunction(mean, corrXdim, corrYdim, corrZdim);
-  }
+  TH3D* mean = dynamic_cast<TH3D*>(_file->Get("sum_mean_correction"));
+  die->SetCentroidCorrFunctionTOF(mean, corrXdim, corrYdim, corrZdim);
+  TH3D* width = dynamic_cast<TH3D*>(_file->Get("sum_width_correction"));
+  die->SetWidthCorrFunctionTOF(width, corrXdim, corrYdim, corrZdim);
+  printf("======== TOF Recalibration setup done ========\n");
 }
-void SetEtaCorrectionTOFRMS(AliDielectron* die, Int_t corrXdim, Int_t corrYdim, Int_t corrZdim, Bool_t runwise)
-{
-  //
-  // eta correction for the centroid and width of electron sigmas in the TPC, can be one/two/three-dimensional
-  //
-  std::cout << "Set eta correction width\n";
-  std::string file_name = "~/analysis/pPb/PID/summary_TOF/outputTOF.root";
-
-  TFile* _file = TFile::Open(file_name.c_str());
-  std::cout << _file << std::endl;
-  if (_file == 0x0) {
-    gSystem->Exec("alien_cp alien:///alice/cern.ch/user/h/hscheid/supportFiles/PIDrecalibration/TOF/outputTOF.root file:.");
-    std::cout << "Copy TOF correction from Alien" << std::endl;
-    _file = TFile::Open("outputTOF.root");
-    if (_file == 0x0) {
-      printf("Did not find the file for sigma\n");
-      return;
-    } else
-      printf("correction loaded\n");
-  } else {
-    std::cout << "Correction loaded" << std::endl;
-  }
-  if (runwise) {
-    TObjArray* arr_width = dynamic_cast<TObjArray*>(_file->Get("width_correction_arr"));
-    die->SetWidthCorrArr(arr_width, kTRUE, corrXdim, corrYdim, corrZdim);
-  } else {
-    TH3D* width = dynamic_cast<TH3D*>(_file->Get("sum_width_correction"));
-    die->SetWidthCorrFunction(width, corrXdim, corrYdim, corrZdim);
-  }
-}
-
 Bool_t GetMixing() { return kMix; }
