@@ -4,6 +4,9 @@ bool kDoSignifRaw = true;
 bool kDoNormBinwidth = true;
 bool kDoNormNevents = true;
 
+//
+bool kDoEfficiencyCorr = false;
+
 Double_t kSetMinPtLabel = 0.2;
 Double_t kSetMaxPtLabel = 10.;
 
@@ -14,14 +17,17 @@ Int_t debug = 0;
 
 // input files dataset
 TString fileName[] = {
-  "../../input/data/AnalysisResults_c1.root",
-  "../../input/data/AnalysisResults_c2.root",
-  "../../input/data/LHC16q_pass2.root", // merged input only one cut setting
-  "../../input/data/AnalysisResults_c1-2.root", // fast, with first 10 cut settings
-  "../../input/data/AnalysisResults_c1-2.root", // woSDD, with first 10 cut settings
-  "../../input/data/LHC16q_pass2_cutVar_1.root" // merged input with first 10 cut settings (cut one is analysis default)
+  "../../input/data/old/AnalysisResults_c1.root",
+  "../../input/data/old/AnalysisResults_c2.root",
+  "../../input/data/old/LHC16q_pass2.root", // merged input only one cut setting
+  "../../input/data/old/AnalysisResults_c1-2.root", // fast, with first 10 cut settings
+  "../../input/data/old/AnalysisResults_c1-2.root", // woSDD, with first 10 cut settings
+  "../../input/data/old/LHC16q_pass2_cutVar_1.root", // merged input with first 10 cut settings (cut one is analysis default)
+  "../../input/data/LHC16q_pass1_cut1_woSDD_407.root",
+  ""
 };
 TString tree_name[] = {"Histos_diel_lowmass"};
+
 TString cut_setting[] = {
   // always adapt to input data files!
   "aodTrackCuts01", // 001
@@ -35,13 +41,60 @@ TString cut_setting[] = {
   "aodTrackCuts09", // this is obviously retarded
   "aodTrackCuts10"  // this is obviously retarded
 };
-TString inputhist = "pInvMass_pPt_DCAsigma";
+TString inputhist = "pInvMass_pPt_phiV";
+
+// effi_name: location of your efficiency file, effi_gen: name of gen hist, effi_rec: name
+// std::vector<TString> effi_name,effi_rec,effi_gen;
+
+TString effi_name [] = {
+  "../../PairEffCalc_V2/output/pair_effv2_aodTrackCuts01.root",
+  "../../PairEffCalc_V2/output/pair_effv2_aodTrackCuts02.root",
+  "../../PairEffCalc_V2/output/pair_effv2_aodTrackCuts03.root",
+  "../../PairEffCalc_V2/output/pair_effv2_aodTrackCuts04.root",
+  "../../PairEffCalc_V2/output/pair_effv2_aodTrackCuts05.root",
+  "../../PairEffCalc_V2/output/pair_effv2_aodTrackCuts06.root",
+  "../../PairEffCalc_V2/output/pair_effv2_aodTrackCuts07.root",
+  "../../PairEffCalc_V2/output/pair_effv2_aodTrackCuts08.root",
+  "../../PairEffCalc_V2/output/pair_effv2_aodTrackCuts09.root",
+  "../../PairEffCalc_V2/output/pair_effv2_aodTrackCuts10.root",
+  "../../PairEffCalc_V2/output/pair_effv2_aodTrackCuts11.root",
+  "../../PairEffCalc_V2/output/pair_effv2_aodTrackCuts12.root",
+  "../../PairEffCalc_V2/output/pair_effv2_aodTrackCuts13.root",
+  "../../PairEffCalc_V2/output/pair_effv2_aodTrackCuts14.root",
+  "../../PairEffCalc_V2/output/pair_effv2_aodTrackCuts15.root",
+  "../../PairEffCalc_V2/output/pair_effv2_aodTrackCuts16.root",
+  "../../PairEffCalc_V2/output/pair_effv2_aodTrackCuts17.root",
+  "../../PairEffCalc_V2/output/pair_effv2_aodTrackCuts18.root",
+  "../../PairEffCalc_V2/output/pair_effv2_aodTrackCuts19.root",
+  "../../PairEffCalc_V2/output/pair_effv2_aodTrackCuts20.root",
+  "../../PairEffCalc_V2/output/pair_effv2_aodTrackCuts21.root",
+  "../../PairEffCalc_V2/output/pair_effv2_aodTrackCuts22.root",
+  "../../PairEffCalc_V2/output/pair_effv2_aodTrackCuts23.root",
+  "../../PairEffCalc_V2/output/pair_effv2_aodTrackCuts24.root",
+  "../../PairEffCalc_V2/output/pair_effv2_aodTrackCuts25.root",
+  "../../PairEffCalc_V2/output/pair_effv2_aodTrackCuts26.root",
+  "../../PairEffCalc_V2/output/pair_effv2_aodTrackCuts27.root",
+  "../../PairEffCalc_V2/output/pair_effv2_aodTrackCuts28.root",
+  "../../PairEffCalc_V2/output/pair_effv2_aodTrackCuts29.root",
+  "../../PairEffCalc_V2/output/pair_effv2_aodTrackCuts30.root"
+};
+
+TString effi_rec [] = {
+  "eff_weighted"
+};
+
+TString effi_gen [] = {
+  "eff_denominator"
+};
+
 Int_t inputdim = 3;
+
+
 
 const TString configString[] = {
   (coll_system + ":" + fileName[0] + ":" + tree_name[0] + ":" + cut_setting[0] + ":" + "data"),
   (coll_system + ":" + fileName[2] + ":" + tree_name[0] + ":" + cut_setting[0] + ":" + "data"),
-  (coll_system + ":" + fileName[5] + ":" + tree_name[0] + ":" + cut_setting[0] + ":" + "data"),
+  (coll_system + ":" + fileName[6] + ":" + tree_name[0] + ":" + cut_setting[0] + ":" + "data" + ":" + effi_name[0] + ":" + effi_gen[0] + ":" + effi_rec[0]),
   (coll_system + ":" + fileName[5] + ":" + tree_name[0] + ":" + cut_setting[1] + ":" + "data"),
   (coll_system + ":" + fileName[5] + ":" + tree_name[0] + ":" + cut_setting[2] + ":" + "data"),
   (coll_system + ":" + fileName[5] + ":" + tree_name[0] + ":" + cut_setting[3] + ":" + "data"),

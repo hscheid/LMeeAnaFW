@@ -42,22 +42,23 @@ using namespace std;
 // Start of analysis
 
 // how many configs are we running on?
-int n_config = 10;
+int n_config = 1; // should probably be more dynamic
 
 int main(int argc, char const* argv[])
 {
   LmHelper lmHelper; // for styles etc.
   lmHelper.SetDebugLvl(debug);
 
-  LmBaseSignal::SetInputLabelZ("DCA_{ee}", "#sigma", "DCAee");
+  LmBaseSignal::SetInputLabelZ("PhiV", "mrad", "PhiV");
 
   std::vector<LmManager*> vecMgr;
+
   for (int iConfig = 0; iConfig < n_config; ++iConfig) {
     LmManager* mgr = new LmManager(const_cast<char*>(configString[2 + iConfig].Data()));
     // set all kinds of configuration for the manager
     mgr->SetInputhistAndDim(const_cast<char*>(inputhist.Data()), inputdim);
     mgr->SetProjOption(projoption);
-    mgr->SetEnableEffiCorr(kFALSE);
+    mgr->SetEnableEffiCorr(kDoEfficiencyCorr); // make a bool variable ?
 
     //mgr00->SetEnableRebinning(kFALSE); // use this to disable or just comment out the setter above...
     // configure 3D exclusion cut
@@ -88,7 +89,7 @@ int main(int argc, char const* argv[])
   // need an index since we need to loop over the mgr and the bkg vectors...
   for (int iS = 0; iS < vecMgr.size(); ++iS) {
     TString signame = Form("Var %d", iS);
-    if (iS==0) signame = "Default";
+    if (iS == 0) signame = "Default";
     LmSignal* sig = new LmSignal(*(vecMgr.at(iS)), *(vecBkg.at(iS)), signame.Data());
     //sig->SetDoSubtraction(kFALSE);
     sig->SetDoSignifRaw(kDoSignifRaw);
@@ -107,7 +108,7 @@ int main(int argc, char const* argv[])
     vecSig.push_back(sig);
   }
 
-  std::vector<double> binsPtee_forMee = {0., 8};
+  std::vector<double> binsPtee_forMee = {0.,0.5,1.,1.5,2.,3.,5.,8.};
   std::vector<double> binsMee_forPtee = {0.0, 0.14, 0.7, 1.04, 3.1, 5.};
   double plotMeeMin = 0.0;
   double plotPteeMin = 0.0;
@@ -128,6 +129,7 @@ int main(int argc, char const* argv[])
     hanCompare->PrintCompareSignif_Mee(i, kTRUE, Form("../plots/signif_mee_%d.pdf", i));
   }
   for (int i = 0; i < binsMee_forPtee.size(); i++) {
+    hanCompare->PrintCompareSig_Ptee(i, kTRUE, Form("../plots/sig_ptee_%d.pdf", i));
     hanCompare->PrintCompareSoverB_Ptee(i, kTRUE, Form("../plots/soverb_ptee_%d.pdf", i));
     hanCompare->PrintCompareSignif_Ptee(i, kTRUE, Form("../plots/signif_ptee_%d.pdf", i));
   }
