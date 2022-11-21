@@ -55,7 +55,8 @@ void Rebin2DHistogram(TH2D& hIn, Int_t n_bins_mee, Double_t* bins_mee, Int_t n_b
 
 enum FileMode { kRecreate = 0, kUpdate };
 
-void AddEfficienciesWeighted(TString settingname = "aodTrackCuts01", FileMode filemode = kRecreate)
+void AddEfficienciesWeighted(TString settingname = "aodTrackCuts01")
+// void AddEfficienciesWeighted(TString settingname = "aodTrackCuts01", FileMode filemode = kRecreate)
 {
 
   Bool_t WriteOutput = kTRUE;
@@ -69,7 +70,7 @@ void AddEfficienciesWeighted(TString settingname = "aodTrackCuts01", FileMode fi
   // TString filename_out     = "./pair_effv2_CockWeighted_PbPb2018_v7_cut2_200.root";
   TString baseDir = {"./output/pass1/"};
   TString filename_in[] = {"LHC18f3.root", "LHC19h9_charm.root", "LHC19h9_beauty.root"};
-  TString filename_out = "./pair_effv2_CockWeighted.root";
+  TString filename_out = "./pair_effv2_" + settingname + ".root";
 
   // std::vector<TString> settingname;
   // for (int i = 1; i <= 10; ++i) {
@@ -88,8 +89,9 @@ void AddEfficienciesWeighted(TString settingname = "aodTrackCuts01", FileMode fi
   TFile* file = 0x0;
 
   TFile* file_out = nullptr;
-  if(filemode == kRecreate) file_out = TFile::Open(filename_out, "RECREATE");
-  else if(filemode == kUpdate) file_out = TFile::Open(filename_out, "UPDATE");
+  file_out = TFile::Open(filename_out,"RECREATE");
+  // if(filemode == kRecreate) file_out = TFile::Open(filename_out, "RECREATE");
+  // else if(filemode == kUpdate) file_out = TFile::Open(filename_out, "UPDATE");
   if (file_out->IsOpen()) cout << "File opened successfully" << endl;
   TDirectoryFile* fDir = nullptr;
   TString str1, str2;
@@ -126,9 +128,9 @@ void AddEfficienciesWeighted(TString settingname = "aodTrackCuts01", FileMode fi
     }
 
     file_out->cd();
-    fDir = new TDirectoryFile(settingname, settingname);
+    // fDir = new TDirectoryFile(settingname, settingname);
     // fDir = new TDirectoryFile(it, it);
-    fDir->cd();
+    // fDir->cd();
 
     TH2D* clone_LF = (TH2D*)h2_reco[0]->Clone("eff_LF");
     clone_LF->GetZaxis()->SetRangeUser(0, 0.5);
@@ -267,9 +269,10 @@ void AddEfficienciesWeighted(TString settingname = "aodTrackCuts01", FileMode fi
                 // cout << "  reso: " << eff_reso << " hf: " << eff_hf << endl;
               }
 
-              if (weight_reso + weight_hf > 1) {
+              if (weight_reso + weight_hf > 1.000000001) {
 
-                cout << "  weight reso: " << weight_reso << "  weight_hf: " << weight_hf << endl;
+                cout << "  weight reso: " << weight_reso << "  weight_hf: " << weight_hf << " = " << weight_reso+weight_hf << endl;
+                cout << "bin x: " << bin_x << " bin y: " << bin_y << endl;
               }
 
               recoPairs->SetBinContent(bin_x, bin_y, eff_pair);
@@ -386,7 +389,16 @@ void AddEfficienciesWeighted(TString settingname = "aodTrackCuts01", FileMode fi
 
       genPairs->Write();
       recoPairs->Write();
-
+      TH2D* eff_denominator = (TH2D*)recoPairs->Clone("eff_denominator");
+      for (int ix = 1; ix <= eff_denominator->GetNbinsX();++ix)
+      {
+        for (int iy = 1; iy <= eff_denominator->GetNbinsY();++iy)
+        {
+          eff_denominator->SetBinContent(ix,iy,1);
+          eff_denominator->SetBinError(ix,iy,0);
+        }
+      }
+      eff_denominator->Write("eff_denominator");
       // eff_weighted->Delete();
       // genPairs->Delete();
       // recoPairs->Delete();
