@@ -193,366 +193,315 @@ AliAnalysisCuts* SetupPIDcuts(Int_t cutDefinition)
 
   //TPC electrons: includes electrons and exclude all possible other contributions using the TPC
   //possible elemination of contamination using ITS and TOF
-  if (cutDefinition == 0) {
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0., 100., kFALSE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.5, 0.00, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3, 3., 0.200, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3, 3., 0.200, 100., kTRUE);
+  if (cutDefinition < 10) {
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0., 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+  } else if (cutDefinition < 20) {
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -2.5, 2.5., 0., 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -2.5, 2.5, 0.0, 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+  } else if (cutDefinition < 30) {
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3.5, 3.5., 0., 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3.5, 3.5, 0.0, 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+  }
 
+  if (cutDefinition == 0) {
     //TOF electrons: includes all electrons, exlcludes Pions using the TPC
-    //possible elemination of contamination using ITS
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE);
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4., 0.0, 100., kTRUE);
-    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE, AliDielectronPID::kRequire);
-    // if the ITS identify a track as an electron include it back in
+    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE, , AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.5, 0.00, 100., kTRUE, , AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    // TPC sample is varied in every cut.
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3, 3., 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3, 3., 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
   }
 
   if (cutDefinition == 1) {
-    //TPC only sample
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0., 100., kFALSE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.5, 0.00, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -2.5, 3.5, 0.200, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -2.5, 3.5, 0.200, 100., kTRUE);
     // TOF sample
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE);
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4., 0.0, 100., kTRUE);
-    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire);
+    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    //TPC only sample
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -2.5, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -2.5, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
   }
 
   if (cutDefinition == 2) {
-    //TPC only sample
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0., 100., kFALSE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.5, 0.00, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.0, 3.0, 0.200, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -2.5, 3.5, 0.200, 100., kTRUE);
     // TOF sample
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE);
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4., 0.0, 100., kTRUE);
-    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire);
+    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    //TPC only sample
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.0, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -2.5, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
   }
 
   if (cutDefinition == 3) {
-    //TPC only sample
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0., 100., kFALSE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4.0, 0.00, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -2.5, 3.5, 0.200, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.0, 3.0, 0.200, 100., kTRUE);
     // TOF sample
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE);
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4., 0.0, 100., kTRUE);
-    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire);
+    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    //TPC only sample
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -2.5, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.0, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
   }
 
   if (cutDefinition == 4) {
-    //TPC only sample
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0., 100., kFALSE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4.0, 0.00, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.0, 3.0, 0.200, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -2.5, 3.5, 0.200, 100., kTRUE);
     // TOF sample
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE);
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4., 0.0, 100., kTRUE);
-    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -3.0, 3.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire);
+    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -3.0, 3.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    //TPC only sample
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.0, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -2.5, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
   }
 
   if (cutDefinition == 5) {
-    //TPC only sample
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0., 100., kFALSE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4.0, 0.00, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.0, 3.0, 0.200, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.0, 3.0, 0.200, 100., kTRUE);
     // TOF sample
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE);
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4., 0.0, 100., kTRUE);
-    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire);
+    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    //TPC only sample
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.0, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.0, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
   }
 
   if (cutDefinition == 6) {
-    //TPC only sample
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0., 100., kFALSE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.5, 0.00, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.0, 3.0, 0.200, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -2.5, 3.5, 0.200, 100., kTRUE);
     // TOF sample
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE);
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4., 0.0, 100., kTRUE);
-    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -3.0, 3.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire);
+    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -3.0, 3.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    //TPC only sample
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.0, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -2.5, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
   }
 
   if (cutDefinition == 7) {
-    //TPC only sample
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0., 100., kFALSE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.5, 0.00, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.0, 3.0, 0.200, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.0, 3.0, 0.200, 100., kTRUE);
     // TOF sample
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE);
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4., 0.0, 100., kTRUE);
-    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire);
+    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    //TPC only sample
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.0, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.0, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
   }
 
   if (cutDefinition == 8) {
-    //TPC only sample
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0., 100., kFALSE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.0, 0.00, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.5, 2.5, 0.200, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -2.5, 3.5, 0.200, 100., kTRUE);
     // TOF sample
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE);
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4., 0.0, 100., kTRUE);
-    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -3.0, 3.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire);
+    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -3.0, 3.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    //TPC only sample
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.5, 2.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -2.5, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
   }
 
   if (cutDefinition == 9) {
-    //TPC only sample
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0., 100., kFALSE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.5, 0.00, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.5, 2.5, 0.200, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -2.5, 3.5, 0.200, 100., kTRUE);
     // TOF sample
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE);
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4., 0.0, 100., kTRUE);
-    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -3.0, 3.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire);
+    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -3.0, 3.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    //TPC only sample
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.5, 2.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -2.5, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
   }
 
   if (cutDefinition == 10) {
-    //TPC only sample
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0., 100., kFALSE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.0, 0.00, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.5, 2.5, 0.200, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.0, 3.0, 0.200, 100., kTRUE);
     // TOF sample
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE);
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4., 0.0, 100., kTRUE);
-    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire);
+    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    //TPC only sample
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.5, 2.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.0, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
   }
 
   if (cutDefinition == 11) {
-    //TPC only sample
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0., 100., kFALSE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.5, 0.00, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -2.5, 3.5, 0.200, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.0, 3.0, 0.200, 100., kTRUE);
     // TOF sample
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE);
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4., 0.0, 100., kTRUE);
-    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -3.0, 3.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire);
+    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -3.0, 3.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    //TPC only sample
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -2.5, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.0, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
   }
 
   if (cutDefinition == 12) {
-    //TPC only sample
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0., 100., kFALSE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.0, 0.00, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.5, 2.5, 0.200, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -2.5, 3.5, 0.200, 100., kTRUE);
     // TOF sample
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE);
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4., 0.0, 100., kTRUE);
-    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -3.0, 3.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire);
+    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -3.0, 3.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    //TPC only sample
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.5, 2.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -2.5, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
   }
 
   if (cutDefinition == 13) {
-    //TPC only sample
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0., 100., kFALSE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.0, 0.00, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.0, 3.0, 0.200, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.5, 2.5, 0.200, 100., kTRUE);
     // TOF sample
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE);
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4., 0.0, 100., kTRUE);
-    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -3.0, 3.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire);
+    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -3.0, 3.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    //TPC only sample
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.0, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.5, 2.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
   }
 
   if (cutDefinition == 14) {
-    //TPC only sample
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0., 100., kFALSE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4.0, 0.00, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.0, 3.0, 0.200, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -2.5, 3.5, 0.200, 100., kTRUE);
     // TOF sample
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE);
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4., 0.0, 100., kTRUE);
-    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire);
+    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    //TPC only sample
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.0, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -2.5, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
   }
 
   if (cutDefinition == 15) {
-    //TPC only sample
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0., 100., kFALSE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.5, 0.00, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.5, 2.5, 0.200, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.0, 3.0, 0.200, 100., kTRUE);
     // TOF sample
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE);
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4., 0.0, 100., kTRUE);
-    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire);
+    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    //TPC only sample
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.5, 2.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.0, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
   }
 
   if (cutDefinition == 16) {
-    //TPC only sample
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0., 100., kFALSE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4.0, 0.00, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.5, 2.5, 0.200, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -2.5, 3.5, 0.200, 100., kTRUE);
     // TOF sample
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE);
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4., 0.0, 100., kTRUE);
-    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -3.0, 3.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire);
+    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -3.0, 3.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    //TPC only sample
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.5, 2.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -2.5, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
   }
 
   if (cutDefinition == 17) {
-    //TPC only sample
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0., 100., kFALSE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.0, 0.00, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -2.5, 3.5, 0.200, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.0, 3.0, 0.200, 100., kTRUE);
     // TOF sample
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE);
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4., 0.0, 100., kTRUE);
-    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -3.0, 3.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire);
+    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -3.0, 3.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    //TPC only sample
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -2.5, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.0, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
   }
 
   if (cutDefinition == 18) {
-    //TPC only sample
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0., 100., kFALSE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4.0, 0.00, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.5, 2.5, 0.200, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.0, 3.0, 0.200, 100., kTRUE);
     // TOF sample
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE);
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4., 0.0, 100., kTRUE);
-    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire);
+    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    //TPC only sample
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.5, 2.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.0, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
   }
 
   if (cutDefinition == 19) {
-    //TPC only sample
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0., 100., kFALSE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.0, 0.00, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.0, 3.0, 0.200, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.0, 3.0, 0.200, 100., kTRUE);
     // TOF sample
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE);
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4., 0.0, 100., kTRUE);
-    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire);
+    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    //TPC only sample
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.0, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.0, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
   }
 
   if (cutDefinition == 20) {
-    //TPC only sample
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0., 100., kFALSE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.5, 0.00, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.5, 2.5, 0.200, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.5, 2.5, 0.200, 100., kTRUE);
     // TOF sample
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE);
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4., 0.0, 100., kTRUE);
-    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire);
+    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    //TPC only sample
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.5, 2.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.5, 2.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
   }
 
   if (cutDefinition == 21) {
-    //TPC only sample
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0., 100., kFALSE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4.0, 0.00, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -2.5, 3.5, 0.200, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -2.5, 3.5, 0.200, 100., kTRUE);
     // TOF sample
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE);
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4., 0.0, 100., kTRUE);
-    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire);
+    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    //TPC only sample
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -2.5, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -2.5, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
   }
 
   if (cutDefinition == 22) {
-    //TPC only sample
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0., 100., kFALSE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4.0, 0.00, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.5, 2.5, 0.200, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.5, 2.5, 0.200, 100., kTRUE);
     // TOF sample
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE);
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4., 0.0, 100., kTRUE);
-    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -3.0, 3.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire);
+    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -3.0, 3.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    //TPC only sample
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.5, 2.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.5, 2.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
   }
 
   if (cutDefinition == 23) {
-    //TPC only sample
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0., 100., kFALSE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.0, 0.00, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -2.5, 3.5, 0.200, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.5, 2.5, 0.200, 100., kTRUE);
     // TOF sample
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE);
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4., 0.0, 100., kTRUE);
-    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire);
+    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -3.0, 3.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    //TPC only sample
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -2.5, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.5, 2.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
   }
 
   if (cutDefinition == 24) {
-    //TPC only sample
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0., 100., kFALSE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.0, 0.00, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.5, 2.5, 0.200, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.5, 2.5, 0.200, 100., kTRUE);
     // TOF sample
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE);
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4., 0.0, 100., kTRUE);
-    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire);
+    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    //TPC only sample
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.5, 2.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.5, 2.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
   }
 
   if (cutDefinition == 25) {
-    //TPC only sample
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -2., 2., 0., 100., kFALSE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4.0, 0.00, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -2.5, 3.5, 0.200, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.0, 3.0, 0.200, 100., kTRUE);
     // TOF sample
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE);
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4., 0.0, 100., kTRUE);
-    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire);
+    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    //TPC only sample
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -2.5, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.0, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
   }
 
   if (cutDefinition == 26) {
-    //TPC only sample
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -2., 2., 0., 100., kFALSE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4.0, 0.00, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.0, 3.0, 0.200, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.0, 3.0, 0.200, 100., kTRUE);
     // TOF sample
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE);
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4., 0.0, 100., kTRUE);
-    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire);
+    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    //TPC only sample
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.0, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.0, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
   }
 
   if (cutDefinition == 27) {
-    //TPC only sample
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -2., 2., 0., 100., kFALSE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.0, 0.00, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -2.5, 3.5, 0.200, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.5, 2.5, 0.200, 100., kTRUE);
     // TOF sample
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE);
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4., 0.0, 100., kTRUE);
-    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -3.0, 3.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire);
+    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -3.0, 3.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    //TPC only sample
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -2.5, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.5, 2.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
   }
 
   if (cutDefinition == 28) {
-    //TPC only sample
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -2., 2., 0., 100., kFALSE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.5, 0.00, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.5, 2.5, 0.200, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.0, 3.0, 0.200, 100., kTRUE);
     // TOF sample
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE);
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4., 0.0, 100., kTRUE);
-    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire);
+    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    //TPC only sample
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.5, 2.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.0, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
   }
 
   if (cutDefinition == 29) {
-    //TPC only sample
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -2., 2., 0., 100., kFALSE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.0, 0.00, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.5, 2.5, 0.200, 100., kTRUE);
-    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.0, 3.0, 0.200, 100., kTRUE);
     // TOF sample
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kElectron, -3., 3., 0.0, 100., kFALSE);
-    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 4., 0.0, 100., kTRUE);
-    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire);
+    recover_TOF->AddCut(AliDielectronPID::kTOF, AliPID::kElectron, -2.0, 2.0, 0.0, 100., kFALSE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TOF->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    //TPC only sample
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kPion, -100, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kKaon, -3.5, 2.5, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
+    recover_TPC->AddCut(AliDielectronPID::kTPC, AliPID::kProton, -3.0, 3.0, 0.00, 100., kTRUE, AliDielectronPID::kRequire, AliDielectronVarManager::kPt);
   }
 
   // AliDielectronCutGroup* recover_cg = new AliDielectronCutGroup("recover_cg","recover_cg",AliDielectronCutGroup::kCompAND);
@@ -585,249 +534,280 @@ AliDielectronVarCuts* SetupTrackCuts(Int_t cutDefinition)
 
   AliDielectronVarCuts* fTrackCuts = new AliDielectronVarCuts("fTrackCuts", "fTrackCuts");
   //global
-  fTrackCuts->AddCut(AliDielectronVarManager::kPt, 0.2, 100.);        //SetPtRange( 0.2 , 100. );
+  fTrackCuts->AddCut(AliDielectronVarManager::kPt, 0.2, 10.);         //SetPtRange( 0.2 , 100. );
   fTrackCuts->AddCut(AliDielectronVarManager::kEta, -0.8, 0.8);       //SetEtaRange( -0.8 , 0.8 );
   fTrackCuts->AddCut(AliDielectronVarManager::kImpactParXY, -1., 1.); //SetMaxDCAToVertexZ(3.);
   fTrackCuts->AddCut(AliDielectronVarManager::kImpactParZ, -3., 3.);  //SetMaxDCAToVertexXY(1.);
+  fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCr, 80., 160.); //SetMinNClustersTPC(100);
 
   if (cutDefinition == 0) {
-    // fTrackCuts->AddCut(AliDielectronVarManager::kNclsTPC,       100., 160.);  //SetMinNClustersTPC(100);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCr, 100., 160.);    //SetMinNClustersTPC(100);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.5, 1.1); //SetMinRatioCrossedRowsOverFindableClustersTPC(0.5);
-    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 4.);       //SetMaxChi2PerClusterTPC(4);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 3., 10.);         //SetMinNClustersITS(3);
-    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 5.5);      //SetMaxChi2PerClusterITS(5.5);
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 3., 10.);           // Minimum clusters in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 5.5);        // Chi2 per Cluster in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::NFclsCrossedTPC, 100., 160.); // Number of crossed rows in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.6, 1.1);   // fraction crossed rows/findable clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsSTPC, 0.0, 0.4);         // fraction of shared clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 4.);         // Chi2 per Cluster in the TPC
   }
+
   if (cutDefinition == 1) {
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCr, 120.0, 160.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.6, 1.1);
-    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 3.0);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 2.0, 10.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 4.5);
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 2., 10.);           // Minimum clusters in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 4.5);        // Chi2 per Cluster in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::NFclsCrossedTPC, 100., 160.); // Number of crossed rows in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.6, 1.1);   // fraction crossed rows/findable clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsSTPC, 0.0, 0.4);         // fraction of shared clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 3.);         // Chi2 per Cluster in the TPC
   }
 
   if (cutDefinition == 2) {
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCr, 120.0, 160.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.6, 1.1);
-    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 3.0);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 3.0, 10.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 6.5);
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 3., 10.);           // Minimum clusters in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 6.5);        // Chi2 per Cluster in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::NFclsCrossedTPC, 120., 160.); // Number of crossed rows in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.6, 1.1);   // fraction crossed rows/findable clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsSTPC, 0.0, 0.4);         // fraction of shared clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 3.);         // Chi2 per Cluster in the TPC
   }
 
   if (cutDefinition == 3) {
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCr, 100.0, 160.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.7, 1.1);
-    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 3.0);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 2.0, 10.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 6.5);
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 2., 10.);           // Minimum clusters in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 6.5);        // Chi2 per Cluster in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::NFclsCrossedTPC, 100., 160.); // Number of crossed rows in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.7, 1.1);   // fraction crossed rows/findable clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsSTPC, 0.0, 0.4);         // fraction of shared clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 3.);         // Chi2 per Cluster in the TPC
   }
 
   if (cutDefinition == 4) {
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCr, 120.0, 160.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.5, 1.1);
-    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 4.0);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 3.0, 10.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 4.5);
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 3., 10.);           // Minimum clusters in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 4.5);        // Chi2 per Cluster in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::NFclsCrossedTPC, 120., 160.); // Number of crossed rows in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.5, 1.1);   // fraction crossed rows/findable clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsSTPC, 0.0, 0.4);         // fraction of shared clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 4.);         // Chi2 per Cluster in the TPC
   }
 
   if (cutDefinition == 5) {
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCr, 140.0, 160.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.7, 1.1);
-    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 3.0);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 3.0, 10.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 6.5);
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 3., 10.);           // Minimum clusters in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 6.5);        // Chi2 per Cluster in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::NFclsCrossedTPC, 140., 160.); // Number of crossed rows in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.7, 1.1);   // fraction crossed rows/findable clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsSTPC, 0.0, 0.4);         // fraction of shared clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 3.);         // Chi2 per Cluster in the TPC
   }
 
   if (cutDefinition == 6) {
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCr, 140.0, 160.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.7, 1.1);
-    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 5.0);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 2.0, 10.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 5.5);
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 2., 10.);           // Minimum clusters in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 5.5);        // Chi2 per Cluster in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::NFclsCrossedTPC, 140., 160.); // Number of crossed rows in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.7, 1.1);   // fraction crossed rows/findable clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsSTPC, 0.0, 0.4);         // fraction of shared clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 5.);         // Chi2 per Cluster in the TPC
   }
 
   if (cutDefinition == 7) {
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCr, 120.0, 160.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.6, 1.1);
-    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 4.0);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 3.0, 10.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 5.5);
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 3., 10.);           // Minimum clusters in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 5.5);        // Chi2 per Cluster in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::NFclsCrossedTPC, 120., 160.); // Number of crossed rows in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.6, 1.1);   // fraction crossed rows/findable clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsSTPC, 0.0, 0.4);         // fraction of shared clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 4.);         // Chi2 per Cluster in the TPC
   }
 
   if (cutDefinition == 8) {
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCr, 140.0, 160.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.6, 1.1);
-    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 3.0);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 3.0, 10.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 4.5);
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 3., 10.);           // Minimum clusters in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 4.5);        // Chi2 per Cluster in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::NFclsCrossedTPC, 140., 160.); // Number of crossed rows in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.6, 1.1);   // fraction crossed rows/findable clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsSTPC, 0.0, 0.4);         // fraction of shared clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 3.);         // Chi2 per Cluster in the TPC
   }
 
   if (cutDefinition == 9) {
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCr, 140.0, 160.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.7, 1.1);
-    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 4.0);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 3.0, 10.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 5.5);
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 3., 10.);           // Minimum clusters in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 5.5);        // Chi2 per Cluster in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::NFclsCrossedTPC, 140., 160.); // Number of crossed rows in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.7, 1.1);   // fraction crossed rows/findable clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsSTPC, 0.0, 0.4);         // fraction of shared clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 4.);         // Chi2 per Cluster in the TPC
   }
 
   if (cutDefinition == 10) {
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCr, 100.0, 160.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.5, 1.1);
-    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 4.0);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 4.0, 10.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 4.5);
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 4., 10.);           // Minimum clusters in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 4.5);        // Chi2 per Cluster in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::NFclsCrossedTPC, 100., 160.); // Number of crossed rows in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.5, 1.1);   // fraction crossed rows/findable clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsSTPC, 0.0, 0.6);         // fraction of shared clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 4.);         // Chi2 per Cluster in the TPC
   }
 
   if (cutDefinition == 11) {
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCr, 140.0, 160.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.6, 1.1);
-    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 5.0);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 4.0, 10.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 5.5);
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 4., 10.);           // Minimum clusters in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 5.5);        // Chi2 per Cluster in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::NFclsCrossedTPC, 140., 160.); // Number of crossed rows in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.6, 1.1);   // fraction crossed rows/findable clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsSTPC, 0.0, 0.6);         // fraction of shared clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 5.);         // Chi2 per Cluster in the TPC
   }
 
   if (cutDefinition == 12) {
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCr, 100.0, 160.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.7, 1.1);
-    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 5.0);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 4.0, 10.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 5.5);
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 4., 10.);           // Minimum clusters in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 5.5);        // Chi2 per Cluster in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::NFclsCrossedTPC, 100., 160.); // Number of crossed rows in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.7, 1.1);   // fraction crossed rows/findable clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsSTPC, 0.0, 0.6);         // fraction of shared clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 5.);         // Chi2 per Cluster in the TPC
   }
 
   if (cutDefinition == 13) {
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCr, 140.0, 160.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.6, 1.1);
-    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 5.0);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 3.0, 10.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 6.5);
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 3., 10.);           // Minimum clusters in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 6.5);        // Chi2 per Cluster in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::NFclsCrossedTPC, 140., 160.); // Number of crossed rows in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.6, 1.1);   // fraction crossed rows/findable clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsSTPC, 0.0, 0.4);         // fraction of shared clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 5.);         // Chi2 per Cluster in the TPC
   }
 
   if (cutDefinition == 14) {
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCr, 100.0, 160.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.7, 1.1);
-    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 5.0);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 3.0, 10.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 6.5);
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 3., 10.);           // Minimum clusters in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 6.5);        // Chi2 per Cluster in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::NFclsCrossedTPC, 100., 160.); // Number of crossed rows in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.7, 1.1);   // fraction crossed rows/findable clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsSTPC, 0.0, 0.6);         // fraction of shared clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 5.);         // Chi2 per Cluster in the TPC
   }
 
   if (cutDefinition == 15) {
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCr, 120.0, 160.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.5, 1.1);
-    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 4.0);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 2.0, 10.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 5.5);
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 2., 10.);           // Minimum clusters in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 5.5);        // Chi2 per Cluster in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::NFclsCrossedTPC, 120., 160.); // Number of crossed rows in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.5, 1.1);   // fraction crossed rows/findable clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsSTPC, 0.0, 0.6);         // fraction of shared clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 4.);         // Chi2 per Cluster in the TPC
   }
 
   if (cutDefinition == 16) {
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCr, 120.0, 160.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.6, 1.1);
-    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 5.0);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 4.0, 10.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 4.5);
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 4., 10.);           // Minimum clusters in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 4.5);        // Chi2 per Cluster in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::NFclsCrossedTPC, 120., 160.); // Number of crossed rows in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.6, 1.1);   // fraction crossed rows/findable clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsSTPC, 0.0, 0.6);         // fraction of shared clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 5.);         // Chi2 per Cluster in the TPC
   }
 
   if (cutDefinition == 17) {
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCr, 140.0, 160.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.6, 1.1);
-    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 5.0);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 2.0, 10.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 6.5);
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 2., 10.);           // Minimum clusters in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 6.5);        // Chi2 per Cluster in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::NFclsCrossedTPC, 140., 160.); // Number of crossed rows in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.6, 1.1);   // fraction crossed rows/findable clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsSTPC, 0.0, 0.6);         // fraction of shared clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 5.);         // Chi2 per Cluster in the TPC
   }
 
   if (cutDefinition == 18) {
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCr, 140.0, 160.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.7, 1.1);
-    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 4.0);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 2.0, 10.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 6.5);
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 2., 10.);           // Minimum clusters in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 6.5);        // Chi2 per Cluster in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::NFclsCrossedTPC, 140., 160.); // Number of crossed rows in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.7, 1.1);   // fraction crossed rows/findable clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsSTPC, 0.0, 0.6);         // fraction of shared clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 4.);         // Chi2 per Cluster in the TPC
   }
 
   if (cutDefinition == 19) {
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCr, 120.0, 160.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.6, 1.1);
-    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 5.0);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 4.0, 10.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 6.5);
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 4., 10.);           // Minimum clusters in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 6.5);        // Chi2 per Cluster in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::NFclsCrossedTPC, 120., 160.); // Number of crossed rows in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.6, 1.1);   // fraction crossed rows/findable clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsSTPC, 0.0, 0.6);         // fraction of shared clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 5.);         // Chi2 per Cluster in the TPC
   }
 
   if (cutDefinition == 20) {
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCr, 140.0, 160.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.6, 1.1);
-    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 4.0);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 2.0, 10.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 5.5);
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 4., 10.);           // Minimum clusters in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 5.5);        // Chi2 per Cluster in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::NFclsCrossedTPC, 140., 160.); // Number of crossed rows in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.6, 1.1);   // fraction crossed rows/findable clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsSTPC, 0.0, 0.8);         // fraction of shared clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 4.);         // Chi2 per Cluster in the TPC
   }
 
   if (cutDefinition == 21) {
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCr, 140.0, 160.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.7, 1.1);
-    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 5.0);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 2.0, 10.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 6.5);
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 2., 10.);           // Minimum clusters in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 6.5);        // Chi2 per Cluster in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::NFclsCrossedTPC, 140., 160.); // Number of crossed rows in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.7, 1.1);   // fraction crossed rows/findable clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsSTPC, 0.0, 0.8);         // fraction of shared clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 5.);         // Chi2 per Cluster in the TPC
   }
 
   if (cutDefinition == 22) {
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCr, 100.0, 160.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.5, 1.1);
-    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 3.0);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 3.0, 10.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 6.5);
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 3., 10.);           // Minimum clusters in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 6.5);        // Chi2 per Cluster in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::NFclsCrossedTPC, 100., 160.); // Number of crossed rows in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.5, 1.1);   // fraction crossed rows/findable clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsSTPC, 0.0, 0.8);         // fraction of shared clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 3.);         // Chi2 per Cluster in the TPC
   }
 
   if (cutDefinition == 23) {
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCr, 100.0, 160.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.7, 1.1);
-    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 5.0);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 3.0, 10.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 4.5);
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 3., 10.);           // Minimum clusters in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 4.5);        // Chi2 per Cluster in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::NFclsCrossedTPC, 100., 160.); // Number of crossed rows in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.7, 1.1);   // fraction crossed rows/findable clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsSTPC, 0.0, 0.8);         // fraction of shared clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 5.);         // Chi2 per Cluster in the TPC
   }
 
   if (cutDefinition == 24) {
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCr, 120.0, 160.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.6, 1.1);
-    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 5.0);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 2.0, 10.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 4.5);
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 2., 10.);           // Minimum clusters in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 4.5);        // Chi2 per Cluster in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::NFclsCrossedTPC, 120., 160.); // Number of crossed rows in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.6, 1.1);   // fraction crossed rows/findable clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsSTPC, 0.0, 0.8);         // fraction of shared clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 5.);         // Chi2 per Cluster in the TPC
   }
 
   if (cutDefinition == 25) {
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCr, 140.0, 160.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.7, 1.1);
-    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 5.0);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 3.0, 10.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 5.5);
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 4., 10.);           // Minimum clusters in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 5.5);        // Chi2 per Cluster in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::NFclsCrossedTPC, 140., 160.); // Number of crossed rows in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.7, 1.1);   // fraction crossed rows/findable clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsSTPC, 0.0, 0.8);         // fraction of shared clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 5.);         // Chi2 per Cluster in the TPC
   }
 
   if (cutDefinition == 26) {
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCr, 100.0, 160.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.7, 1.1);
-    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 4.0);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 3.0, 10.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 6.5);
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 3., 10.);           // Minimum clusters in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 6.5);        // Chi2 per Cluster in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::NFclsCrossedTPC, 100., 160.); // Number of crossed rows in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.7, 1.1);   // fraction crossed rows/findable clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsSTPC, 0.0, 0.8);         // fraction of shared clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 4.);         // Chi2 per Cluster in the TPC
   }
 
   if (cutDefinition == 27) {
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCr, 140.0, 160.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.5, 1.1);
-    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 4.0);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 2.0, 10.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 6.5);
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 4., 10.);           // Minimum clusters in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 6.5);        // Chi2 per Cluster in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::NFclsCrossedTPC, 140., 160.); // Number of crossed rows in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.5, 1.1);   // fraction crossed rows/findable clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsSTPC, 0.0, 0.8);         // fraction of shared clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 4.);         // Chi2 per Cluster in the TPC
   }
 
   if (cutDefinition == 28) {
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCr, 100.0, 160.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.7, 1.1);
-    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 5.0);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 3.0, 10.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 4.5);
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 4., 10.);           // Minimum clusters in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 4.5);        // Chi2 per Cluster in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::NFclsCrossedTPC, 100., 160.); // Number of crossed rows in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.7, 1.1);   // fraction crossed rows/findable clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsSTPC, 0.0, 0.8);         // fraction of shared clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 5.);         // Chi2 per Cluster in the TPC
   }
 
   if (cutDefinition == 29) {
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCr, 100.0, 160.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.6, 1.1);
-    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 5.0);
-    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 2.0, 10.);
-    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 6.5);
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsITS, 2., 10.);           // Minimum clusters in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::kITSchi2Cl, 0.0, 4.5);        // Chi2 per Cluster in the ITS
+    fTrackCuts->AddCut(AliDielectronVarManager::NFclsCrossedTPC, 100., 160.); // Number of crossed rows in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNFclsTPCfCross, 0.6, 1.1);   // fraction crossed rows/findable clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kNclsSTPC, 0.0, 0.8);         // fraction of shared clusters in the TPC
+    fTrackCuts->AddCut(AliDielectronVarManager::kTPCchi2Cl, 0.0, 5.);         // Chi2 per Cluster in the TPC
   }
 
   AliDielectronVarCuts* returnCut = NULL;
